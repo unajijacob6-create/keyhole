@@ -17,7 +17,16 @@ export const cfg = {
   get attester() { return process.env.KH_ATTESTER ?? `watcher.${this.master}`; },
   get vault() { return process.env.KH_VAULT ?? `vault.${this.master}`; },
   get agent() { return process.env.KH_AGENT ?? `agent.${this.master}`; },
+  // Keyhole Guardian demo (npm run setup:guardian / demo:guardian).
+  get dao() { return process.env.KH_DAO ?? `${this.master === "keyhole.testnet" ? "kh-guardian" : "kh-g-" + this.master.split(".")[0].slice(-14)}.${DAO_FACTORY}`; },
+  get councilA() { return process.env.KH_COUNCIL_A ?? `council-a.${this.master}`; }, // proposes the upgrade
+  get councilB() { return process.env.KH_COUNCIL_B ?? `council-b.${this.master}`; }, // approves it
+  get alice() { return process.env.KH_ALICE ?? `alice.${this.master}`; }, // depositor with a hatch
+  get bob() { return process.env.KH_BOB ?? `bob.${this.master}`; }, // depositor without one
+  get guardian() { return process.env.KH_GUARDIAN ?? `guardian.${this.master}`; }, // relayer that fires hatches
 };
+/** The official Sputnik v2 DAO factory on testnet (get_default_version [3,31] on 2026-11-09). */
+export const DAO_FACTORY = "sputnikv2.testnet";
 
 const credDir = path.join(os.homedir(), ".near-credentials", NETWORK);
 export const credentialPath = (id: string) => path.join(credDir, `${id}.json`);

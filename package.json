@@ -25,7 +25,8 @@
     "eval:review": "tsx scripts/eval-review.ts",
     "eval": "tsx scripts/eval.ts",
     "judge": "tsx scripts/judge.ts",
-    "gen:images": "tsx scripts/gen-images.ts"
+    "gen:images": "tsx scripts/gen-images.ts",
+    "setup:guardian": "tsx scripts/setup-guardian.ts"
   },
   "engines": {
     "node": ">=22"
