@@ -2,7 +2,7 @@
 import { Rpc, RpcAnswerError, type Network, type Transport, type AccessKeyInfo } from "./rpc.ts";
 import { EMPTY_CODE_HASH, codeHash as computeCodeHash } from "./hash.ts";
 import { analyzeWasm, type WasmAnalysis } from "./wasm.ts";
-import { discoverOwners, resolveActor, type ActorInfo, type OwnerCandidate } from "./controller.ts";
+import { discoverOwners, resolveActor, deployerRolesFromSource, type ActorInfo, type OwnerCandidate, type DeployerRoles } from "./controller.ts";
 import { nep330, sourcescan, type Nep330Signal, type SourceScanSignal, type SourceOptions } from "./sources.ts";
 import { registryLookup, registryRpc, KEYHOLE_REGISTRY, type RegistrySignal } from "./registry.ts";
 import { lastCodeChange, type CodeChange } from "./history.ts";
@@ -19,6 +19,9 @@ export interface InspectOptions {
   /** Query the Keyhole registry (default true). Pass an Rpc to use a custom endpoint/transport. */
   registry?: boolean | { rpc?: Rpc; account?: string };
   checkRepo?: SourceOptions["checkRepo"];
+  /** Read near-plugins code_deployers from the declared GitHub source (default on). Pass a fetcher
+   *  for tests, or false to disable. */
+  sourceRoles?: false | ((url: string) => Promise<string | null>);
   nowMs?: number;
   /** Resolved code (e.g. from a block stream) to avoid a second view_code. */
   rpc?: Rpc;
@@ -42,6 +45,7 @@ export interface KeyholeReport {
   owners: (OwnerCandidate & { actor: ActorInfo | null; note?: string })[];
   globalPublisher: ActorInfo | null;
   paths: UpgradePath[];
+  deployerRoles: DeployerRoles | null;
   nep330: Nep330Signal | null;
   sourcescan: SourceScanSignal | null;
   registry: RegistrySignal | null;
@@ -72,7 +76,7 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
       g.headline = "Account does not exist.";
       g.verdict = "CAUTION";
       g.reasons = [{ code: "NO_ACCOUNT", severity: "info", text: `${accountId} does not exist on ${network}.`, evidence: [ev.account(network, accountId)] }];
-      return { schema: "keyhole.report/1", account: accountId, network, at, exists: false, code: null, keys: { fullAccess: [], functionCall: [] }, wasm: null, owners: [], globalPublisher: null, paths: [], nep330: null, sourcescan: null, registry: null, lastChange: null, grade: g, rpcCalls: rpc.calls, disclaimer: DISCLAIMER };
+      return { schema: "keyhole.report/1", account: accountId, network, at, exists: false, code: null, keys: { fullAccess: [], functionCall: [] }, wasm: null, owners: [], globalPublisher: null, paths: [], deployerRoles: null, nep330: null, sourcescan: null, registry: null, lastChange: null, grade: g, rpcCalls: rpc.calls, disclaimer: DISCLAIMER };
     }
     throw e;
   }
@@ -114,7 +118,7 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
       fullAccessKeyAdded: keyAddedEvents(registry),
       nowMs,
     });
-    return { schema: "keyhole.report/1", account: accountId, network, at, exists: true, code: null, keys, wasm: null, owners: [], globalPublisher: null, paths, nep330: null, sourcescan: null, registry, lastChange: null, grade: g, rpcCalls: rpc.calls + regRpc.calls, disclaimer: DISCLAIMER };
+    return { schema: "keyhole.report/1", account: accountId, network, at, exists: true, code: null, keys, wasm: null, owners: [], globalPublisher: null, paths, deployerRoles: null, nep330: null, sourcescan: null, registry, lastChange: null, grade: g, rpcCalls: rpc.calls + regRpc.calls, disclaimer: DISCLAIMER };
   }
 
   // ── Code and wasm capabilities ──
@@ -127,8 +131,22 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
   // ── Paths through the contract's own code ──
   const capImports = PATH_CAPS.filter((c) => wasm.capabilities[c]);
   const owners: KeyholeReport["owners"] = [];
+  // Verification signals first: source-declared deployer roles are trusted only for verified code.
+  const [nep, ss, registry] = await Promise.all([
+    nep330(rpc, accountId, wasm.exports, { checkRepo: opts.checkRepo }),
+    sourcescan(rpc, accountId, effHash),
+    registryOpt ? registryLookup(regRpc, accountId, effHash, regAccount) : Promise.resolve(null),
+  ]);
+  const builds = registry?.forHash.filter((r) => r.attestation.kind === "ReproducibleBuild") ?? [];
+  const reproducibleBuildMatch = builds.length ? builds.some((r) => (r.attestation as any).matches === true) : null;
+  const codeVerified = ss.status === "verified" || reproducibleBuildMatch === true;
+  let deployerRoles: DeployerRoles | null = null;
+  if (capImports.length && wasm.exports.includes("acl_role_variants") && opts.sourceRoles !== false) {
+    const fromSrc = await deployerRolesFromSource(nep.github, nep.metadata?.build_info?.contract_path, typeof opts.sourceRoles === "function" ? opts.sourceRoles : undefined);
+    if (fromSrc) deployerRoles = { ...fromSrc, certain: codeVerified };
+  }
   if (capImports.length) {
-    const candidates = await discoverOwners(rpc, accountId, wasm.exports);
+    const candidates = await discoverOwners(rpc, accountId, wasm.exports, deployerRoles);
     for (const c of candidates) {
       if (c.account === accountId) {
         owners.push({ ...c, actor: null, note: "the contract names itself; it can only act through its own methods and keys" });
@@ -182,13 +200,8 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
     });
   }
 
-  // ── Verification, registry, history (independent; run in parallel) ──
-  const [nep, ss, registry, lastChange] = await Promise.all([
-    nep330(rpc, accountId, wasm.exports, { checkRepo: opts.checkRepo }),
-    sourcescan(rpc, accountId, effHash),
-    registryOpt ? registryLookup(regRpc, accountId, effHash, regAccount) : Promise.resolve(null),
-    opts.history === false ? Promise.resolve(null) : lastCodeChange(rpc, accountId, effHash, at.height, { archivalUrl: opts.archivalUrl, transport: opts.transport }),
-  ]);
+  // ── History ──
+  const lastChange = opts.history === false ? null : await lastCodeChange(rpc, accountId, effHash, at.height, { archivalUrl: opts.archivalUrl, transport: opts.transport });
 
   const immutabilityFacts = [
     "no full-access keys",
@@ -196,8 +209,6 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
     source === "global-by-account" ? "" : "it is not a global contract referenced by account",
   ].filter(Boolean);
 
-  const builds = registry?.forHash.filter((r) => r.attestation.kind === "ReproducibleBuild") ?? [];
-  const reproducibleBuildMatch = builds.length ? builds.some((r) => (r.attestation as any).matches === true) : null;
   // AiReview verdict_summary is "<risk>: <text>". Only none/low-risk reviews count as "reviewed".
   const reviews = (registry?.forHash ?? []).filter((r) => r.attestation.kind === "AiReview").map((r) => String((r.attestation as any).verdict_summary ?? ""));
   const riskOf = (s: string) => (s.match(/^(high|medium|low|none)\b/)?.[1] ?? "unknown") as string;
@@ -236,6 +247,7 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
     owners,
     globalPublisher,
     paths,
+    deployerRoles,
     nep330: nep,
     sourcescan: ss,
     registry,

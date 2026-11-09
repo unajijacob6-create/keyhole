@@ -48,3 +48,18 @@ describe("analyzeSputnikPolicy", () => {
     expect(dao.requiredApprovals).toBeNull();
   });
 });
+
+import { deployerRolesFromSource } from "../src/controller.ts";
+describe("deployerRolesFromSource", () => {
+  it("reads code_deployers from the declared source at the declared rev", async () => {
+    const seen: string[] = [];
+    const src = `#[upgradable(access_control_roles(\n    code_stagers(Role::StagingManager),\n    code_deployers(Role::UpgradeManager, Role::DAO),\n))]`;
+    const r = await deployerRolesFromSource({ owner: "o", repo: "r", rev: "abc1234" }, "contract", async (u) => (seen.push(u), src));
+    expect(seen[0]).toBe("https://raw.githubusercontent.com/o/r/abc1234/contract/src/lib.rs");
+    expect(r?.roles).toEqual(["UpgradeManager", "DAO"]);
+  });
+  it("returns null without a pinned rev or without the attribute", async () => {
+    expect(await deployerRolesFromSource({ owner: "o", repo: "r", rev: null }, "", async () => "x")).toBeNull();
+    expect(await deployerRolesFromSource({ owner: "o", repo: "r", rev: "abc1234" }, "", async () => "fn main() {}")).toBeNull();
+  });
+});

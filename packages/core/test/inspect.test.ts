@@ -11,7 +11,7 @@ const load = (f: string) => JSON.parse(zlib.gunzipSync(fs.readFileSync(path.join
 async function run(file: string) {
   const fx = load(file);
   const transport = fixtureTransport(fx.fixtures);
-  const r = await inspect(fx.account, { transport, history: fx.history, registry: { rpc: new Rpc({ network: "testnet", transport, retries: 0 }) }, checkRepo: false, nowMs: fx.nowMs });
+  const r = await inspect(fx.account, { transport, history: fx.history, registry: { rpc: new Rpc({ network: "testnet", transport, retries: 0 }) }, checkRepo: false, sourceRoles: false, nowMs: fx.nowMs });
   return { fx, r };
 }
 

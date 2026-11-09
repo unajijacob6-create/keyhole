@@ -160,9 +160,6 @@ export async function resolveActor(rpc: Rpc, account: string): Promise<ActorInfo
 const DIRECT_OWNER_VIEWS = ["get_owner", "get_owner_id", "owner_id", "owner", "get_owner_account_id", "owner_get", "get_admin", "admin"];
 const OBJECT_VIEWS = ["get_config", "get_metadata", "get_contract_state", "get_contract_info", "get_info", "metadata", "get_state", "contract_metadata", "get_contract_metadata"];
 const OWNER_KEY = /^(owner|owner_id|owner_account_id|admin|admin_id|admin_account_id|governance|governance_id|governance_account_id|dao|dao_id|dao_account_id|super_admin|manager|manager_id|operator_account_id)$/i;
-/** near-plugins Upgradable deployer role names seen on mainnet (UpgradableCodeDeployer: Near-One,
- *  Rhea; Upgrader: intents.near). Other role names are ignored; super admins are always counted. */
-export const SELF_DEPLOY_ROLES = ["UpgradableCodeDeployer", "Upgrader", "CodeDeployer"];
 const ACCOUNT_ID = /^(?=.{2,64}$)(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
 
 export interface OwnerCandidate {
@@ -182,8 +179,42 @@ function findOwnerFields(obj: unknown, prefix: string, out: { path: string; valu
   }
 }
 
+export interface DeployerRoles {
+  roles: string[];
+  /** Where the role list came from, e.g. the source file URL at the declared rev. */
+  source: string;
+  /** true when the source is verified to build the deployed code (reproducible build / SourceScan). */
+  certain: boolean;
+}
+
+/** Read near-plugins `code_deployers(Role::A, Role::B)` from the contract's declared source. */
+export async function deployerRolesFromSource(github: { owner: string; repo: string; rev: string | null } | null, contractPath: string | undefined, fetchText: (url: string) => Promise<string | null> = defaultFetchText): Promise<{ roles: string[]; source: string } | null> {
+  if (!github?.rev) return null;
+  const dir = (contractPath ?? "").replace(/^\/+|\/+$/g, "");
+  const url = `https://raw.githubusercontent.com/${github.owner}/${github.repo}/${github.rev}/${dir ? dir + "/" : ""}src/lib.rs`;
+  const text = await fetchText(url);
+  if (!text) return null;
+  const m = text.match(/code_deployers\s*\(([^)]*)\)/);
+  if (!m) return null;
+  const roles = [...m[1].matchAll(/Role::(\w+)/g)].map((x) => x[1]);
+  return roles.length ? { roles, source: url } : null;
+}
+async function defaultFetchText(url: string): Promise<string | null> {
+  try {
+    const r = await fetch(url);
+    return r.ok ? await r.text() : null;
+  } catch {
+    return null;
+  }
+}
+
+/** near-plugins role names that deploy the contract's own code in contracts seen on mainnet. */
+const KNOWN_DEPLOYER_ROLES = ["UpgradableCodeDeployer", "Upgrader", "CodeDeployer", "UpgradeManager"];
+/** Other role names that might deploy code; their grantees can only make a path "unresolved". */
+const POSSIBLE_DEPLOYER_ROLE = /upgrad|deploy|^dao$/i;
+
 /** Ask the contract who owns it, using only view methods it actually exports. */
-export async function discoverOwners(rpc: Rpc, account: string, exports: string[]): Promise<OwnerCandidate[]> {
+export async function discoverOwners(rpc: Rpc, account: string, exports: string[], deployerRoles?: DeployerRoles | null): Promise<OwnerCandidate[]> {
   const n = rpc.network;
   const found: OwnerCandidate[] = [];
   const add = (acc: string, source: string, evidence: Evidence, uncertain = false) => {
@@ -200,12 +231,24 @@ export async function discoverOwners(rpc: Rpc, account: string, exports: string[
     for (const a of v ?? []) add(a, "acl_get_super_admins() (near-plugins ACL super admin)", ev.view(n, account, "acl_get_super_admins", args));
     if (exports.includes("acl_role_variants") && exports.includes("acl_get_grantees")) {
       const roles = (await rpc.tryView<string[]>(account, "acl_role_variants")) ?? [];
-      // Only roles that deploy *this* contract's code. Names like TokenDeployer/TokenUpgrader (e.g.
-      // on omni.bridge.near) manage other contracts and are deliberately not matched.
-      for (const role of roles.filter((r) => SELF_DEPLOY_ROLES.includes(r))) {
+      for (const role of roles) {
+        // From source: exactly the declared code_deployers. Otherwise: known names (certain) and
+        // possible names (uncertain). Names like TokenDeployer on omni.bridge.near deploy *other*
+        // contracts; without source they can only make the path "unresolved", never "single-key".
+        let certain: boolean;
+        let why: string;
+        if (deployerRoles) {
+          if (!deployerRoles.roles.includes(role)) continue;
+          certain = deployerRoles.certain;
+          why = `code_deployers in ${deployerRoles.certain ? "verified" : "declared, unverified"} source`;
+        } else if (KNOWN_DEPLOYER_ROLES.includes(role)) {
+          (certain = true), (why = "near-plugins deployer role");
+        } else if (POSSIBLE_DEPLOYER_ROLE.test(role) && !/stag/i.test(role)) {
+          (certain = false), (why = "role name suggests it may deploy code; not confirmed");
+        } else continue;
         const gArgs = { role, skip: 0, limit: 20 };
         const g = await rpc.tryView<string[]>(account, "acl_get_grantees", gArgs);
-        for (const a of g ?? []) add(a, `acl_get_grantees(${role}) (near-plugins ACL role)`, ev.view(n, account, "acl_get_grantees", gArgs));
+        for (const a of g ?? []) add(a, `acl_get_grantees(${role}) (${why})`, ev.view(n, account, "acl_get_grantees", gArgs), !certain);
       }
     }
   }

@@ -21,7 +21,7 @@ for (const c of process.argv[2] ? cases.filter((x) => x.account === process.argv
   const store: Record<string, { result?: unknown; error?: unknown }> = {};
   const transport = recordingTransport(store);
   const nowMs = Date.now();
-  const r = await inspect(c.account, { transport, history: c.history, registry: { rpc: new Rpc({ network: "testnet", transport }) }, checkRepo: false, nowMs });
+  const r = await inspect(c.account, { transport, history: c.history, registry: { rpc: new Rpc({ network: "testnet", transport }) }, checkRepo: false, sourceRoles: false, nowMs });
   const file = path.join(DIR, `${c.account.length > 40 ? c.account.slice(0, 16) : c.account}.json.gz`);
   fs.writeFileSync(file, zlib.gzipSync(JSON.stringify({ account: c.account, history: c.history, nowMs, expected: { class: r.grade.class, verdict: r.grade.verdict, flags: r.grade.flags }, fixtures: store }), { level: 9 }));
   console.log(`${c.account}: ${r.grade.verdict} ${r.grade.class} ${r.grade.flags.join(",")} — ${Object.keys(store).length} requests, ${(fs.statSync(file).size / 1024).toFixed(0)} KiB`);
