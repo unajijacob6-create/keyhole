@@ -15,7 +15,124 @@ const fmt = (x) => (x < 120 ? `${x} s` : x < 7200 ? `${(x / 60).toFixed(1)} min`
 /** True when the in-browser grader may grade this radar proposal (web/src/guardian.ts canGrade). */
 export const gradeable = (p) => Boolean(p?.code_hash) && !p?.registers_release && (p?.state === "pending" || (p?.state === "executed" && Boolean(p?.changed_at_height)));
 
+// ── Intra-repo markdown links (README.md and docs/*.md) ──────────────────────────────────────
+// GitHub's heading slug: drop markup, lower-case, keep letters, digits, space, '-' and '_', spaces → '-'.
+const slug = (h) => h.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1").replace(/<[^>]+>/g, "").trim().toLowerCase().replace(/[^\p{L}\p{N} _-]/gu, "").replace(/ /g, "-");
+const outsideFences = (src) => {
+  let fence = false;
+  return src.split("\n").map((line) => {
+    if (/^\s*(```|~~~)/.test(line)) return (fence = !fence), "";
+    return fence ? "" : line;
+  });
+};
+/** The anchors a markdown file defines: heading slugs (with GitHub's -1, -2 for repeats) and explicit <a id>/<a name>. */
+export function mdAnchors(file) {
+  const out = new Set();
+  const seen = {};
+  for (const line of outsideFences(read(file))) {
+    for (const m of line.matchAll(/<a\s+(?:id|name)="([^"]+)"/g)) out.add(m[1]);
+    const h = /^#{1,6}\s+(.*?)\s*#*\s*$/.exec(line);
+    if (h) {
+      const s = slug(h[1]);
+      const n = seen[s] ?? 0;
+      seen[s] = n + 1;
+      out.add(n ? `${s}-${n}` : s);
+    }
+  }
+  return out;
+}
+/** Every relative link in `file` whose target file, or whose #anchor in a .md target, does not exist. */
+export function brokenLinks(file) {
+  const bad = [];
+  outsideFences(read(file)).forEach((line, i) => {
+    for (const m of line.replace(/`[^`]*`/g, "").matchAll(/\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g)) {
+      const t = m[1];
+      if (/^[a-z][a-z0-9+.-]*:/i.test(t)) continue; // http:, https:, mailto:
+      const [p, a] = t.split("#");
+      const target = p ? path.posix.join(path.posix.dirname(file), decodeURIComponent(p)) : file;
+      if (!fs.existsSync(path.join(ROOT, target))) bad.push(`${file}:${i + 1} ${t} (no such file)`);
+      else if (a && target.endsWith(".md") && !mdAnchors(target).has(a)) bad.push(`${file}:${i + 1} ${t} (no such anchor)`);
+    }
+  });
+  return bad;
+}
+export function checkLinks(ok) {
+  const files = ["README.md", ...fs.readdirSync(path.join(ROOT, "docs")).filter((f) => f.endsWith(".md")).map((f) => `docs/${f}`), "packages/guard/README.md", "packages/mcp/README.md"];
+  const bad = files.flatMap(brokenLinks);
+  ok(bad.length === 0, `claims: every relative link in README.md, docs/*.md and the guard/mcp READMEs resolves (${files.length} files)${bad.length ? `; broken: ${bad.join("; ")}` : ""}`);
+}
+
+/** The deposits data/guardian-run.json records (step 1's line "vault total X NEAR (alice A, bob B)"), in NEAR. */
+export function recordedDeposits() {
+  const run = JSON.parse(read("data/guardian-run.json"));
+  for (const s of run.steps ?? []) for (const l of s.lines ?? []) {
+    const m = /\(alice (\d+(?:\.\d+)?), bob (\d+(?:\.\d+)?)\)/.exec(l);
+    if (m) return { alice: Number(m[1]), bob: Number(m[2]) };
+  }
+  return null;
+}
+
+// Second-round review items (C1-C9): wording that was too strong must not come back, and the
+// replacements must say what the code and data support.
+export function checkRound2(ok) {
+  const flatRead = (f) => flat(read(f));
+  const html = flatRead("web/index.html");
+  const gts = read("web/src/guardian.ts");
+  const readme = flatRead("README.md");
+  const guardianMd = flatRead("docs/GUARDIAN.md");
+  const banned = [
+    // C1: the hatch is not guaranteed to land before execution.
+    [/gets you out before the vote lands/i, ["web/index.html", "README.md", "docs/GUARDIAN.md"], "C1 'gets you out before the vote lands'"],
+    // C2: the blob precedes execution, not necessarily the deciding vote (sputnikdao2 v3 Finalize can re-execute).
+    [/on chain before the deciding vote|reads them before the vote|reads those bytes before the deciding vote/i, ["web/index.html", "web/src/guardian.ts", "README.md", "docs/GUARDIAN.md"], "C2 blob 'before the deciding vote'"],
+    // C3: the eval table label.
+    [/public before the vote/i, ["scripts/eval-upgrades.ts", "docs/EVAL_UPGRADES.md"], "C3 'store_blob tx (public before the vote)'"],
+    // C4: stale AI-grade and hatch statements outside the copy checked above.
+    [/AI never sets/i, ["packages/core/src/grade.ts", "scripts/eval-review.ts", "docs/EVAL_REVIEW.md"], "C4 'AI never sets it/the grade'"],
+    [/cannot redirect funds/i, ["packages/hatch/src/index.ts"], "C4 hatch 'cannot redirect funds'"],
+    [/only when an upgrade is graded STOP/i, ["packages/hatch/package.json"], "C4 hatch description 'only when an upgrade is graded STOP'"],
+    // C6: a stale fixed check count, and "re-derives every claim".
+    [/\b\d+\/\d+ checks\b/, ["docs/GUARDIAN.md", "README.md"], "C6 fixed 'N/N checks' count"],
+    [/re-derives every claim/i, ["web/src/guardian.ts", "web/index.html"], "C6 're-derives every claim'"],
+    // C7: the replaced code is read just before the change block, possibly a few blocks earlier.
+    [/block \$\{p\.changed_at_height - 1\}/, ["web/src/guardian.ts"], "C7 'block changed_at_height-1'"],
+    // C8: amounts in the replay come from data/guardian-run.json, not literals.
+    [/["'`][^"'`\n]*\b\d+\.\d{2} NEAR/, ["web/src/guardian.ts"], "C8 hard-coded NEAR amounts in the replay"],
+  ];
+  for (const [re, fs_, what] of banned) {
+    const hits = fs_.filter((f) => re.test(read(f)));
+    ok(hits.length === 0, `claims: no ${what}${hits.length ? ` (found in ${hits.join(", ")})` : ""}`);
+  }
+  // C1: the intro says the head start is not guaranteed and points at the limits.
+  ok(/before the upgrade executes when the window allows; that is not guaranteed/.test(html) && /href="#limits"/.test(html), "claims: index.html intro says the hatch can land before execution, not guaranteed");
+  // C2: the blob claim is "before the proposal executes" where it is made.
+  ok(/must be on chain before the proposal executes/.test(html) && /must be on chain before the proposal executes/.test(flat(gts)) && /on chain before execution/.test(gts), "claims: index.html and the radar say the store_blob precedes execution");
+  // C3: the generated eval report explains the label.
+  ok(/so the `store_blob` always precedes execution/.test(flatRead("docs/EVAL_UPGRADES.md")), "claims: EVAL_UPGRADES.md explains that a store_blob precedes execution");
+  // C4: the replacements are precise.
+  ok(/fixes receiver, method, args and deposit/.test(read("packages/hatch/src/index.ts")) && /decides where the funds go/.test(read("packages/hatch/src/index.ts")), "claims: hatch source comment says the signature fixes the call and the venue's code decides where funds go");
+  ok(/decides where the funds go/.test(JSON.parse(read("packages/hatch/package.json")).description), "claims: hatch package description says the venue's code decides where funds go");
+  for (const f of ["scripts/eval-review.ts", "docs/EVAL_REVIEW.md"]) ok(/an AI review changes a grade only by the fixed rules/.test(read(f)), `claims: ${f} says the AI review counts only by the fixed rules`);
+  // C6: the check count is dated, and the replay copy names what it checks.
+  ok(/all checks pass \(\d+ on \d{4}-\d{2}-\d{2}\)/.test(guardianMd), "claims: GUARDIAN.md states the replay check count with its date");
+  ok(/fetches each recorded transaction from testnet archival RPC and checks its signer, receiver, call and block/.test(flat(gts)), "claims: the site says what the replay checks");
+  // C7: the radar text says what "All" shows.
+  ok(/"All" shows the \$\{RADAR_SHOWN\} most recent across/.test(gts) && /slice\(0, RADAR_SHOWN\)/.test(gts), "claims: the radar text and its 'All' filter use the same count");
+  ok(/just before block \$\{p\.changed_at_height\}/.test(gts), "claims: the in-browser grade says 'the code just before block <changed_at_height>'");
+  // C8: the recording has the amounts the replay shows.
+  ok(recordedDeposits() !== null, `claims: data/guardian-run.json records the deposits the replay shows (${JSON.stringify(recordedDeposits())})`);
+  // C9: README "For agents" names what exists in the code.
+  const mcpSrc = read("packages/mcp/src/tools.ts") + read("packages/mcp/src/server.ts");
+  const tools = ["keyhole_inspect", "keyhole_pending", "keyhole_check_call", "keyhole_verify_hatch"];
+  ok(/## For agents/.test(readme) && tools.every((t) => readme.includes(t) && mcpSrc.includes(`name: "${t}"`)), "claims: README 'For agents' names the four MCP tools, each registered in packages/mcp/src");
+  ok(/\(packages\/guard\/README\.md\)/.test(readme) && /\(packages\/mcp\/README\.md\)/.test(readme), "claims: README links the guard and MCP READMEs");
+  const guardSrc = read("packages/guard/src/index.ts");
+  ok(/checkPending/.test(guardSrc) && /policy\.checkPending/.test(readme) && /auto-hatch is testnet-only/.test(guardSrc), "claims: README's guardCall statements (checkPending, testnet-only auto-hatch) match packages/guard/src");
+}
+
 export function checkClaims(ok) {
+  checkLinks(ok);
+  checkRound2(ok);
   const ev = JSON.parse(read("eval/upgrades.json"));
   const S = ev.summary;
   const readme = read("README.md");

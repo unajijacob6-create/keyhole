@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Keyhole Guardian</title>
-    <meta name="description" content="Keyhole reads the exact code a NEAR DAO is voting on, grades it before the deciding vote, and can fire the withdrawal you signed in advance." />
+    <meta name="description" content="Keyhole reads the exact code a NEAR DAO is voting on, grades it, and can fire the withdrawal you signed in advance." />
     <meta name="color-scheme" content="light dark" />
     <link rel="preload" as="image" href="img/hero-1600.webp" imagesrcset="img/hero-960.webp 960w, img/hero-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
     <script>
@@ -69,7 +69,7 @@
           <h2 id="intro-h" class="display">What is Keyhole?</h2>
           <a class="pill dark" href="#watch">Watch it happen <span class="arrow" aria-hidden="true">→</span></a>
         </div>
-        <p class="intro-right">Of 24 major NEAR contracts Keyhole surveyed (the <a href="#table">trust table</a> below), 11 are governed by a Sputnik DAO, among them Ref, Burrow, Meta Pool and LiNEAR, and none is immutable. A Sputnik DAO executes an upgrade in the same call as its deciding vote. There is no timelock to wait out. Keyhole watches those proposals, reads the code they would install, and grades it while there is still time. If you armed an escape hatch, it gets you out before the vote lands. Every answer comes with the request that proves it.</p>
+        <p class="intro-right">Of 24 major NEAR contracts Keyhole surveyed (the <a href="#table">trust table</a> below), 11 are governed by a Sputnik DAO, among them Ref, Burrow, Meta Pool and LiNEAR, and none is immutable. A Sputnik DAO executes an upgrade in the same call as its deciding vote. There is no timelock to wait out. Keyhole watches those proposals, reads the code they would install, and grades it while there is still time. If you armed an escape hatch, Keyhole can submit your exit before the upgrade executes when the window allows; that is not guaranteed (see <a href="#limits">what it does not do</a>). Every answer comes with the request that proves it.</p>
       </section>
 
       <!-- Three cards: the three questions -->
@@ -77,13 +77,13 @@
         <article class="card light reveal">
           <div class="card-text">
             <h3>See it coming</h3>
-            <p>An upgrade proposal names the exact code hash. For <code>UpgradeRemote</code> and <code>UpgradeSelf</code>, a <code>store_blob</code> transaction to the DAO holds the bytes, and it must be on chain before the deciding vote; near-plugins deploys stage the code on the contract. When Keyhole finds those bytes, it reads them before the vote.</p>
+            <p>An upgrade proposal names the exact code hash. For <code>UpgradeRemote</code> and <code>UpgradeSelf</code>, a <code>store_blob</code> transaction to the DAO holds the bytes, and it must be on chain before the proposal executes; near-plugins deploys stage the code on the contract. When Keyhole finds those bytes, it can read them before the proposal executes.</p>
           </div>
           <img class="card-img" src="img/key-960.webp" srcset="img/key-640.webp 640w, img/key-960.webp 960w" sizes="(max-width: 900px) 100vw, 50vw" alt="" loading="lazy" width="960" height="640" />
         </article>
         <article class="card dark reveal" style="--d: 90ms">
           <img class="card-glow" src="img/glow-480.webp" alt="" loading="lazy" width="480" height="480" />
-          <h3>Grade it before the vote</h3>
+          <h3>Grade it before it runs</h3>
           <p>New methods and privileged host calls, diffed against the live code. The source the bytes declare, SourceScan and reproducible builds. A private review in a NEAR AI Cloud TEE, with a receipt.</p>
         </article>
         <article class="card dark reveal" style="--d: 180ms">
@@ -123,6 +123,7 @@
           <li><strong>Your own keys.</strong> A hatch cannot help if a key on your account is compromised: any full-access key can delete it first.</li>
           <li><strong>Off-chain trigger.</strong> The guardian decides when to submit. The worst it can do is send the exit you signed early, late or never. In this build it also fires on STOP for code that already landed; the exit then runs the new code, which decides where the funds go.</li>
           <li><strong>A TEE receipt is provenance.</strong> It proves which model answered inside an attested enclave, over exactly which request. It does not prove the answer is right.</li>
+          <li><strong>Agents get a check, not a signer.</strong> <code>@keyhole/guard</code> refuses the call in code, before signing, when the live code or a pending upgrade grades STOP. The Keyhole MCP server is read-only: none of its tools takes a key or sends a transaction.</li>
           <li><strong>Testnet for the action.</strong> The radar reads mainnet. Hatches are demonstrated on testnet; nothing here signs on mainnet.</li>
         </ul>
       </section>

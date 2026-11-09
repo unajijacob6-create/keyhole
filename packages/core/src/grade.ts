@@ -1,4 +1,4 @@
-// The grade is a pure function of the collected signals. AI never sets it. Rules: docs/GRADING.md.
+// The grade is a pure function of the collected signals; an attested AI review is one of them and counts only where the rules say. Rules: docs/GRADING.md.
 import type { Evidence } from "./evidence.ts";
 
 export type ControlClass = "IMMUTABLE" | "GOVERNED" | "CUSTODIAL" | "UNRESOLVED" | "NO_CODE";

@@ -6,8 +6,8 @@ Of 24 major NEAR contracts in Keyhole's survey (`npm run survey`,
 [STATE_OF_NEAR.md](STATE_OF_NEAR.md)), 11 are governed by a Sputnik DAO, among them Ref, Burrow, Meta
 Pool and LiNEAR, and none is immutable. A Sputnik DAO executes an upgrade in the same call as the vote that reaches its threshold; the
 proposal period is an expiry, not a delay. Keyhole Guardian watches those proposals, reads the exact
-code they would install when the bytes can be found, grades it before the deciding vote, and can
-submit a withdraw call that the depositor signed in advance.
+code they would install when the bytes can be found, grades it (before the proposal executes, when
+the window allows), and can submit a withdraw call that the depositor signed in advance.
 
 Every claim below names the command that re-checks it.
 
@@ -29,10 +29,10 @@ Every claim below names the command that re-checks it.
    (`add_release_info`) carries only a hash. In the upgrade eval a DAO `store_blob` was found for 16
    of 130 real proposals (Ref 6, SWEAT 10); for the other executed ones the bytes were read from the
    chain at the block where the code changed, i.e. after the fact.
-4. **Grade them before the vote** (`gradeUpgrade()` in `packages/core/src/upgrade.ts`, rules in
-   [GRADING.md](GRADING.md#upgrade-grading)): new methods and privileged host calls diffed against the
-   live code, SourceScan and reproducible-build attestations for the new hash, the NEP-330 source the
-   bytes declare (read by running the constant getter in a stub VM, `packages/core/src/wasmview.ts`),
+4. **Grade them before they execute** (`gradeUpgrade()` in `packages/core/src/upgrade.ts`, rules
+   in [GRADING.md](GRADING.md#7-upgrade-grading-pending-upgrades)): new methods and privileged host
+   calls diffed against the live code, SourceScan and reproducible-build attestations for the new
+   hash, the NEP-330 source the bytes declare (read by running the constant getter in a stub VM, `packages/core/src/wasmview.ts`),
    and optionally a private review of the diff in a NEAR AI Cloud TEE with an offline-verifiable
    receipt, posted to the Keyhole registry as an `AiReview` for the pending hash.
 5. **Act.** If the grade is STOP and a depositor armed a hatch (trigger `stop`) for that contract, the
@@ -46,9 +46,9 @@ Every claim below names the command that re-checks it.
 
 | claim | how to re-check | result |
 |---|---|---|
-| A testnet DAO upgrade was graded STOP and Alice's hatch landed before the deciding vote | `npm run demo:guardian -- --replay` (no keys) | 21/21 checks; hatch 23 blocks before the executing vote (run of 2026-11-09) |
+| A testnet DAO upgrade was graded STOP and Alice's hatch landed before the deciding vote | `npm run demo:guardian -- --replay` (no keys) | all checks pass (31 on 2026-11-09); hatch 23 blocks before the executing vote (run of 2026-11-09) |
 | The hatch is exactly what Alice signed | `npm run judge` (check 9, offline) | signature valid; changing receiver, method, deposit or nonce fails |
-| A real mainnet upgrade's bytes were public before its vote | `npm run judge` (check 10) | Ref proposal 1018: `store_blob` by refchef.near, 897,024 bytes, sha256 = proposal hash |
+| A real mainnet upgrade's bytes were public before it executed | `npm run judge` (check 10) | Ref proposal 1018: `store_blob` by refchef.near, 897,024 bytes, sha256 = proposal hash |
 | A hatch works on a real NEP-141 venue | `npm run hatch:live` (testnet keys) | wrap.testnet `near_withdraw` (1 yoctoNEAR) relayed by another account; replay refused |
 | How fast real upgrades execute | `npm run eval:upgrades` ([EVAL_UPGRADES.md](EVAL_UPGRADES.md), `eval/upgrades.json`) | 101 executed upgrade proposals on 5 DAOs, measured by archival bisection from submission to the block where the code changed: shortest 2.4 min, median 90.0 min, longest 144.0 h; 12 under 10 minutes. 19 release registrations (`add_release_info`) change no code and are not timed |
 
@@ -86,9 +86,10 @@ Wall-clock time from the proposal transaction to the hatch landing: 11.8 s in th
 - **Native NEAR only.** "Money path" means the `transfer` action. Fungible-token balances (for example
   Ref and Burrow deposits) move with cross-contract calls such as `ft_transfer`, which no flag covers:
   a new method that calls `ft_transfer` to an attacker is not `NEW_MONEY_PATH`, and removing an FT
-  withdraw is not `EXIT_METHOD_REMOVED` ([GRADING.md](GRADING.md#upgrade-grading)). For such venues the
-  verdict rests on verification (unverified code is at least CAUTION) and the AI review, so a `stop`
-  hatch may not fire on a token drain.
+  withdraw is not `EXIT_METHOD_REMOVED`
+  ([GRADING.md](GRADING.md#7-upgrade-grading-pending-upgrades)). For such venues the verdict rests
+  on verification (unverified code is at least CAUTION) and the AI review, so a `stop` hatch may not
+  fire on a token drain.
 - **AI can raise an upgrade verdict, never lower it.** For a pending upgrade, a high-risk AI review
   alone is enough for STOP (and so fires `stop` hatches), even when the diff shows nothing; a
   medium or low review does not change the verdict.

@@ -43,9 +43,20 @@ interface Stage {
   tx?: string;
   alice: { state: string; near: string; tone: "ok" | "warn" | "stop" | "idle" };
   bob: { state: string; near: string; tone: "ok" | "warn" | "stop" | "idle" };
-  vault: number; // NEAR in the vault
+  vault: number | null; // NEAR in the vault, from the recording (null if it was not recorded)
   guardian: string[];
 }
+
+/** The deposits the run recorded, in NEAR: step 1's console line "vault total X NEAR (alice A, bob B)". */
+export function recordedDeposits(r: { steps?: { lines?: string[] }[] }): { alice: number; bob: number } | null {
+  for (const s of r.steps ?? []) for (const l of s.lines ?? []) {
+    const m = /\(alice (\d+(?:\.\d+)?), bob (\d+(?:\.\d+)?)\)/.exec(l);
+    if (m) return { alice: Number(m[1]), bob: Number(m[2]) };
+  }
+  return null;
+}
+const nearAmt = (x: number | null | undefined, d = 2) => (x === null || x === undefined || Number.isNaN(x) ? "—" : `${x.toFixed(d)} NEAR`);
+const nearShort = (x: number | null) => (x === null ? "some NEAR" : `${x} NEAR`);
 
 function stages(): Stage[] {
   const H = run.heights as Record<string, number>;
@@ -54,22 +65,33 @@ function stages(): Stage[] {
   const firedAlert = (run.alerts as any[]).find((a) => a.fired?.length);
   const summary: string[] = firedAlert?.assessment?.summary ?? [];
   const bytes = firedAlert?.assessment?.pending_size;
+  // Amounts come from the recording: deposits from step 1, what is left from run.balances (yocto).
+  const dep = recordedDeposits(run as any);
+  const A = dep?.alice ?? null, B = dep?.bob ?? null;
+  const bal = (run.balances ?? {}) as Record<string, string | undefined>;
+  const aliceLeft = bal.alice_in_vault_after_fire != null ? Number(yocto(bal.alice_in_vault_after_fire)) : null;
+  const vaultEnd = bal.vault_total_after_sweep != null ? Number(yocto(bal.vault_total_after_sweep)) : null;
+  const total = A !== null && B !== null ? A + B : null;
+  const afterFire = B !== null && aliceLeft !== null ? B + aliceLeft : null;
+  const aliceOut = A !== null && aliceLeft !== null ? A - aliceLeft : null;
+  const inVault = (x: number | null) => `${nearAmt(x)} in vault`;
+  const home = `${nearAmt(aliceOut)} back home`;
   return [
-    { key: "deposits", title: "Two depositors", detail: "Alice deposits 1 NEAR, Bob 0.5 NEAR into a vault governed by a 2-of-2 Sputnik DAO. Withdrawing needs exactly 1 yoctoNEAR, as Ref and Burrow withdraws do. Unlike them it holds native NEAR: the diff catches a native-NEAR sweep, not a token one.", block: H.bob_deposit, tx: T.bob_deposit,
-      alice: { state: "deposited", near: "1.00 NEAR in vault", tone: "idle" }, bob: { state: "deposited", near: "0.50 NEAR in vault", tone: "idle" }, vault: 1.5, guardian: ["watching gv-… · controller resolved: kh-guardian.sputnikv2.testnet (2 of 2)"] },
+    { key: "deposits", title: "Two depositors", detail: `Alice deposits ${nearShort(A)}, Bob ${nearShort(B)} into a vault governed by a 2-of-2 Sputnik DAO. Withdrawing needs exactly 1 yoctoNEAR, as Ref and Burrow withdraws do. Unlike them it holds native NEAR: the diff catches a native-NEAR sweep, not a token one.`, block: H.bob_deposit, tx: T.bob_deposit,
+      alice: { state: "deposited", near: inVault(A), tone: "idle" }, bob: { state: "deposited", near: inVault(B), tone: "idle" }, vault: total, guardian: ["watching gv-… · controller resolved: kh-guardian.sputnikv2.testnet (2 of 2)"] },
     { key: "armed", title: "Alice arms a hatch", detail: "She signs one withdraw_all to herself with a dedicated key, then drops the key's secret. The guardian keeps only the signed bytes; it cannot change them.", block: run.hatch?.created_height ?? null,
-      alice: { state: "hatch ARMED", near: "1.00 NEAR in vault", tone: "ok" }, bob: { state: "no hatch", near: "0.50 NEAR in vault", tone: "idle" }, vault: 1.5, guardian: [`hatch ${run.hatch?.id ?? ""} · ARMED · ${run.hatch?.method}() · 1 yocto · until block ${run.hatch?.max_block_height}`] },
+      alice: { state: "hatch ARMED", near: inVault(A), tone: "ok" }, bob: { state: "no hatch", near: inVault(B), tone: "idle" }, vault: total, guardian: [`hatch ${run.hatch?.id ?? ""} · ARMED · ${run.hatch?.method}() · 1 yocto · until block ${run.hatch?.max_block_height}`] },
     { key: "proposed", title: "An upgrade is proposed", detail: `A council member stores ${bytes ? `${bytes.toLocaleString("en")} bytes` : "a new wasm"} and proposes "Vault v1.1: gas optimisations". Nothing has executed yet.`, block: H.add_proposal, tx: T.add_proposal,
-      alice: { state: "hatch ARMED", near: "1.00 NEAR in vault", tone: "ok" }, bob: { state: "no hatch", near: "0.50 NEAR in vault", tone: "idle" }, vault: 1.5, guardian: [`proposal #${run.proposal_id} · UpgradeRemote · 0 of 2 approvals`] },
+      alice: { state: "hatch ARMED", near: inVault(A), tone: "ok" }, bob: { state: "no hatch", near: inVault(B), tone: "idle" }, vault: total, guardian: [`proposal #${run.proposal_id} · UpgradeRemote · 0 of 2 approvals`] },
     { key: "stop", title: "STOP, before any vote", detail: "Keyhole fetches the exact bytes from the store_blob transaction, diffs them against the live code, finds no verified build, and fires Alice's hatch.", block: H.hatch_fired, tx: T.hatch_fired,
-      alice: { state: "hatch FIRED", near: "1.00 NEAR back home", tone: "ok" }, bob: { state: "no hatch", near: "0.50 NEAR in vault", tone: "warn" }, vault: 0.5,
+      alice: { state: "hatch FIRED", near: home, tone: "ok" }, bob: { state: "no hatch", near: inVault(B), tone: "warn" }, vault: afterFire,
       guardian: [`${pend?.verdict ?? "STOP"}: ${pend?.headline ?? ""}`.replace(/^STOP: STOP:/, "STOP:"), ...summary.map((s) => `diff: ${s}`), ...(run.review ? [`TEE review (${run.review.model.split("/").pop()}): ${run.review.risk} — ${run.review.summary}`] : []), `FIRED hatch ${run.hatch?.id ?? ""}`] },
     { key: "vote1", title: "Vote 1 of 2", detail: "The proposer approves. One more approval executes it, in the same call.", block: H.vote_1, tx: T.vote_1,
-      alice: { state: "safe", near: "1.00 NEAR back home", tone: "ok" }, bob: { state: "no hatch", near: "0.50 NEAR in vault", tone: "warn" }, vault: 0.5, guardian: ["proposal #" + run.proposal_id + " · 1 of 2 · the next approval executes it"] },
+      alice: { state: "safe", near: home, tone: "ok" }, bob: { state: "no hatch", near: inVault(B), tone: "warn" }, vault: afterFire, guardian: ["proposal #" + run.proposal_id + " · 1 of 2 · the next approval executes it"] },
     { key: "vote2", title: "Vote 2 of 2 executes it", detail: "Sputnik runs the upgrade in the call that reaches the threshold. The vault now has a sweep method.", block: H.vote_2, tx: T.vote_2,
-      alice: { state: "safe", near: "1.00 NEAR back home", tone: "ok" }, bob: { state: "exposed", near: "0.50 NEAR in vault", tone: "stop" }, vault: 0.5, guardian: ["code changed → " + short(run.code.evil, 10)] },
+      alice: { state: "safe", near: home, tone: "ok" }, bob: { state: "exposed", near: inVault(B), tone: "stop" }, vault: afterFire, guardian: ["code changed → " + short(run.code.evil, 10)] },
     { key: "sweep", title: "The sweep", detail: "Anyone calls sweep(). It takes what is left in the vault.", block: H.sweep, tx: T.sweep,
-      alice: { state: "safe", near: "1.00 NEAR back home", tone: "ok" }, bob: { state: "swept", near: "0.00 NEAR", tone: "stop" }, vault: 0, guardian: ["vault total 0"] },
+      alice: { state: "safe", near: home, tone: "ok" }, bob: { state: "swept", near: nearAmt(vaultEnd), tone: "stop" }, vault: vaultEnd, guardian: [`vault total ${nearAmt(vaultEnd, 4)}`] },
   ];
 }
 
@@ -125,7 +147,7 @@ export function mountReplay(el: HTMLElement) {
         </div>
         <pre class="term g-console" id="g-console" aria-label="Guardian console"></pre>
       </div>
-      <p class="small muted g-verify">Re-check this run with no keys: <code>npm run demo:guardian -- --replay</code> re-derives every claim from testnet archival RPC (the bytes hash to the proposal, the guardian's transaction carries exactly Alice's signature, the hatch landed ${lead} blocks before the deciding vote).
+      <p class="small muted g-verify">Re-check this run with no keys: <code>npm run demo:guardian -- --replay</code> fetches each recorded transaction from testnet archival RPC and checks its signer, receiver, call and block; that the stored bytes hash to the proposal and re-derives their diff; that the guardian's transaction carries Alice's signed delegate byte for byte and her withdraw paid her deposit back; the block order (the hatch landed ${lead} blocks before the deciding vote); the sweep; and that the recorded balances, outcome and alerts match the chain.
         <a href="${nearAcct("testnet", run.vault)}">vault</a> · <a href="${nearAcct("testnet", run.dao)}">DAO</a>${run.review?.registry_id ? ` · registry AiReview #${run.review.registry_id}` : ""}</p>
     </div>`;
   const $ = (s: string) => el.querySelector(s) as HTMLElement;
@@ -141,8 +163,9 @@ export function mountReplay(el: HTMLElement) {
       (l.querySelector(".lane-state") as HTMLElement).textContent = lane.state;
       (l.querySelector(".lane-near") as HTMLElement).textContent = lane.near;
     }
-    ($("#vault-fill") as HTMLElement).style.width = `${(s.vault / 1.5) * 100}%`;
-    $("#vault-n").textContent = `${s.vault.toFixed(2)} NEAR`;
+    const full = S[0].vault;
+    ($("#vault-fill") as HTMLElement).style.width = s.vault !== null && full ? `${(s.vault / full) * 100}%` : "0%";
+    $("#vault-n").textContent = nearAmt(s.vault);
     const lines = S.slice(0, i + 1).flatMap((x) => x.guardian.map((g) => `${x.block ? `#${x.block}` : "      "}  ${g}`));
     const con = $("#g-console");
     con.innerHTML = lines.map((l) => `<span class="${/STOP|FIRED/.test(l) ? "hot" : /diff:|TEE/.test(l) ? "dim2" : ""}">${esc(l)}</span>`).join("\n");
@@ -218,7 +241,7 @@ function propCard(p: RadarProp) {
       <div><dt>new code</dt><dd class="mono" title="${esc(p.code_hash ?? "")}">${esc(short(p.code_hash, 10))}</dd></div>
       ${p.registers_release ? `<div><dt>effect</dt><dd>registers a release; deployed to managed contracts by a later call</dd></div>` : `<div><dt>${p.state === "executed" ? "proposal → live" : "submitted"}</dt><dd>${p.state === "executed" ? (p.window_s != null ? `<strong>${fmtWindow(p.window_s)}</strong>` : "—") : `${fmtWindow(Math.round(age / 1000))} ago`}</dd></div>`}
       ${exp ? `<div><dt>window</dt><dd>${esc(exp)}</dd></div>` : ""}
-      ${p.blob_tx ? `<div><dt>bytes</dt><dd><a href="${nearTx("mainnet", p.blob_tx)}">${p.bytes ? `${(p.bytes / 1024).toFixed(0)} KB` : "store_blob"} on chain before the deciding vote ↗</a></dd></div>` : ""}
+      ${p.blob_tx ? `<div><dt>bytes</dt><dd><a href="${nearTx("mainnet", p.blob_tx)}">${p.bytes ? `${(p.bytes / 1024).toFixed(0)} KB` : "store_blob"} on chain before execution ↗</a></dd></div>` : ""}
     </dl>
     ${g ? `<div class="prop-grade">${verdictBadge(g.verdict)} <span class="small">${esc(g.flags.slice(0, 3).join(" · "))}</span></div>` : ""}
     <div class="prop-live" hidden></div>
@@ -233,7 +256,7 @@ const canGrade = (p: RadarProp) => Boolean(p.code_hash) && !p.registers_release 
 
 /** What the in-browser grade diffs the proposal's code against (shown with every result). */
 export const comparedWith = (p: Pick<RadarProp, "state" | "changed_at_height" | "target">) =>
-  p.state === "executed" && p.changed_at_height ? `the code it replaced (${p.target} at block ${p.changed_at_height - 1}, archival RPC)` : `the code ${p.target} runs now`;
+  p.state === "executed" && p.changed_at_height ? `the code it replaced (${p.target} just before block ${p.changed_at_height}, archival RPC)` : `the code ${p.target} runs now`;
 
 /** Code at height h; heights with no block step backwards. */
 async function codeBefore(arch: Rpc, account: string, h: number): Promise<Uint8Array> {
@@ -263,7 +286,7 @@ async function gradeInBrowser(p: RadarProp, out: HTMLElement) {
     }
     let live: Uint8Array | null = null;
     if (p.state === "executed" && p.changed_at_height) {
-      out.innerHTML = `<p class="small muted">Reading the code it replaced from archival RPC (block ${p.changed_at_height - 1})…</p>`;
+      out.innerHTML = `<p class="small muted">Reading the code it replaced from archival RPC (just before block ${p.changed_at_height})…</p>`;
       live = await codeBefore(arch, p.target, p.changed_at_height - 1);
       if (!pending) {
         pending = (await arch.viewCode(p.target, p.changed_at_height)).code;
@@ -316,15 +339,19 @@ function windowChart(rows: { dao: string; id: number; target: string; window_s: 
   </figure>`;
 }
 
+/** Cards the radar shows at once, for "All" and for each DAO's filter. */
+export const RADAR_SHOWN = 12;
+
 export function mountRadar(el: HTMLElement) {
   const st = radar.stats ?? {};
   const all = radar.daos.flatMap((d) => d.proposals);
+  const perDao = Math.max(0, ...radar.daos.map((d) => d.proposals.length));
   let filter = "all";
   el.innerHTML = `
     <div class="g-head">
       <span class="tag"><span class="dot live-dot" aria-hidden="true"></span>NEAR mainnet · snapshot ${esc(radar.generatedAt.slice(0, 16).replace("T", " "))} UTC, refreshed live</span>
       <h2 id="radar-h" class="display">Upgrade radar.</h2>
-      <p>Recent upgrade proposals (the latest 12 per DAO in the snapshot) of the DAOs behind Ref, Burrow, NEAR Intents, the Omni bridge and SWEAT. Each one names the exact code hash. For <code>UpgradeRemote</code> and <code>UpgradeSelf</code> the code is in a <code>store_blob</code> transaction to the DAO, which must be on chain before the deciding vote; near-plugins deploys use code staged on the target, and a release registration carries only a hash. Pick a proposal that is still open, or an executed one whose replaced code is known, and Keyhole grades it here, in your browser.</p>
+      <p>Recent upgrade proposals of the DAOs behind Ref, Burrow, NEAR Intents, the Omni bridge and SWEAT: the snapshot holds the latest ${perDao} per DAO. "All" shows the ${RADAR_SHOWN} most recent across the ${radar.daos.length} DAOs; a DAO's filter shows its latest ${RADAR_SHOWN}. Each one names the exact code hash. For <code>UpgradeRemote</code> and <code>UpgradeSelf</code> the code is in a <code>store_blob</code> transaction to the DAO, which must be on chain before the proposal executes; near-plugins deploys use code staged on the target, and a release registration carries only a hash. Pick a proposal that is still open, or an executed one whose replaced code is known, and Keyhole grades it here, in your browser.</p>
     </div>
     <div class="radar-stats">
       <div class="rstat"><strong>${fmtWindow(st.window_min_s as number)}</strong><span>fastest proposal → live code</span></div>
@@ -341,7 +368,7 @@ export function mountRadar(el: HTMLElement) {
     <p class="small muted">Sputnik executes a proposal in the call that reaches its threshold; the proposal period (7 days on these DAOs) is an expiry, not a delay. "Proposal → live" is the time between submission and the first block running the new code. A grade here is the deterministic rule set in <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/GRADING.md">GRADING.md</a>; it describes what the new code can do, not intent. A STOP on a past upgrade means its code had no verified build and its diff adds a new path (or removes an exit); a reproducible build or SourceScan verification of the new hash would make it CAUTION. No known incident is attached to these upgrades, so the upgrade eval counts every such STOP as a false alarm.</p>`;
   const propsEl = el.querySelector("#props") as HTMLElement;
   const paint = () => {
-    const rows = all.filter((p) => filter === "all" || p.dao === filter).sort((a, b) => b.submitted_at_ms - a.submitted_at_ms).slice(0, 12);
+    const rows = all.filter((p) => filter === "all" || p.dao === filter).sort((a, b) => b.submitted_at_ms - a.submitted_at_ms).slice(0, RADAR_SHOWN);
     propsEl.innerHTML = rows.map(propCard).join("");
     propsEl.querySelectorAll<HTMLElement>(".grade-btn").forEach((b) =>
       b.addEventListener("click", () => {

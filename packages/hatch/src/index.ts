@@ -11,7 +11,7 @@
 //             key transaction with a non-zero deposit: InvalidAccessKeyError::DepositWithFunctionCall).
 //
 // The worst a holder of a hatch can do is submit exactly the signed (or permitted) call, early or never.
-// It cannot redirect funds: the withdraw pays `predecessor_account_id`, which is the depositor.
+// It fixes the call, not the outcome: a delegate hatch's signature fixes receiver, method, args and deposit (an fc-key fixes receiver and methods), and the venue's code at execution decides where the funds go.
 import { sha256 } from "@noble/hashes/sha2.js";
 import { deserialize, serialize } from "borsh";
 import {

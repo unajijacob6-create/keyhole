@@ -6,7 +6,7 @@ import path from "node:path";
 import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
-import { checkClaims, gradeable, read } from "./claims.mjs";
+import { checkClaims, gradeable, read, recordedDeposits } from "./claims.mjs";
 
 const require = createRequire(import.meta.url);
 let chromium;
@@ -88,6 +88,13 @@ for (const width of [360, 768, 1366]) {
     ok(!/nowhere else/.test(hatchText) && /decides where the funds go/.test(hatchText) && /already landed/.test(hatchText), `${width}px ${scheme}: hatch copy says the venue's code decides where funds go, and that it fires on landed code`);
     const radarHead = ((await page.locator("#radar .g-head").textContent()) ?? "").replace(/\s+/g, " ");
     ok(/latest 12 per DAO/.test(radarHead) && !/Every upgrade proposal/.test(radarHead), `${width}px ${scheme}: radar scopes its list (latest 12 per DAO)`);
+    // C7: what the text says "All" shows is what the "All" filter renders.
+    const allN = Number(/"All" shows the (\d+) most recent/.exec(radarHead)?.[1]);
+    const shownAll = await page.locator(".prop").count();
+    ok(allN > 0 && shownAll === Math.min(allN, radarProps.length), `${width}px ${scheme}: radar text says "All" shows ${allN}, and it renders ${shownAll}`);
+    // C1: the intro no longer promises the hatch lands first.
+    const intro = ((await page.locator(".intro-right").textContent()) ?? "").replace(/\s+/g, " ");
+    ok(/not guaranteed/.test(intro) && !/gets you out before the vote lands/.test(intro), `${width}px ${scheme}: intro says the head start is not guaranteed`);
     const cards = await page.locator(".prop").evaluateAll((els) => els.map((e) => ({ dao: e.dataset.dao, id: Number(e.dataset.id), btn: Boolean(e.querySelector(".grade-btn")) })));
     const wrong = cards.filter((c) => c.btn !== gradeable(radarProps.find((p) => p.dao === c.dao && p.id === c.id)));
     ok(cards.length > 0 && wrong.length === 0, `${width}px ${scheme}: "Grade it in your browser" only on open proposals or executed ones with a known replaced-code block (${cards.filter((c) => c.btn).length} of ${cards.length})${wrong.length ? `; wrong: ${wrong.map((c) => c.id).join(",")}` : ""}`);
@@ -118,6 +125,17 @@ for (const width of [360, 768, 1366]) {
   for (let k = 0; k < 8; k++) await page.click("#g-prev");
   const detail = (await page.locator("#g-detail").textContent()) ?? "";
   ok(/Ref and Burrow/.test(detail) && /not a token one/.test(detail), `replay step 1 qualifies the Ref and Burrow comparison`);
+  // C8: the amounts on screen are the ones data/guardian-run.json recorded.
+  const dep = recordedDeposits();
+  const laneA = await page.locator("#lane-a .lane-near").textContent();
+  const laneB = await page.locator("#lane-b .lane-near").textContent();
+  const vaultN = await page.locator("#vault-n").textContent();
+  ok(dep && laneA === `${dep.alice.toFixed(2)} NEAR in vault` && laneB === `${dep.bob.toFixed(2)} NEAR in vault` && vaultN === `${(dep.alice + dep.bob).toFixed(2)} NEAR` && detail.includes(`Alice deposits ${dep.alice} NEAR, Bob ${dep.bob} NEAR`), `replay step 1 shows the recorded deposits (${laneA}; ${laneB}; vault ${vaultN})`);
+  for (let k = 0; k < 8; k++) await page.click("#g-next");
+  const endA = await page.locator("#lane-a .lane-near").textContent();
+  const endVault = await page.locator("#vault-n").textContent();
+  const bal = JSON.parse(read("data/guardian-run.json")).balances;
+  ok(dep && endA === `${(dep.alice - Number(BigInt(bal.alice_in_vault_after_fire) / 10n ** 20n) / 10_000).toFixed(2)} NEAR back home` && endVault === `${(Number(BigInt(bal.vault_total_after_sweep) / 10n ** 20n) / 10_000).toFixed(2)} NEAR`, `replay last step shows the recorded balances (${endA}; vault ${endVault})`);
   await ctx.close();
 }
 // Keyboard: Tab reaches the input and the Inspect button with a visible focus ring.

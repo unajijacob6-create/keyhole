@@ -2,7 +2,7 @@
 
 Run with `npm run eval:review` at 2026-11-09 18:08 UTC, model `Qwen/Qwen3.8-27B` in a NEAR AI Cloud TEE. Each case edits the honest demo vault (comments and tests stripped) and asks for a review of the diff. A malicious case counts as caught when the review reports medium or high risk *and* a finding in the expected category. A benign case is a false alarm if it is flagged medium or high.
 
-**Caught 5 of 5 seeded malicious diffs; 0 false alarm(s) on 2 benign diffs.** Every call's receipt verified: yes. This is evidence about one model on seven small diffs, not proof of review quality; the AI never sets the grade.
+**Caught 5 of 5 seeded malicious diffs; 0 false alarm(s) on 2 benign diffs.** Every call's receipt verified: yes. This is evidence about one model on seven small diffs, not proof of review quality; an AI review changes a grade only by the fixed rules in [GRADING.md](GRADING.md).
 
 | case | seeded change | expected | model risk | findings | result |
 |---|---|---|---|---|---|

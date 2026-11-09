@@ -145,8 +145,8 @@ hatch fires before the upgrade executes. Does not protect against:
   (`transfer`) only. Fungible-token balances, such as Ref and Burrow deposits, move with cross-contract
   calls like `ft_transfer`, which no flag covers: a new method that sends everyone's tokens out with
   `ft_transfer` is not `NEW_MONEY_PATH`, and removing an FT withdraw is not `EXIT_METHOD_REMOVED`
-  ([GRADING.md](GRADING.md#upgrade-grading)). Such an upgrade grades CAUTION if its code is
-  unverified (OK if verified) unless an AI review reports high risk, so a `stop` hatch does not fire
+  ([GRADING.md](GRADING.md#7-upgrade-grading-pending-upgrades)). Such an upgrade grades CAUTION if
+  its code is unverified (OK if verified) unless an AI review reports high risk, so a `stop` hatch does not fire
   on it. The 1-yoctoNEAR exit requirement is the same as for native-NEAR vaults; the detection is not.
 - **A failing exit.** `fireHatch` reports `ok: false` whenever any receipt fails (the live run shows
   a venue panic and a spent nonce). It cannot make a broken or already-upgraded venue pay. It is also
