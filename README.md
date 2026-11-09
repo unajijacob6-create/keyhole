@@ -1,34 +1,82 @@
-# Keyhole
+# Keyhole Guardian
 
-**See who can change the contract you're about to trust.**
+**See the upgrade coming. Get out before it lands.**
 
-On NEAR, a contract with no keys can still replace its own code. Wallets and explorers don't show
-who holds that power, or whether the code running now is the code that was verified. Keyhole does.
-It reads public RPC directly, grades deterministically, and gives the request that re-checks every claim.
+Most of the money on NEAR sits in contracts that a DAO can upgrade, and a Sputnik DAO executes an
+upgrade in the same call as the vote that reaches its threshold. There is no timelock to wait out.
+Keyhole watches those proposals, reads the exact code they would install (the bytes are public in the
+DAO's `store_blob` transaction before anyone votes), grades it, and can submit a withdraw-to-self the
+depositor signed in advance. Underneath is Keyhole's contract inspector: who can change a contract,
+and whether the code running now is the verified code. Every claim comes with the request that
+re-checks it.
 
-- **Live site:** <https://unajijacob6-create.github.io/keyhole/> (static, runs in your browser)
+- **Live site:** <https://unajijacob6-create.github.io/keyhole/> (static; the upgrade radar grades
+  mainnet proposals in your browser)
 - **Demo video:** *link added when the demo post is published*
 - **For judges:** [docs/JUDGE.md](docs/JUDGE.md). `npm ci && npm run judge` needs no keys.
+- **How Guardian works, with proofs and limits:** [docs/GUARDIAN.md](docs/GUARDIAN.md)
 
 Built at NEAR HACKATHON (Nov 2026). Not a security audit; see [docs/SECURITY.md](docs/SECURITY.md).
 
 ## Try it (each step was run in this repo; output abridged)
 
-**1. Verify the deployment, with no keys.**
+**1. Verify everything with no keys.**
 ```bash
 npm ci && npm run judge
 ```
 ```
- 1. [ok] the testnet registry answers, and Keyhole grades the registry itself
- 2. [ok] the demo vault's v1 → v2 silent upgrade is on record at a block anyone can re-query
-       archival view_account: E1arxbbpY6… at 276954999, BJU8rR1Mjy… at 276955000 (re-checked independently)
-       export diff v1 → v2: + sweep
- ...
- 7. [ok] a SourceScan-verified mainnet contract re-checks, and a CI rebuild matches intents.near
-all checks ok (7 checks)
+ 8. [ok] Guardian: the recorded testnet run re-derives from archival RPC (bytes, signature, order, outcome)
+       ok  store_blob bytes hash to GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm (proposal hash GHmAPqMjCH…)
+       ok  diff of live code vs the stored blob (re-derived now): + sweep; newly reachable: transfer←sweep
+       ok  guardian tx rRASc9f6YheRZiEZiW22XS1HBHXxBTnuq1aAZEmZp36 carries that signed delegate (…)
+       ok  hatch at block 276976501 < deciding vote at block 276976524 (23 blocks earlier)
+ 9. [ok] Guardian: the hatch's signed bytes decode to exactly one withdraw-to-self, and tampering is rejected (offline)
+10. [ok] Guardian: a real mainnet upgrade's bytes were public before its vote (Ref proposal 1018)
+       store_blob HhJpLfgiaMGrF6etg2XnhcxBNJRendZwV8K9U43fAw5S by refchef.near at block 222301033: 897024 bytes, sha256 = proposal hash
+all checks ok (10 checks)
 ```
 
-**2. Inspect any contract.** The same library as the website, run against public RPC:
+**2. Watch a DAO upgrade get caught before the deciding vote** (testnet; `-- --replay` re-checks the
+recorded run without keys, `npm run setup:guardian` first for a live run):
+```bash
+npm run demo:guardian
+```
+```
+── 5. council-a.keyhole.testnet stores a new wasm and proposes UpgradeRemote(gv-mw9s8ox4.keyhole.testnet.upgrade)
+store_blob: 113387 bytes · proposal #2 "Vault v1.1: gas optimisations"
+── 6. guardian: fetch the exact bytes being voted on, diff, grade, act
+ALERT proposal #2 · 2 more approval(s) execute it · STOP: unverified code adds a new path to move funds.
+   bytes: 113387 read from store_blob tx E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ
+   diff: new methods: sweep
+   diff: transfer now reachable from: sweep
+   TEE review: high — New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears.
+   FIRED hatch 474ac154d50db38a for alice.keyhole.testnet
+registry registry.keyhole.testnet AiReview #16 for the pending hash (posted before the deciding vote)
+── 7. the council votes; the second approval executes the upgrade in the same call
+── 8. anyone calls sweep()
+── 9. outcome
+alice: hatch fired at block 276976501, upgrade executed at block 276976524 → out before it landed
+bob: no hatch; the sweep took the vault's remaining total
+```
+
+**3. See what NEAR's DAOs are upgrading** (mainnet, read-only):
+```bash
+npx keyhole pending ref-finance.sputnik-dao.near --last 5
+```
+```
+ref-finance.sputnik-dao.near  (mainnet, Sputnik DAO; proposals expire after 7d; approvals needed: upgrade_remote 3, upgrade_self 3, call 3)
+  id    state    kind          target                        method           hash      votes age  expires
+  1022  executed UpgradeRemote dclv2.ref-labs.near           upgrade          3G34Nhjm… 3/3   5d   -
+  1018  executed UpgradeRemote v2.ref-finance.near           upgrade          GZmkbfVL… 3/3   10d  -
+```
+Add `--fetch-code` to read the bytes, diff them against the live code and grade them.
+
+**4. Arm an escape hatch on a real token** (testnet keys): `npm run hatch:live` wraps 0.1 NEAR in
+`wrap.testnet`, arms a hatch for `near_withdraw` (which needs 1 yoctoNEAR, so a function-call key could
+not call it), lets a different account relay it, and checks that a replay is refused.
+[HATCH.md](docs/HATCH.md) has the run and the hatch's limits.
+
+**5. Inspect any contract** (Keyhole's foundation). The same library as the website, run against public RPC:
 ```bash
 npx keyhole inspect usdt.tether-token.near
 ```
@@ -41,7 +89,7 @@ Who can change it?
 ```
 Add `--evidence` for the `curl` that re-checks each reason, or `--json` for agents.
 
-**3. Run the silent-upgrade attack on testnet** (about 1 minute; with no keys it creates its own
+**6. The other path: a silent redeploy with no vote.** Run it on testnet (about 1 minute; with no keys it creates its own
 faucet account and private registry):
 ```bash
 npm run demo:attack
@@ -65,7 +113,7 @@ receipt: TEE signer 0x835ab53d…aa26, nonce echoed true, signature verified tru
 deposit NOT sent: GuardRefusal thrown before signing; no transaction was created
 ```
 
-**4. Website.** Paste any account. Or paste a transaction under **Before you sign**: it decodes
+**7. Website.** Watch the recorded Guardian run, browse the mainnet upgrade radar, or paste any account. Or paste a transaction under **Before you sign**: it decodes
 `ft_transfer_call` messages and meta-transactions, then grades every contract the transaction will run.
 
 ## How it works
@@ -93,7 +141,27 @@ deposit NOT sent: GuardRefusal thrown before signing; no transaction was created
                      attestations keyed by code hash  ◄── reviewer: NEAR AI Cloud TEE review
 ```
 
-Grading rules: [docs/GRADING.md](docs/GRADING.md). Design: [docs/DESIGN.md](docs/DESIGN.md).
+Guardian, on top of the same core:
+
+```
+  Sputnik DAO proposals ──┐   near-plugins staged code ──┐   live code hash (fallback)
+  (UpgradeRemote/Self,    │   (up_staged_code_hash)      │
+   FunctionCall upgrade)  ▼                              ▼
+             guardian radar ── new / changed upgrade ──► assess
+                                                          │ bytes: DAO's store_blob tx (FastNEAR tx index) or up_staged_code,
+                                                          │        kept only if sha256 == proposal hash
+                                                          │ diff vs live wasm: new methods, privileged host calls
+                                                          │ verified? SourceScan · registry ReproducibleBuild · NEP-330 the bytes declare
+                                                          │ optional: private TEE review of the diff → registry AiReview
+                                                          ▼
+                                          gradeUpgrade() → OK / CAUTION / STOP
+                                                          │ STOP + an ARMED hatch for that contract
+                                                          ▼
+                       relayer submits the depositor's pre-signed NEP-366 withdraw-to-self
+```
+
+Grading rules: [docs/GRADING.md](docs/GRADING.md). Design: [docs/DESIGN.md](docs/DESIGN.md),
+[docs/GUARDIAN_DESIGN.md](docs/GUARDIAN_DESIGN.md).
 
 ## NEAR primitives used, and why each is needed
 
@@ -107,6 +175,11 @@ Grading rules: [docs/GRADING.md](docs/GRADING.md). Design: [docs/DESIGN.md](docs
 | **near-plugins ACL** | `acl_get_super_admins` and deployer roles. The roles are read from verified source when available. |
 | **Named accounts + receipts** | The watcher follows executed receipts, so self-upgrades through an `upgrade` method and meta-transactions (`Delegate`) are caught, not only direct transactions. |
 | **NEAR AI Cloud TEE** | A private review whose receipt (TEE attestation + signature over request/response hashes) anyone can re-verify. Only hashes go on-chain. |
+| **Sputnik `store_blob` + `UpgradeRemote`/`UpgradeSelf`** | An upgrade proposal names the code hash, and the code itself is the argument of the DAO's `store_blob` transaction. Keyhole reads those bytes before the vote and checks `sha256 == hash`. |
+| **Sputnik execution on the threshold vote** | `act_proposal` executes in the call that reaches the threshold; `proposal_period` is an expiry. That is why the window is "until the deciding vote", and why it can be minutes. |
+| **near-plugins `Upgradable`** | `up_staged_code_hash` / `up_staged_code` expose staged code before `up_deploy_code`; `up_get_delay_status` shows whether any staging delay is enforced. |
+| **NEP-366 meta-transactions (`SignedDelegateAction`)** | The escape hatch: a depositor signs one withdraw-to-self now; anyone can relay it later, and the signature covers every field. Signed by a dedicated full-access key because a function-call key cannot attach the 1 yoctoNEAR most withdraws demand. |
+| **Access-key nonces and `max_block_height`** | One key, one hatch: the nonce makes it single-use, the expiry bounds it, and `view_access_key` tells anyone whether it is still ARMED. |
 | **A registry contract other apps query** | Attestations keyed by code hash (`ChangeObserved`, `KeyAdded`, `ReproducibleBuild`, `AiReview`). Each one names how to re-check it. |
 
 ## Why this gap is real (evidence, re-checked 2026-11-09)
@@ -174,13 +247,16 @@ Full text: [docs/SECURITY.md](docs/SECURITY.md).
 
 ```
 packages/core   inspect(), wasm analysis, controller resolution, grade(), decodeTransactions(), CLI
+packages/core   + pending.ts (upgrade proposals, staged code, store_blob bytes), upgrade.ts (gradeUpgrade), wasmview.ts
+packages/hatch  escape hatches: NEP-366 delegate (dedicated key) and function-call-key modes; verify, health, fire, deposit probe
 packages/guard  guardCall(): agents refuse STOP in code; CAUTION asks a human or fails closed
-contracts/      registry (Rust, near-sdk 5), demo vaults v1/v2, reproducible builds in contracts/repro
+guardian/       radar (proposals, staged code, live hash) → assess (bytes, diff, verification, TEE review) → fire
+contracts/      registry (Rust, near-sdk 5), demo vaults v1/v2, guarded vault (+ seeded upgrades), reproducible builds
 watcher/        neardata follower (tx + Delegate + receipts) → registry + public feed branch
 verifier/       rebuild deployed contracts from NEP-330 build_info (GitHub Actions)
 reviewer/       NEAR AI Cloud TEE review, receipts, offline verification, seeded eval
 web/            static site (Vite, vanilla TS), Playwright smoke at 360/768/1366 light/dark
-scripts/        factcheck, survey, demo:attack, judge, eval, attest:builds
+scripts/        factcheck, survey, demo:attack, demo:guardian, setup:guardian, hatch:live, eval:upgrades, radar, judge, eval
 ```
 
 | command | what it does |
@@ -189,6 +265,10 @@ scripts/        factcheck, survey, demo:attack, judge, eval, attest:builds
 | `npm run judge` | the zero-key checks above |
 | `npm run survey` | regenerate `docs/STATE_OF_NEAR.md` and the website's trust table |
 | `npm run eval` / `npm run eval:review` | the two evals (`eval:review` needs NEAR AI Cloud access) |
+| `npm run demo:guardian [-- --replay]` | the Guardian run on testnet, or its keyless re-check |
+| `npm run guardian -- run --network mainnet --watch <contracts>` | watch contracts' DAOs and staged code; alert-only without `--relayer` |
+| `npm run eval:upgrades` | real mainnet upgrade proposals: windows, bytes, grades ([docs/EVAL_UPGRADES.md](docs/EVAL_UPGRADES.md)) |
+| `npm run radar` | refresh the website's upgrade-radar snapshot |
 | `npm run watch -- --network mainnet --all` | follow the chain locally |
 | `bash contracts/test.sh` | build the contracts, then run unit and sandbox tests |
 | `npm run test:web` | build the site and run the Playwright smoke test |
@@ -213,8 +293,11 @@ scripts/        factcheck, survey, demo:attack, judge, eval, attest:builds
   Intear, Bitte and NearBlocks (NearBlocks issue #1175 asks for deploy details).
 - **Protocol badges.** Badges that expire when the code hash changes, and paid monitoring with
   per-upgrade TEE review for teams.
-- **DAO tooling.** A "review this upgrade proposal" step for Trezu and NEAR Business, and a
-  clear-signing descriptor NEP for NEAR methods.
+- **Guardian as a service.** Alerts per contract you hold, hatches armed from a wallet, a hosted
+  relayer, and protocols pre-registering verified builds so routine upgrades don't trigger exits.
+- **DAO tooling.** A "review this upgrade proposal" step for Trezu and NEAR Business (Proposal X-Ray
+  already decodes proposals; Keyhole adds the bytes, the diff and the receipt), and a clear-signing
+  descriptor NEP for NEAR methods.
 - **Other chains.** The wasm analysis generalises to CosmWasm and Stylus.
 
 ## Other project by the same builder
