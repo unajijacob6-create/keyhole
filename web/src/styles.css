@@ -369,7 +369,7 @@ pre.code { background: #15122a; color: #e6e2ff; border-radius: var(--r-sm); padd
 .g-mark.g-stop.on i { background: var(--ok); border-color: var(--ok); box-shadow: 0 0 0 6px color-mix(in oklab, var(--ok) 20%, transparent); }
 .g-mark.g-vote2.on i, .g-mark.g-sweep.on i { background: var(--stop); border-color: var(--stop); }
 .g-mark.g-stop span { color: var(--ok); }
-@media (max-width: 700px) { .g-mark span { display: none; } .g-mark.g-stop span { display: block; } }
+@media (max-width: 700px) { .g-mark span, .g-mark em { display: none; } .g-mark.g-stop span { display: block; } }
 .g-controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); margin-bottom: var(--s4); }
 .g-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s4); }
 @media (min-width: 980px) { .g-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr); } }

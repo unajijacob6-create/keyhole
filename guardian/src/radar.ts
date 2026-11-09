@@ -48,6 +48,8 @@ export const emptyRadarState = (): RadarState => ({ proposals: {}, live: {}, sta
 
 export class Radar {
   readonly controllers = new Map<string, Controller>();
+  /** DAOs read at least once. On the first read only open (pending) proposals are reported. */
+  private readonly primedDaos = new Set<string>();
   constructor(
     readonly rpc: Rpc,
     readonly network: Network,
@@ -78,6 +80,7 @@ export class Radar {
 
     for (const [dao, targets] of daoTargets) {
       const props = await listUpgradeProposals(this.rpc, dao, { last: this.opts.last ?? 20, nowMs });
+      const primed = this.primedDaos.has(dao);
       for (const p of props) {
         if (!targets.has(p.target)) continue;
         const key = `${dao}#${p.id}`;
@@ -85,8 +88,11 @@ export class Radar {
         const stamp = `${p.status}/${p.state}/${p.votes.approve}`;
         if (seen === stamp) continue;
         this.state.proposals[key] = stamp;
+        // First sight of a proposal that is already settled (executed, expired, ...): history, not news.
+        if (seen === undefined && p.state !== "pending" && !primed) continue;
         events.push({ kind: "proposal", target: p.target, dao, proposal: p, first: seen === undefined });
       }
+      this.primedDaos.add(dao);
     }
     for (const c of this.controllers.values()) {
       const v = await this.rpc.viewAccount(c.target);

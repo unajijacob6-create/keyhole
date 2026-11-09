@@ -68,7 +68,16 @@ for (const width of [360, 768, 1366]) {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     ok(overflow <= 0, `${width}px ${scheme}: no horizontal overflow (${overflow}px)`);
     const h1 = await page.locator("h1").textContent();
-    ok(/Who can change the contract/.test(h1 ?? ""), `${width}px ${scheme}: H1 present`);
+    ok(/See the upgrade coming/.test(h1 ?? ""), `${width}px ${scheme}: H1 present`);
+    // Guardian sections render from the recorded run and the radar snapshot, with no network.
+    const replay = page.locator('[data-testid="guardian-replay"]');
+    ok(await replay.count() === 1, `${width}px ${scheme}: guardian replay rendered`);
+    const lead = await page.locator(".g-lead span").textContent();
+    ok(/^\d+ blocks ahead$/.test(lead ?? ""), `${width}px ${scheme}: replay shows the hatch's lead over the deciding vote (${lead})`);
+    await page.click("#g-next").catch(() => {});
+    ok((await page.locator(".prop").count()) >= 6, `${width}px ${scheme}: radar lists proposals (${await page.locator(".prop").count()})`);
+    ok((await page.locator('[data-testid="hatch-card"] .hatch-fields div').count()) === 7, `${width}px ${scheme}: hatch card decodes 7 fields`);
+    for (const id of ["watch", "radar", "hatch", "limits"]) await page.locator(`#${id}`).screenshot({ path: path.join(SHOTS, `${id}-${width}-${scheme}.png`) });
     await page.screenshot({ path: path.join(SHOTS, `home-${width}-${scheme}.png`), fullPage: false });
     // Inspect a fixture account through the search box.
     await page.fill("#q", "usdt.tether-token.near");
