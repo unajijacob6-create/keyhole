@@ -27,6 +27,8 @@ export interface FollowOptions {
   log?: (line: string) => void;
   signal?: AbortSignal;
   heartbeatMs?: number;
+  /** When more than this many blocks behind the head, skip to the head (logged). */
+  maxLag?: number;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -36,12 +38,30 @@ const settle = (p: Promise<any>): Promise<Settled> => p.then((value) => ({ ok: t
 const neardata = (network: Network) => (globalThis as any).process?.env?.KH_NEARDATA_BASE ?? `https://${network}.neardata.xyz/v0`;
 const short = (h?: string) => (h ? `${h.slice(0, 6)}…` : "?");
 
+// neardata's public tier allows 180 requests/minute per IP. Space requests out (token bucket),
+// honour Retry-After on 429, and never burst. Override with KH_NEARDATA_RPM.
+const RPM = Number((globalThis as any).process?.env?.KH_NEARDATA_RPM ?? 150);
+let nextSlot = 0;
+async function slot() {
+  const now = Date.now();
+  const at = Math.max(now, nextSlot);
+  nextSlot = at + 60_000 / RPM;
+  if (at > now) await sleep(at - now);
+}
+export const neardataStats = { requests: 0, rateLimited: 0 };
 async function getJson(url: string, tries = 3): Promise<any> {
   for (let i = 0; ; i++) {
     try {
+      await slot();
+      neardataStats.requests++;
       const r = await fetch(url, { redirect: "follow" });
       if (r.ok) return await r.json();
       if (r.status === 404) return null;
+      if (r.status === 429) {
+        neardataStats.rateLimited++;
+        const ra = Number(r.headers.get("retry-after"));
+        nextSlot = Date.now() + (Number.isFinite(ra) && ra > 0 ? ra * 1000 : 10_000);
+      }
       throw new Error(`HTTP ${r.status}`);
     } catch (e) {
       if (i >= tries) throw e;
@@ -80,22 +100,32 @@ export async function follow(opts: FollowOptions): Promise<WatchEvent[]> {
   log(`[watch] ${opts.network} from block ${h.toLocaleString("en-US")}; watching ${[...opts.watch].join(", ") || "(none)"}${opts.all ? "; network-wide deploy feed on" : ""}`);
   let scanned = 0;
   let failures = 0;
+  let skipped = 0;
   let lastBeat = Date.now();
   while (!opts.signal?.aborted) {
     if (opts.durationMs && Date.now() - started > opts.durationMs) break;
     if (opts.heartbeatMs && Date.now() - lastBeat > opts.heartbeatMs) {
       lastBeat = Date.now();
-      log(`[watch] ${opts.network} at block ${h.toLocaleString("en-US")} (head ${head.toLocaleString("en-US")}, lag ${head - h}); scanned ${scanned} blocks, ${seen.length} event(s)`);
+      log(`[watch] ${opts.network} at block ${h.toLocaleString("en-US")} (head ${head.toLocaleString("en-US")}, lag ${head - h}); scanned ${scanned}, skipped ${skipped} blocks; ${seen.length} event(s); neardata ${neardataStats.requests} req, ${neardataStats.rateLimited} rate-limited`);
     }
     if (h > head) {
       await sleep(500);
-      head = await lastFinal(opts.network).catch(() => head);
+      head = await lastFinal(opts.network).catch((e) => {
+        log(`[watch] ${opts.network}: head refresh failed (${String((e as Error)?.message ?? e).slice(0, 80)}); keeping ${head}`);
+        return head;
+      });
+      // Too far behind (e.g. rate-limited): jump to the head and say so, rather than lag forever.
+      if (opts.maxLag && head - h > opts.maxLag) {
+        log(`[watch] ${opts.network}: ${head - h} blocks behind; skipping to head ${head.toLocaleString("en-US")} (blocks ${h}–${head - 1} not scanned)`);
+        skipped += head - h;
+        h = head;
+      }
       continue;
     }
     // Prefetch up to 6 blocks ahead when behind, so a mainnet follower keeps up (~1-2 blocks/s).
     // Prefetched promises are settled immediately (never left as unhandled rejections, which would
     // terminate Node); a failed prefetch is simply retried below.
-    for (let k = 0; k < 6 && h + k <= head; k++) if (!prefetch.has(h + k)) prefetch.set(h + k, settle(getJson(`${base}/block/${h + k}`)));
+    for (let k = 0; k < (failures ? 1 : 3) && h + k <= head; k++) if (!prefetch.has(h + k)) prefetch.set(h + k, settle(getJson(`${base}/block/${h + k}`)));
     let block: any;
     try {
       const got = await (prefetch.get(h) ?? settle(getJson(`${base}/block/${h}`)));

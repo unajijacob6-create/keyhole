@@ -84,8 +84,10 @@ deposit NOT sent: GuardRefusal thrown before signing; no transaction was created
   │          → OK / CAUTION / STOP, every reason with its re-check      │
   └───────┬───────────────────────────────┬─────────────────────────────┘
           │                               │
-  @keyhole/guard guardCall()      watcher (GitHub Actions, ~5 h loops, self-dispatching)
-  refuses in code on STOP         tx + Delegate + receipt actions → ChangeObserved / KeyAdded
+  @keyhole/guard guardCall()      watcher (GitHub Actions, ~5 h runs, self-dispatching)
+  refuses in code on STOP         stream: tx + Delegate + receipt actions (neardata, best effort)
+                                  poll: watchlist over RPC + archival bisection for the exact block
+                                        → ChangeObserved / KeyAdded
                                           │
                      Keyhole registry (Rust, testnet) ◄── verifier: CI rebuild from NEP-330
                      attestations keyed by code hash  ◄── reviewer: NEAR AI Cloud TEE review

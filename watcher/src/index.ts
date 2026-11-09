@@ -4,6 +4,7 @@
 import fs from "node:fs";
 import { registryPoster } from "./poster.ts";
 import { follow } from "./follow.ts";
+import { pollWatchlist } from "./poll.ts";
 import type { Network } from "../../packages/core/src/index.ts";
 
 const argv = process.argv.slice(2);
@@ -21,6 +22,13 @@ process.on("SIGTERM", () => ctrl.abort());
 // Never let a stray rejection kill the watcher: log it and keep going.
 process.on("unhandledRejection", (e) => console.error(`[watch] unhandled rejection (continuing): ${String((e as Error)?.message ?? e).slice(0, 200)}`));
 const durationMs = arg("--duration") ? Number(arg("--duration")) * 1000 : undefined;
+// --mode stream (default): follow the neardata block stream. --mode poll: poll the watchlist over
+// RPC and bisect archival state for exact heights (authoritative for posting; no neardata needed).
+const mode = arg("--mode") ?? "stream";
+if (mode === "poll") {
+  await pollWatchlist({ network, accounts: [...watch], intervalMs: Number(arg("--interval") ?? 60) * 1000, durationMs, poster, feed, signal: ctrl.signal });
+  process.exit(0);
+}
 const started = Date.now();
 let total = 0;
 let from = arg("--from") ? Number(arg("--from")) : undefined;
@@ -30,7 +38,7 @@ for (let attempt = 0; !ctrl.signal.aborted; attempt++) {
   const remaining = durationMs === undefined ? undefined : durationMs - (Date.now() - started);
   if (remaining !== undefined && remaining <= 0) break;
   try {
-    const events = await follow({ network, watch, all: argv.includes("--all"), from, durationMs: remaining, feed, poster, signal: ctrl.signal, heartbeatMs: arg("--heartbeat") ? Number(arg("--heartbeat")) * 1000 : 300_000 });
+    const events = await follow({ network, watch, all: argv.includes("--all"), from, durationMs: remaining, feed, poster, signal: ctrl.signal, heartbeatMs: arg("--heartbeat") ? Number(arg("--heartbeat")) * 1000 : 300_000, maxLag: arg("--max-lag") ? Number(arg("--max-lag")) : undefined });
     total += events.length;
     break;
   } catch (e) {

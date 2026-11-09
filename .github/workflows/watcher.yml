@@ -4,8 +4,8 @@ name: watcher
 # re-dispatches itself (workflow_dispatch via GITHUB_TOKEN) — only after a successful run that
 # lasted more than 80% of its planned duration, so a failing run can never start a hot loop.
 # Cron (every 3 h) is the backup that restarts it after a failure.
-#  - mainnet: every code deploy network-wide → feed branch (feed-mainnet.jsonl), plus the watchlist;
-#  - testnet: the demo vault and registry.
+#  - mainnet stream: every code deploy network-wide → feed branch (best effort, neardata free tier);
+#  - mainnet + testnet polls: the watchlists, via RPC + archival bisection (authoritative; posts).
 # Posting ChangeObserved / KeyAdded to the registry needs the KEYHOLE_ATTESTER_KEY secret (a
 # function-call key of watcher.keyhole.testnet limited to `attest`). Without it the watcher only
 # writes the public feed.
@@ -44,17 +44,23 @@ jobs:
           git config user.name "keyhole-watcher"; git config user.email "keyhole-watcher@users.noreply.github.com"
           git fetch origin feed || true
           git worktree add -B feed /tmp/feed origin/feed 2>/dev/null || git worktree add --orphan -b feed /tmp/feed
-      - name: Follow mainnet and testnet, publish the feed every 10 minutes
+      - name: Watch (mainnet stream + mainnet/testnet watchlist polls), publish the feed every 10 minutes
         id: follow
         run: |
           set -u
           T0=$(date +%s)
           POST=""; if [ -n "${KEY_WATCHER_KEYHOLE_TESTNET}" ]; then POST="--post"; fi
           mkdir -p /tmp/run /tmp/feed/logs
-          npx tsx watcher/src/index.ts --network mainnet --all --watchlist scripts/data/watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-mainnet.jsonl --heartbeat 600 > /tmp/run/mainnet.log 2>&1 &
-          M=$!
-          npx tsx watcher/src/index.ts --network testnet --watchlist scripts/data/testnet-watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-testnet.jsonl --heartbeat 600 > /tmp/run/testnet.log 2>&1 &
-          T=$!
+          # 1. Network-wide deploy feed from the neardata block stream: best effort (free tier is
+          #    180 req/min per IP, shared on CI runners), rate-limited, skips ahead if far behind, never posts.
+          npx tsx watcher/src/index.ts --mode stream --network mainnet --all --duration $DURATION --max-lag 3000 --feed /tmp/run/feed-mainnet.jsonl --heartbeat 600 > /tmp/run/stream.log 2>&1 &
+          P1=$!
+          # 2-3. Watchlists: RPC polling + archival bisection for exact heights. Authoritative; these post.
+          npx tsx watcher/src/index.ts --mode poll --network mainnet --watchlist scripts/data/watchlist.json --interval 120 $POST --duration $DURATION --feed /tmp/run/feed-mainnet.jsonl > /tmp/run/mainnet.log 2>&1 &
+          P2=$!
+          npx tsx watcher/src/index.ts --mode poll --network testnet --watchlist scripts/data/testnet-watchlist.json --interval 60 $POST --duration $DURATION --feed /tmp/run/feed-testnet.jsonl > /tmp/run/testnet.log 2>&1 &
+          P3=$!
+          NAMES=(stream mainnet testnet); PIDS=($P1 $P2 $P3); CODES=("" "" "")
           publish() {
             # Conflict-safe: start from the remote branch, append this run's new lines, retry once.
             for attempt in 1 2; do
@@ -62,9 +68,9 @@ jobs:
               for n in mainnet testnet; do
                 touch /tmp/feed/feed-$n.jsonl   # the website reads this file; it must exist even when empty
                 [ -s /tmp/run/feed-$n.jsonl ] && cat /tmp/run/feed-$n.jsonl >> /tmp/feed/feed-$n.jsonl
-                [ -f /tmp/feed/feed-$n.jsonl ] && tail -n 500 /tmp/feed/feed-$n.jsonl > /tmp/feed/.t && mv /tmp/feed/.t /tmp/feed/feed-$n.jsonl
-                [ -f /tmp/run/$n.log ] && tail -n 80 /tmp/run/$n.log > /tmp/feed/logs/$n.log
+                tail -n 500 /tmp/feed/feed-$n.jsonl > /tmp/feed/.t && mv /tmp/feed/.t /tmp/feed/feed-$n.jsonl
               done
+              for n in "${NAMES[@]}"; do [ -f /tmp/run/$n.log ] && tail -n 80 /tmp/run/$n.log > /tmp/feed/logs/$n.log; done
               echo "run ${GITHUB_RUN_ID} at $(date -u +%FT%TZ); elapsed $(( $(date +%s) - T0 ))s; ${1:-}" > /tmp/feed/last-run.txt
               if (cd /tmp/feed && git add -A && git commit -qm "feed $(date -u +%FT%TZ)" && git push -q origin feed); then
                 for n in mainnet testnet; do : > /tmp/run/feed-$n.jsonl; done
@@ -73,19 +79,24 @@ jobs:
             done
             echo "publish failed twice; lines kept for the next publish"
           }
-          MC=""; TC=""
-          while [ -z "$MC" ] || [ -z "$TC" ]; do
+          running() { for c in "${CODES[@]}"; do [ -z "$c" ] && return 0; done; return 1; }
+          while running; do
             sleep "${PUBLISH_EVERY:-600}" & wait $!
-            if [ -z "$MC" ] && ! kill -0 $M 2>/dev/null; then wait $M && MC=0 || MC=$?; echo "mainnet watcher exited with code $MC after $(( $(date +%s) - T0 ))s" | tee -a /tmp/run/mainnet.log; fi
-            if [ -z "$TC" ] && ! kill -0 $T 2>/dev/null; then wait $T && TC=0 || TC=$?; echo "testnet watcher exited with code $TC after $(( $(date +%s) - T0 ))s" | tee -a /tmp/run/testnet.log; fi
-            publish "mainnet=${MC:-running} testnet=${TC:-running}"
+            for i in 0 1 2; do
+              if [ -z "${CODES[$i]}" ] && ! kill -0 ${PIDS[$i]} 2>/dev/null; then
+                wait ${PIDS[$i]} && CODES[$i]=0 || CODES[$i]=$?
+                echo "${NAMES[$i]} watcher exited with code ${CODES[$i]} after $(( $(date +%s) - T0 ))s" | tee -a /tmp/run/${NAMES[$i]}.log
+              fi
+            done
+            publish "stream=${CODES[0]:-running} mainnet=${CODES[1]:-running} testnet=${CODES[2]:-running}"
           done
           ELAPSED=$(( $(date +%s) - T0 ))
-          echo "exit codes: mainnet=$MC testnet=$TC; elapsed ${ELAPSED}s of ${DURATION}s" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "exit codes: stream=${CODES[0]} mainnet=${CODES[1]} testnet=${CODES[2]}; elapsed ${ELAPSED}s of ${DURATION}s" | tee -a "$GITHUB_STEP_SUMMARY"
+          OK=1; for c in "${CODES[@]}"; do [ "$c" = "0" ] || OK=0; done
           # Re-dispatch only after a healthy run that lasted more than 80% of DURATION: never a hot
           # loop. Otherwise the 3-hourly cron restarts the watcher.
-          if [ "$MC" = "0" ] && [ "$TC" = "0" ] && [ "$ELAPSED" -gt $(( DURATION * 8 / 10 )) ]; then echo "full=true" >> "$GITHUB_OUTPUT"; else echo "full=false" >> "$GITHUB_OUTPUT"; echo "not re-dispatching (exit codes mainnet=$MC testnet=$TC, elapsed ${ELAPSED}s); cron will restart" | tee -a "$GITHUB_STEP_SUMMARY"; fi
-          [ "$MC" = "0" ] && [ "$TC" = "0" ]
+          if [ "$OK" = 1 ] && [ "$ELAPSED" -gt $(( DURATION * 8 / 10 )) ]; then echo "full=true" >> "$GITHUB_OUTPUT"; else echo "full=false" >> "$GITHUB_OUTPUT"; echo "not re-dispatching (exit codes ${CODES[*]}, elapsed ${ELAPSED}s); cron will restart" | tee -a "$GITHUB_STEP_SUMMARY"; fi
+          [ "$OK" = 1 ]
       - name: Re-dispatch the next run (only after a successful, full-length run)
         if: success() && steps.follow.outputs.full == 'true'
         env:
