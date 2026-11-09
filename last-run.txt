@@ -1,1 +1,1 @@
-run 42675237260 at 2026-11-09T19:05:04Z; elapsed 1808s; mainnet=running testnet=running
+run 42679142173 at 2026-11-09T19:10:26Z; elapsed 601s; stream=running mainnet=running testnet=running
