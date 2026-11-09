@@ -1,0 +1,15 @@
+{
+  "name": "@keyhole/mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/server.ts",
+  "license": "MIT",
+  "description": "Read-only MCP server: Keyhole's trust check (who can change this NEAR contract, which upgrade is pending, what guardCall would decide) as tools for AI agents. No keys, no signing.",
+  "bin": { "keyhole-mcp": "./bin/keyhole-mcp.mjs" },
+  "dependencies": {
+    "@keyhole/core": "0.1.0",
+    "@keyhole/guard": "0.1.0",
+    "@keyhole/hatch": "0.1.0",
+    "@modelcontextprotocol/sdk": "1.32.2"
+  }
+}

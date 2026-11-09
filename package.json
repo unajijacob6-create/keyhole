@@ -31,7 +31,8 @@
     "guardian": "tsx guardian/src/cli.ts",
     "eval:upgrades": "tsx scripts/eval-upgrades.ts",
     "radar": "tsx scripts/radar.ts",
-    "hatch:live": "tsx scripts/hatch-live.ts"
+    "hatch:live": "tsx scripts/hatch-live.ts",
+    "mcp": "tsx packages/mcp/src/server.ts"
   },
   "engines": {
     "node": ">=22"

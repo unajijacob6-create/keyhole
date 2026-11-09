@@ -1,1 +1,1 @@
-{ "name": "@keyhole/guard", "version": "0.1.0", "type": "module", "main": "src/index.ts", "license": "MIT", "dependencies": { "@keyhole/core": "0.1.0" } }
+{ "name": "@keyhole/guard", "version": "0.1.0", "type": "module", "main": "src/index.ts", "license": "MIT", "dependencies": { "@keyhole/core": "0.1.0", "@keyhole/hatch": "0.1.0" } }
