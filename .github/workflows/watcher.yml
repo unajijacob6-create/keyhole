@@ -22,7 +22,7 @@ permissions:
   actions: write
 
 concurrency:
-  group: watcher-v2
+  group: watcher-v3
   cancel-in-progress: false
 
 jobs:
