@@ -9,7 +9,8 @@ import { Rpc, inspect, fixtureTransport, analyzeWasm, exportDiff, codeHash, norm
 import { verifyReceiptOffline } from "../reviewer/src/review.ts";
 import { listUpgradeProposals, fetchPendingCode, txApi } from "../packages/core/src/index.ts";
 import { decodeHatch, verifyHatch } from "../packages/hatch/src/index.ts";
-import { replayGuardianRun } from "./lib/replay.ts";
+import { pickReplayLines, replayGuardianRun } from "./lib/replay.ts";
+import { findExecutingVote } from "./lib/vote-timing.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REGISTRY = process.env.KH_REGISTRY ?? KEYHOLE_REGISTRY.account;
@@ -147,7 +148,11 @@ await check("Guardian: the recorded testnet run re-derives from archival RPC (by
   const lines: string[] = [];
   const ok = await replayGuardianRun(path.join(ROOT, "data/guardian-run.json"), { log: (l) => lines.push(l.trim()) });
   must(ok, lines.filter((l) => l.startsWith("XX")).join("\n") || "replay failed");
-  return [lines.find((l) => l.startsWith("ok  store_blob bytes"))!, lines.find((l) => l.startsWith("ok  diff"))!, lines.find((l) => l.startsWith("ok  guardian tx"))!, lines.find((l) => l.startsWith("ok  hatch at block"))!, lines.at(-1)!].filter(Boolean);
+  // The lines this check's title stands for must each be there (a replay that skipped one is a FAIL).
+  const { shown, missing, summary, passed } = pickReplayLines(lines);
+  must(missing.length === 0, `replay output lacks: ${missing.join(" | ")}`);
+  must(passed, `unexpected replay summary: ${summary}`);
+  return [...shown, summary];
 });
 
 await check("Guardian: the hatch's signed bytes decode to exactly one withdraw-to-self, and tampering is rejected (offline)", async () => {
@@ -168,8 +173,21 @@ await check("Guardian: a real mainnet upgrade's bytes were public before its vot
   const blob = await fetchPendingCode({ api: txApi("mainnet"), dao: p!.dao, hash: p!.code_hash!, maxPages: 8 });
   must(blob, "store_blob transaction not found in the tx index");
   must((await codeHash(blob!.code)) === p!.code_hash, "bytes do not hash to the proposal hash");
-  const submitted = new Date(p!.submitted_at_ms).toISOString();
-  return [`UpgradeRemote(v2.ref-finance.near.upgrade, ${p!.code_hash!.slice(0, 10)}…) submitted ${submitted}, ${p!.votes.approve}/${p!.required} approvals`, `store_blob ${blob!.tx} by ${blob!.signer} at block ${blob!.height}: ${blob!.code.length} bytes, sha256 = proposal hash`];
+  const vote = await findExecutingVote({ api: txApi("mainnet"), dao: p!.dao, id: p!.id, target: p!.target, maxPages: 8 });
+  must(vote, "the vote that executed proposal 1018 was not found in the tx index");
+  // Block timestamps from archival RPC (nanoseconds), not from the tx index.
+  const archivalMainnet = new Rpc({ network: "mainnet", url: ARCHIVAL_RPC.mainnet });
+  const tsOf = async (h: number) => Number(BigInt((await archivalMainnet.block({ block_id: h })).header.timestamp) / 1_000_000n);
+  const blobMs = await tsOf(blob!.height);
+  const execMs = await tsOf(vote!.execHeight);
+  must(blob!.height < vote!.txHeight && blob!.height < vote!.execHeight && blobMs < execMs, `store_blob at block ${blob!.height} is not before the executing vote (tx block ${vote!.txHeight}, executed at ${vote!.execHeight})`);
+  const iso = (ms: number) => new Date(ms).toISOString();
+  return [
+    `UpgradeRemote(v2.ref-finance.near.upgrade, ${p!.code_hash!.slice(0, 10)}…) submitted ${iso(p!.submitted_at_ms)}, ${p!.votes.approve}/${p!.required} approvals`,
+    `store_blob ${blob!.tx} by ${blob!.signer}: block ${blob!.height} (${iso(blobMs)}), ${blob!.code.length} bytes, sha256 = proposal hash`,
+    `executing vote ${vote!.tx} by ${vote!.signer}: tx block ${vote!.txHeight}, reached ${p!.target} at block ${vote!.execHeight} (${iso(execMs)})`,
+    `bytes on chain ${vote!.execHeight - blob!.height} blocks (${Math.round((execMs - blobMs) / 1000)} s) before the upgrade ran`,
+  ];
 });
 
 const failed = results.filter((x) => !x).length;
