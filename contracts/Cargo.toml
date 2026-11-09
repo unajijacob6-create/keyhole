@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["registry", "demo-vault-v1", "demo-vault-v2"]
+members = ["registry", "demo-vault-v1", "demo-vault-v2", "guarded-vault"]
 
 [workspace.package]
 edition = "2021"

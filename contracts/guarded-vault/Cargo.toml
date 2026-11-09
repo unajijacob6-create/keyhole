@@ -1,0 +1,43 @@
+[package]
+name = "guarded-vault"
+description = "Keyhole guarded vault: testnet demo venue with an owner upgrade path and seeded honest/evil variants"
+version = "1.0.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# NEP-330 reproducible build (https://github.com/near/NEPs/blob/master/neps/nep-0330.md).
+# cargo-near 0.23.0 image; the tag is descriptive, the digest identifies the image.
+[package.metadata.near.reproducible_build]
+image = "sourcescan/cargo-near:0.23.0-rust-1.99.1"
+image_digest = "sha256:8013f039e8005627f10ae66b5519d1a6eeeed7d7aef4b5067d5e9a86c4302fcc"
+passed_env = []
+container_build_command = ["cargo", "near", "build", "non-reproducible-wasm", "--locked"]
+
+[lints.rust.unexpected_cfgs]
+level = "warn"
+check-cfg = ['cfg(near)']
+
+# Seeded variants. At most one may be enabled (lib.rs enforces this with compile_error!).
+# Each is a separate wasm with the SAME state layout, so it can be deployed over the honest
+# v1 by `upgrade` and read v1 state with no migration. `default` is the honest v1.
+[features]
+default = []
+benign-v2 = []
+evil-sweep = []
+evil-addkey = []
+evil-owner = []
+evil-fee = []
+
+[dependencies]
+near-sdk = { workspace = true }
+
+[dev-dependencies]
+near-sdk = { workspace = true, features = ["unit-testing"] }
+near-workspaces = { workspace = true }
+tokio = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
