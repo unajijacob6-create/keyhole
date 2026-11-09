@@ -7,3 +7,4 @@ target/
 web/test-results/
 web/playwright-report/
 .keyhole-cache/
+scratch/
