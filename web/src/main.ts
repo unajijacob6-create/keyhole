@@ -196,7 +196,7 @@ async function liveRecheck() {
     while (queue.length) {
       const row = queue.shift()!;
       try {
-        const r = await inspect(row.account, { network: "mainnet", history: false });
+        const r = await inspect(row.account, { network: "mainnet", history: false, checkRepo: false }); // repo checks only in the detail view (GitHub's unauthenticated limit is 60/h)
         live.set(row.account, { verdict: r.grade.verdict, class: r.grade.class, sourcescan: r.sourcescan?.status ?? row.sourcescan });
         renderTable();
       } catch {
@@ -285,7 +285,7 @@ async function runDecode() {
     for (const acc of t.inspect) {
       const slot = out.querySelector(`[data-tx="${i}"] [data-acc="${CSS.escape(acc)}"]`)!;
       try {
-        const r = await inspect(acc, { network: acc.endsWith(".testnet") ? "testnet" : "mainnet", history: false });
+        const r = await inspect(acc, { network: acc.endsWith(".testnet") ? "testnet" : "mainnet", history: false, checkRepo: false });
         slot.innerHTML = `${verdictBadge(r.grade.verdict)} <a href="#/inspect/${encodeURIComponent(acc)}">${esc(acc)}</a> — ${esc(r.grade.headline)}`;
       } catch (e) {
         slot.innerHTML = `<span class="sev caution">[!!]</span> ${esc(acc)}: could not check (${esc((e as Error).message)})`;

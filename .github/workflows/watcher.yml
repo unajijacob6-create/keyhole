@@ -2,7 +2,7 @@ name: watcher
 
 # Always-on watcher without depending on cron: each run follows the block stream for ~5 h, then
 # re-dispatches itself (workflow_dispatch via GITHUB_TOKEN) — only after a successful run that
-# lasted at least 90% of its planned duration, so a failing run can never start a hot loop.
+# lasted more than 80% of its planned duration, so a failing run can never start a hot loop.
 # Cron (every 3 h) is the backup that restarts it after a failure.
 #  - mainnet: every code deploy network-wide → feed branch (feed-mainnet.jsonl), plus the watchlist;
 #  - testnet: the demo vault and registry.
@@ -60,6 +60,7 @@ jobs:
             for attempt in 1 2; do
               (cd /tmp/feed && git fetch -q origin feed && git reset -q --hard origin/feed) 2>/dev/null || true
               for n in mainnet testnet; do
+                touch /tmp/feed/feed-$n.jsonl   # the website reads this file; it must exist even when empty
                 [ -s /tmp/run/feed-$n.jsonl ] && cat /tmp/run/feed-$n.jsonl >> /tmp/feed/feed-$n.jsonl
                 [ -f /tmp/feed/feed-$n.jsonl ] && tail -n 500 /tmp/feed/feed-$n.jsonl > /tmp/feed/.t && mv /tmp/feed/.t /tmp/feed/feed-$n.jsonl
                 [ -f /tmp/run/$n.log ] && tail -n 80 /tmp/run/$n.log > /tmp/feed/logs/$n.log
@@ -81,8 +82,9 @@ jobs:
           done
           ELAPSED=$(( $(date +%s) - T0 ))
           echo "exit codes: mainnet=$MC testnet=$TC; elapsed ${ELAPSED}s of ${DURATION}s" | tee -a "$GITHUB_STEP_SUMMARY"
-          # Re-dispatch only after a healthy, (nearly) full-length run: never a hot loop.
-          if [ "$MC" = "0" ] && [ "$TC" = "0" ] && [ "$ELAPSED" -ge $(( DURATION * 9 / 10 )) ]; then echo "full=true" >> "$GITHUB_OUTPUT"; else echo "full=false" >> "$GITHUB_OUTPUT"; fi
+          # Re-dispatch only after a healthy run that lasted more than 80% of DURATION: never a hot
+          # loop. Otherwise the 3-hourly cron restarts the watcher.
+          if [ "$MC" = "0" ] && [ "$TC" = "0" ] && [ "$ELAPSED" -gt $(( DURATION * 8 / 10 )) ]; then echo "full=true" >> "$GITHUB_OUTPUT"; else echo "full=false" >> "$GITHUB_OUTPUT"; echo "not re-dispatching (exit codes mainnet=$MC testnet=$TC, elapsed ${ELAPSED}s); cron will restart" | tee -a "$GITHUB_STEP_SUMMARY"; fi
           [ "$MC" = "0" ] && [ "$TC" = "0" ]
       - name: Re-dispatch the next run (only after a successful, full-length run)
         if: success() && steps.follow.outputs.full == 'true'
