@@ -7,6 +7,9 @@ import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { Rpc, inspect, fixtureTransport, analyzeWasm, exportDiff, codeHash, normaliseRecord, KEYHOLE_REGISTRY, effectiveHash, ARCHIVAL_RPC } from "../packages/core/src/index.ts";
 import { verifyReceiptOffline } from "../reviewer/src/review.ts";
+import { listUpgradeProposals, fetchPendingCode, txApi } from "../packages/core/src/index.ts";
+import { decodeHatch, verifyHatch } from "../packages/hatch/src/index.ts";
+import { replayGuardianRun } from "./lib/replay.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REGISTRY = process.env.KH_REGISTRY ?? KEYHOLE_REGISTRY.account;
@@ -137,6 +140,36 @@ await check("a SourceScan-verified mainnet contract re-checks, and a CI rebuild 
     `token.sweat ${sweat.code_hash.slice(0, 10)}…: SourceScan-verified (${byHash.map((x) => x[0]).join(", ")})`,
     `intents.near ${intents.code_hash.slice(0, 10)}…: rebuilt from ${(att!.attestation as any).repo}@${String((att!.attestation as any).rev).slice(0, 10)} → match (registry #${att!.id}); SourceScan entry is for ${ss?.code_hash?.slice(0, 10) ?? "none"}…`,
   ];
+});
+
+// ── Keyhole Guardian ──
+await check("Guardian: the recorded testnet run re-derives from archival RPC (bytes, signature, order, outcome)", async () => {
+  const lines: string[] = [];
+  const ok = await replayGuardianRun(path.join(ROOT, "data/guardian-run.json"), { log: (l) => lines.push(l.trim()) });
+  must(ok, lines.filter((l) => l.startsWith("XX")).join("\n") || "replay failed");
+  return [lines.find((l) => l.startsWith("ok  store_blob bytes"))!, lines.find((l) => l.startsWith("ok  diff"))!, lines.find((l) => l.startsWith("ok  guardian tx"))!, lines.find((l) => l.startsWith("ok  hatch at block"))!, lines.at(-1)!].filter(Boolean);
+});
+
+await check("Guardian: the hatch's signed bytes decode to exactly one withdraw-to-self, and tampering is rejected (offline)", async () => {
+  const run = JSON.parse(fs.readFileSync(path.join(ROOT, "data/guardian-run.json"), "utf8"));
+  const h = run.hatch;
+  const v = verifyHatch(h);
+  must(v.ok, v.checks.join("; "));
+  const d = decodeHatch(h);
+  must(d.senderId === h.account && d.actions.length === 1 && d.actions[0].deposit === "1", "unexpected delegate contents");
+  const tampered = ["venue", "method", "deposit", "nonce"].map((k) => verifyHatch({ ...h, [k]: k === "venue" ? "evil.testnet" : k === "method" ? "sweep" : "2" }).ok);
+  must(tampered.every((x) => !x), "a tampered record verified");
+  return [`${d.senderId} → ${d.receiverId}.${d.actions[0].method}(${JSON.stringify(d.actions[0].args)}) · ${d.actions[0].deposit} yocto · nonce ${d.nonce} · valid to ${d.maxBlockHeight}`, "changing receiver, method, deposit or nonce fails verification"];
+});
+
+await check("Guardian: a real mainnet upgrade's bytes were public before its vote (Ref proposal 1018)", async () => {
+  const p = (await listUpgradeProposals(mainnet, "ref-finance.sputnik-dao.near", { last: 40 })).find((x) => x.id === 1018);
+  must(p && p.code_hash === "GZmkbfVLcN7ErxU9RDxP24YTaKmoVixhM6XyycP15Qvi" && p.target === "v2.ref-finance.near", `proposal 1018 not decoded as expected: ${JSON.stringify(p)?.slice(0, 160)}`);
+  const blob = await fetchPendingCode({ api: txApi("mainnet"), dao: p!.dao, hash: p!.code_hash!, maxPages: 8 });
+  must(blob, "store_blob transaction not found in the tx index");
+  must((await codeHash(blob!.code)) === p!.code_hash, "bytes do not hash to the proposal hash");
+  const submitted = new Date(p!.submitted_at_ms).toISOString();
+  return [`UpgradeRemote(v2.ref-finance.near.upgrade, ${p!.code_hash!.slice(0, 10)}…) submitted ${submitted}, ${p!.votes.approve}/${p!.required} approvals`, `store_blob ${blob!.tx} by ${blob!.signer} at block ${blob!.height}: ${blob!.code.length} bytes, sha256 = proposal hash`];
 });
 
 const failed = results.filter((x) => !x).length;
