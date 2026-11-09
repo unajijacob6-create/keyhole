@@ -9,9 +9,11 @@
     "preview": "vite preview --port 4173 --strictPort"
   },
   "dependencies": {
-    "@keyhole/core": "0.1.0",
+    "@fontsource-variable/manrope": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0",
     "@fontsource/inter": "^5.0.0",
-    "@fontsource/jetbrains-mono": "^5.0.0"
+    "@fontsource/jetbrains-mono": "^5.0.0",
+    "@keyhole/core": "0.1.0"
   },
   "devDependencies": {
     "vite": "^7.0.0"

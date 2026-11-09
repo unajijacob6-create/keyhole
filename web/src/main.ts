@@ -1,8 +1,8 @@
+import "@fontsource/instrument-serif/400.css";
+import "@fontsource/instrument-serif/400-italic.css";
+import "@fontsource-variable/manrope/wght.css";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/700.css";
-import "@fontsource/inter/400.css";
-import "@fontsource/inter/600.css";
-import "@fontsource/inter/700.css";
 import "./styles.css";
 import { inspect, decodeTransactions, Rpc, type KeyholeReport } from "@keyhole/core";
 import { mountHero } from "./hero.ts";
@@ -12,6 +12,56 @@ import demoRun from "../../data/demo-run.json";
 
 type Row = (typeof survey.rows)[number];
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
+document.documentElement.classList.add("js");
+const REDUCE = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const BASE = import.meta.env.BASE_URL;
+
+// ── motion: scroll reveal, count-up, glassy nav, pointer parallax on the hero coins ──
+const revealer = new IntersectionObserver(
+  (entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      e.target.classList.add("in");
+      revealer.unobserve(e.target);
+      e.target.querySelectorAll<HTMLElement>(".count").forEach(countUp);
+    }
+  },
+  { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+);
+function observeReveals(root: ParentNode = document) {
+  root.querySelectorAll(".reveal:not(.in)").forEach((el) => (REDUCE ? el.classList.add("in") : revealer.observe(el)));
+}
+function countUp(el: HTMLElement) {
+  const to = Number(el.dataset.to);
+  if (REDUCE || !Number.isFinite(to) || to === 0) return void (el.textContent = String(to));
+  const t0 = performance.now();
+  const dur = 1400;
+  const step = (now: number) => {
+    const k = Math.min(1, (now - t0) / dur);
+    el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 3))));
+    if (k < 1) requestAnimationFrame(step);
+  };
+  el.textContent = "0";
+  requestAnimationFrame(step);
+}
+const topBar = $("#top");
+const onScroll = () => topBar.classList.toggle("scrolled", scrollY > 8);
+addEventListener("scroll", onScroll, { passive: true });
+onScroll();
+if (!REDUCE && matchMedia("(pointer: fine)").matches) {
+  const heroEl = $("#hero");
+  const coins = [...heroEl.querySelectorAll<SVGElement>(".coin")];
+  const depth = [18, 26, 40];
+  let raf = 0;
+  heroEl.addEventListener("pointermove", (ev) => {
+    const r = heroEl.getBoundingClientRect();
+    const x = (ev.clientX - r.left) / r.width - 0.5;
+    const y = (ev.clientY - r.top) / r.height - 0.5;
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => coins.forEach((c, i) => (c.style.setProperty("--px", `${(-x * depth[i]).toFixed(1)}px`), c.style.setProperty("--py", `${(-y * depth[i]).toFixed(1)}px`))));
+  });
+  heroEl.addEventListener("pointerleave", () => coins.forEach((c) => (c.style.setProperty("--px", "0px"), c.style.setProperty("--py", "0px"))));
+}
 const mainnet = new Rpc({ network: "mainnet" });
 
 // ── theme ──
@@ -231,30 +281,50 @@ const attackEl = $("#attack");
 type DemoStep = { t: number; step: number; title: string; lines: string[]; state?: { verdict: string; class: string; flags: string[]; headline: string; reasons: string[] } };
 const run = demoRun as unknown as { recordedAt: string; vault: string; steps: DemoStep[]; links: Record<string, string> };
 let replayIdx = 0;
+let playing: ReturnType<typeof setInterval> | null = null;
 function renderReplay() {
+  const banner = `<figure class="banner"><img src="${BASE}img/vault-1200.webp" srcset="${BASE}img/vault-720.webp 720w, ${BASE}img/vault-1200.webp 1200w" sizes="(max-width: 1240px) 100vw, 1200px" alt="" loading="lazy" width="1200" height="800" /><figcaption class="banner-text"><h2 id="attack-h" class="display">The upgrade attack, replayed</h2><p>An honest vault keeps one full-access key. That key silently redeploys it with a <code>sweep</code> method. Keyhole catches it.</p></figcaption></figure>`;
   if (!run.steps?.length) {
-    attackEl.innerHTML = `<h2 id="attack-h">The upgrade attack, replayed</h2><p class="muted">No recorded run yet. Run <code>npm run demo:attack</code>.</p>`;
+    attackEl.innerHTML = `${banner}<p class="muted">No recorded run yet. Run <code>npm run demo:attack</code>.</p>`;
     return;
   }
   const upto = run.steps.slice(0, replayIdx + 1);
   const lastState = [...upto].reverse().find((s) => s.state)?.state;
   attackEl.innerHTML = `
-    <h2 id="attack-h">The upgrade attack, replayed</h2>
-    <p>A real run of <code>npm run demo:attack</code> on testnet, recorded ${esc(run.recordedAt.slice(0, 16).replace("T", " "))} UTC. An honest vault keeps one full-access key; that key silently redeploys it with a <code>sweep</code> method. Step through it, or <a href="#/inspect/${esc(run.vault)}">inspect ${esc(run.vault)} live</a>.</p>
+    ${banner}
+    <p>A real run of <code>npm run demo:attack</code> on testnet, recorded ${esc(run.recordedAt.slice(0, 16).replace("T", " "))} UTC. Step through it, or <a href="#/inspect/${esc(run.vault)}">inspect ${esc(run.vault)} live</a>.</p>
     <div class="replay-controls" role="group" aria-label="Replay controls">
+      <button class="pill dark" type="button" id="rp-play">${playing ? "Pause" : "Play"}</button>
       <button class="secondary" type="button" id="rp-prev" ${replayIdx === 0 ? "disabled" : ""}>← Previous</button>
       <button class="secondary" type="button" id="rp-next" ${replayIdx >= run.steps.length - 1 ? "disabled" : ""}>Next step →</button>
       <button class="secondary" type="button" id="rp-all">Show all</button>
       <span class="muted small" role="status">Step ${replayIdx + 1} of ${run.steps.length}: ${esc(run.steps[replayIdx].title)}</span>
     </div>
+    <div class="progress" aria-hidden="true"><span style="width:${(100 * (replayIdx + 1)) / run.steps.length}%"></span></div>
     <div class="replay">
       <div class="term-col"><pre class="term" aria-label="Terminal output">${upto.map((s) => `<span class="dim">── ${s.step}. ${esc(s.title)}</span>\n${s.lines.map(esc).join("\n")}`).join("\n\n")}</pre></div>
       <div class="state-col">${lastState ? `<div class="panel" data-testid="replay-state">${verdictBadge(lastState.verdict, "lg")} <span class="class-tag">${esc(lastState.class)}</span><p class="headline">${esc(lastState.headline)}</p>${lastState.flags.map((f) => `<span class="flag">${esc(f)}</span>`).join(" ")}<ul class="reasons">${lastState.reasons.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
       <p class="small muted">${Object.entries(run.links ?? {}).map(([k, v]) => `<a href="${esc(v)}">${esc(k)}</a>`).join(" · ")}</p></div>
     </div>`;
-  $("#rp-prev").addEventListener("click", () => ((replayIdx = Math.max(0, replayIdx - 1)), renderReplay()));
-  $("#rp-next").addEventListener("click", () => ((replayIdx = Math.min(run.steps.length - 1, replayIdx + 1)), renderReplay()));
-  $("#rp-all").addEventListener("click", () => ((replayIdx = run.steps.length - 1), renderReplay()));
+  const term = attackEl.querySelector<HTMLElement>(".term");
+  if (term) term.scrollTop = term.scrollHeight;
+  const stop = () => {
+    if (playing) clearInterval(playing);
+    playing = null;
+  };
+  $("#rp-play").addEventListener("click", () => {
+    if (playing) return stop(), renderReplay();
+    if (replayIdx >= run.steps.length - 1) replayIdx = 0;
+    playing = setInterval(() => {
+      if (replayIdx >= run.steps.length - 1) stop();
+      else replayIdx++;
+      renderReplay();
+    }, 1600);
+    renderReplay();
+  });
+  $("#rp-prev").addEventListener("click", () => (stop(), (replayIdx = Math.max(0, replayIdx - 1)), renderReplay()));
+  $("#rp-next").addEventListener("click", () => (stop(), (replayIdx = Math.min(run.steps.length - 1, replayIdx + 1)), renderReplay()));
+  $("#rp-all").addEventListener("click", () => (stop(), (replayIdx = run.steps.length - 1), renderReplay()));
 }
 renderReplay();
 
@@ -297,15 +367,23 @@ $("#tx-go").addEventListener("click", runDecode);
 
 // ── API / SDK ──
 $("#api").innerHTML = `
-  <h2 id="api-h">Use it from code</h2>
-  <p>The website is a thin UI over <code>@keyhole/core</code>. Wallets, dApps and agents can call it directly. It needs no server and no API key.</p>
-  <pre class="code"><code>import { inspect } from "@keyhole/core";
+  <div class="dev">
+    <div class="dev-text">
+      <h2 id="api-h" class="display">A registry other apps can query</h2>
+      <p>The website is a thin UI over <code>@keyhole/core</code>. Wallets, dApps and agents call it directly, with no server and no API key. Attestations (observed changes, reproducible builds, TEE reviews) live in a registry contract keyed by code hash.</p>
+      <pre class="code"><code>import { inspect } from "@keyhole/core";
 const r = await inspect("intents.near");          // public RPC, deterministic grade
 r.grade.verdict;   // "OK" | "CAUTION" | "STOP"
 r.grade.reasons;   // [{ code, severity, text, evidence: [rpc re-check] }]
 
 import { guardCall } from "@keyhole/guard";        // agents: refuse in code, not in a prompt
 await guardCall("vault.near", { methodName: "deposit", deposit }, { execute, policy: { onCaution: "deny" } });</code></pre>
-  <pre class="code"><code>npx keyhole inspect usdt.tether-token.near --json</code></pre>`;
+      <pre class="code"><code>npx keyhole inspect usdt.tether-token.near --json
+near view registry.keyhole.testnet get_attestations '{"code_hash":"…"}'</code></pre>
+    </div>
+    <div class="dev-art"><img src="${BASE}img/pavilion-1200.webp" srcset="${BASE}img/pavilion-720.webp 720w, ${BASE}img/pavilion-1200.webp 1200w" sizes="(max-width: 1024px) 100vw, 40vw" alt="" loading="lazy" width="1200" height="800" /></div>
+  </div>`;
+
+observeReveals();
 
 route();

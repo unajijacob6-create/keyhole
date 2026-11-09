@@ -4,77 +4,65 @@ Keyhole should read like a precise instrument: calm, dense with evidence, nothin
 carries no meaning. This file is the contract for `web/`. The Playwright smoke test
 (`web/tests/smoke.spec.ts`) checks the rules that a machine can check.
 
-## 1. Hero
+## 1. Visual direction (revised 2026-11-09 at the owner's request)
 
-- A large ASCII keyhole drawn with **base58 characters of a real code hash** fetched live from
-  mainnet (it rotates through the watchlist). On load the characters resolve from noise into the
-  keyhole in ≤ 1.2 s.
-- The keyhole's aperture holds a 4–6 line monospace **live feed**: real events only (mainnet
-  `DeployContract` actions from the neardata block stream, and watchlist status lines computed
-  from RPC). There is never placeholder data. While nothing is loaded the feed says so.
-- Copy: H1 "Who can change the contract you're about to trust?" plus one supporting sentence under 25
-  words that states a fact. One primary action: an input ("Paste a NEAR account or transaction")
-  and an **Inspect** button. At most two quiet secondary links: "Watch the upgrade attack" and
-  "Trust table".
-- Below the fold: the trust table, how it works (3 steps), the attack replay, the before-you-sign
-  decoder, and the API/SDK snippet.
+Soft lavender and periwinkle, generous whitespace and rounded cards. Images are illustrations
+generated with **FLUX.2 on NEAR AI Cloud** (`npm run gen:images`, prompts in
+`scripts/gen-images.ts`): a meadow hero, a key, a vault, a pavilion, a glowing keyhole. The site
+uses only real, dated numbers. No customer counts, no partner logos, no implied endorsements:
+the "Reads public data from" row names, in plain text, the services Keyhole actually queries.
+
+- **Hero:** a rounded card (28 px) over the generated meadow.
+  - Three SVG keyhole coins sit *in* the flowers: a masked copy of the image is layered on top of them.
+  - The headline is serif, with the last word in italics.
+  - It has one supporting sentence and a glass search pill with a dark "Inspect" button, plus at most two quiet links.
+- **Below:** "What is Keyhole?" (serif H2 plus a pill), then three cards, one per question Keyhole answers: a light card with the key image and two deep-indigo cards. Then a stats band (real numbers, count-up), then the live ASCII keyhole card.
+- **The ASCII keyhole** (base58 characters of a live code hash, with the live feed inside) moves into a dark "Live from NEAR mainnet" card.
 
 ## 2. Rules
 
 ### Accessibility
 - The ASCII art is real text inside `<pre aria-hidden="true">`. The H1 and a visually hidden
-  description carry the meaning. Text is never rendered as an image.
-- WCAG 2.2 AA: text contrast ≥ 4.5:1, UI components and large text ≥ 3:1. Focus rings are always
-  visible (`:focus-visible`, 2 px outline in the accent colour, 2 px offset). Everything works from the
-  keyboard. Targets are at least 44 × 44 px.
-- A verdict is never shown by colour alone. The same component always shows glyph and word:
-  `[OK] OK`, `[!!] CAUTION`, `[XX] STOP`.
+  description carry the meaning. Decorative images have `alt=""`.
+- WCAG 2.2 AA: text contrast ≥ 4.5:1, UI components ≥ 3:1. Focus rings are always visible. Everything works
+  from the keyboard. Targets are at least 44 × 44 px.
+- A verdict is never shown by colour alone: `[OK] OK`, `[!!] CAUTION`, `[XX] STOP`.
 
-### Responsive ASCII
-- The art is authored on a fixed grid: 72 columns on desktop, plus a separate 36-column art for
-  viewports ≤ 480 px. The art is swapped, never scaled below about 9 px.
-- `font-size: min(14px, calc((100vw - 32px) / (COLS * 0.6)))`, `line-height: 1.05`,
-  `letter-spacing: 0`.
-- No horizontal scroll at 360 px. Side gutters are 16 px on phones.
+### Responsive
+- The ASCII art uses a 72-column grid on desktop and a 36-column grid at ≤ 480 px. It is swapped, not shrunk.
+- No horizontal scroll at 360 px. Gutters are 16 px on phones and 24 px from 768 px up. The max content width is 1240 px.
+- Below 640 px the search pill stacks. Below 1100 px the small floating coin is hidden.
 
 ### Motion
-- Only two things move: the hero's resolve animation and the live feed.
-- One `<pre>`, whose `textContent` is updated in `requestAnimationFrame`, throttled to ≤ 30 fps.
-- Paused when the tab is hidden (`visibilitychange`) or the hero is off-screen (`IntersectionObserver`).
-- With `prefers-reduced-motion: reduce`: the final frame is drawn immediately and nothing animates.
-  The feed text only changes when new data arrives.
+Purposeful and quiet. **Everything stops under `prefers-reduced-motion: reduce`**, which shows the
+final state.
+- **Hero:** the copy rises in on load (staggered, ≤ 1 s). The coins float and catch a light sweep. The meadow
+  drifts slowly (26 s). The coins follow the pointer with a few pixels of parallax (fine pointers only).
+- **Page:** sections fade up as they enter the viewport (IntersectionObserver). The stats count up.
+  The nav turns to frosted glass on scroll. Cards lift on hover, and images zoom slightly.
+- **Signals:** the STOP badge pulses. The sources row scrolls as a marquee and pauses on hover. The attack replay
+  can auto-play.
+- **ASCII hero:** one `<pre>`, updated in `requestAnimationFrame` at ≤ 30 fps. It pauses when hidden or off-screen.
 
 ### Type
-- Two families, both self-hosted through `@fontsource` with `font-display: swap`: **JetBrains Mono**
-  for data and art, **Inter** for prose.
-- Modular scale 1.25: 12.8 / 16 / 20 / 25 / 31.25 px. H1 is `clamp(2rem, 5vw, 4rem)`. Body text is 17 px.
-  Prose is at most 68ch wide.
+- Display: **Instrument Serif**, for H1, H2, card titles and step numbers.
+- UI and body: **Manrope** (variable).
+- Data, art and code: **JetBrains Mono**.
+- All three are self-hosted through `@fontsource` with `font-display: swap`. The H1 is `clamp(2.6rem, 6.4vw, 5.6rem)`.
 
 ### Colour
-Tokens live on `:root`. There is a light theme and a dark theme: the system theme by default, plus a
-toggle stored in `localStorage`.
-
-| token | light | dark | use |
-|---|---|---|---|
-| `--bg` | #fbfbfa | #0f1112 | page |
-| `--surface` | #ffffff | #161a1c | panels |
-| `--border` | #d9dcdf | #2a3033 | panel borders |
-| `--text` | #16191b | #e6e8e9 | body (≥ 13:1) |
-| `--muted` | #545b61 | #a2a9ae | secondary text (≥ 6:1) |
-| `--faint` | #8a9196 | #6b7378 | ASCII noise only (decorative, aria-hidden) |
-| `--accent` | #1f5fbf | #7fb0ff | primary action, links, focus |
-| `--ok` | #1d6b3a | #5fd38d | OK verdict only |
-| `--caution` | #8a5a00 | #f2c14e | CAUTION verdict only |
-| `--stop` | #b42318 | #ff7a6e | STOP verdict only |
-
-Neutral greys carry the page. Green, amber and red are reserved for verdicts, and the accent for the
-primary action and links. There are no decorative gradients.
+Tokens live on `:root`. There are light and dark themes: the system theme by default, plus a toggle.
+- **Neutral and structural colours:** lavender neutrals (`--page #eceaf6`, `--surface #fff`, `--surface-2 #f0eefb`), deep indigo
+  `--ink #1c1935` and `--night #221e3d` for dark cards and buttons.
+- **Verdict colours:** `--ok`, `--caution` and `--stop` are reserved for verdicts and keep the same values (checked with
+  `scratch/contrast.py`: ≥ 5.7:1 on their badges).
+- **The hero card** stays light in both themes, like a picture on the page.
 
 ### Layout
-- A 12-column grid, max content width 1200 px, gutters 16 px on phones and 24 px from 768 px up.
-- Spacing scale (px): 4, 8, 12, 16, 24, 32, 48, 64, 96. Nothing else.
-- Panels use 1 px CSS borders in `--border` with a 6 px radius. Box-drawing characters (┌─┐) appear
-  only as small accents inside monospace text, never as layout.
+- A 12-column grid.
+- The spacing scale (px): 4, 8, 12, 16, 24, 32, 48, 64, 96.
+- Radii: 12 / 20 / 28 px.
+- Shadows are soft, lavender-tinted and single-layer.
 
 ### Hierarchy and disclosure
 - An inspection shows the **verdict first**, then the reasons, then the raw evidence (keys,
@@ -103,8 +91,9 @@ primary action and links. There are no decorative gradients.
 ### Performance
 - LCP < 2.5 s on a mid-range phone. The hero text and the static frame of the art are in the HTML. JS stays
   under 200 KB gzip, excluding the inspected wasm.
-- Fetching and compiling the inspected wasm happens after first paint.
-- Lighthouse accessibility ≥ 95.
+- Fetching and compiling the inspected wasm happens after first paint. The hero image is preloaded
+  (WebP, 84 KB at 1600 px). Other images are lazy-loaded.
+- Lighthouse accessibility ≥ 95. The redesign measured 100, with performance 95 on mobile.
 
 ## 3. Verification
 `npm run test:web` builds the site and runs Playwright at 360, 768 and 1366 px, in light and
