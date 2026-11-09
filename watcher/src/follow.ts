@@ -26,6 +26,7 @@ export interface FollowOptions {
   poster?: Poster;
   log?: (line: string) => void;
   signal?: AbortSignal;
+  heartbeatMs?: number;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -60,16 +61,27 @@ export async function follow(opts: FollowOptions): Promise<WatchEvent[]> {
   let h = opts.from ?? head;
   const started = Date.now();
   const recent: Map<string, TxSummary>[] = [];
+  const prefetch = new Map<number, Promise<any>>();
   const seen: WatchEvent[] = [];
   log(`[watch] ${opts.network} from block ${h.toLocaleString("en-US")}; watching ${[...opts.watch].join(", ") || "(none)"}${opts.all ? "; network-wide deploy feed on" : ""}`);
+  let scanned = 0;
+  let lastBeat = Date.now();
   while (!opts.signal?.aborted) {
     if (opts.durationMs && Date.now() - started > opts.durationMs) break;
+    if (opts.heartbeatMs && Date.now() - lastBeat > opts.heartbeatMs) {
+      lastBeat = Date.now();
+      log(`[watch] ${opts.network} at block ${h.toLocaleString("en-US")} (head ${head.toLocaleString("en-US")}, lag ${head - h}); scanned ${scanned} blocks, ${seen.length} event(s)`);
+    }
     if (h > head) {
       await sleep(500);
       head = await lastFinal(opts.network).catch(() => head);
       continue;
     }
-    const block = await getJson(`${base}/block/${h}`);
+    // Prefetch up to 6 blocks ahead when behind, so a mainnet follower keeps up (~1-2 blocks/s).
+    for (let k = 0; k < 6 && h + k <= head; k++) if (!prefetch.has(h + k)) prefetch.set(h + k, getJson(`${base}/block/${h + k}`));
+    const block = await (prefetch.get(h) ?? getJson(`${base}/block/${h}`));
+    prefetch.delete(h);
+    scanned++;
     if (!block) {
       h++; // no block at this height
       continue;

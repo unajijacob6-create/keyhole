@@ -1,0 +1,65 @@
+name: watcher
+
+# Always-on watcher without depending on cron: each run follows the block stream for ~5 h, then
+# re-dispatches itself (workflow_dispatch via GITHUB_TOKEN). Cron is only a backup.
+#  - mainnet: every code deploy network-wide → feed branch (feed-mainnet.jsonl), plus the watchlist;
+#  - testnet: the demo vault and registry.
+# Posting ChangeObserved / KeyAdded to the registry needs the KEYHOLE_ATTESTER_KEY secret (a
+# function-call key of watcher.keyhole.testnet limited to `attest`). Without it the watcher only
+# writes the public feed.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 */3 * * *"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: watcher
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    env:
+      KEY_WATCHER_KEYHOLE_TESTNET: ${{ secrets.KEYHOLE_ATTESTER_KEY }}
+      DURATION: "17400"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Prepare feed branch worktree
+        run: |
+          git config user.name "keyhole-watcher"; git config user.email "keyhole-watcher@users.noreply.github.com"
+          git fetch origin feed || true
+          git worktree add -B feed /tmp/feed origin/feed 2>/dev/null || git worktree add --orphan -b feed /tmp/feed
+      - name: Follow mainnet and testnet, publish the feed every 10 minutes
+        run: |
+          set -u
+          POST=""; [ -n "${KEY_WATCHER_KEYHOLE_TESTNET}" ] && POST="--post"
+          npx tsx watcher/src/index.ts --network mainnet --all --watchlist scripts/data/watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-mainnet.jsonl --heartbeat 600 &
+          M=$!
+          npx tsx watcher/src/index.ts --network testnet --watchlist scripts/data/testnet-watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-testnet.jsonl --heartbeat 600 &
+          T=$!
+          publish() {
+            for n in mainnet testnet; do
+              [ -f /tmp/run/feed-$n.jsonl ] || continue
+              cat /tmp/run/feed-$n.jsonl >> /tmp/feed/feed-$n.jsonl; : > /tmp/run/feed-$n.jsonl
+              tail -n 500 /tmp/feed/feed-$n.jsonl > /tmp/feed/.t && mv /tmp/feed/.t /tmp/feed/feed-$n.jsonl
+            done
+            date -u +%FT%TZ > /tmp/feed/last-run.txt
+            (cd /tmp/feed && git add -A && git commit -qm "feed $(date -u +%FT%TZ)" && git push -q origin feed) || true
+          }
+          while kill -0 $M 2>/dev/null || kill -0 $T 2>/dev/null; do sleep 600; publish; done
+          publish
+      - name: Re-dispatch the next run
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run watcher.yml --ref main

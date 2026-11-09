@@ -27,5 +27,6 @@ const events = await follow({
   feed,
   poster,
   signal: ctrl.signal,
+  heartbeatMs: arg("--heartbeat") ? Number(arg("--heartbeat")) * 1000 : 300_000,
 });
 console.log(`[watch] stopped; ${events.length} event(s) reported`);
