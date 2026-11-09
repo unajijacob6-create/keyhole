@@ -147,12 +147,15 @@ export function gradeUpgrade(i: UpgradeGradeInput): UpgradeGrade {
       reasons.push({ severity: verified ? "caution" : "stop", text: `New money path: ${parts} ${money.assumed ? "may reach" : "reach"} transfer through a specific call path${money.assumed ? " (call graph unavailable; assumed)" : ""}.` });
     }
 
-    // EXIT_METHOD_REMOVED: a method that could move funds out in the live code is gone.
+    // EXIT_METHOD_REMOVED: a method that could move funds out in the live code is gone. Without a
+    // live call graph, any removed export of code that imports transfer may have been one (assumed,
+    // as gained() assumes for the pending side).
     const lt = live.capabilities.transfer;
-    const exits = d.removedMethods.filter((m) => lt?.reachableFrom?.includes(m) || lt?.viaDispatcherOnly?.includes(m));
+    const liveUnknown = Boolean(lt) && lt!.reachableFrom === null;
+    const exits = d.removedMethods.filter((m) => liveUnknown || lt?.reachableFrom?.includes(m) || lt?.viaDispatcherOnly?.includes(m));
     if (exits.length) {
       flag("EXIT_METHOD_REMOVED");
-      reasons.push({ severity: verified ? "caution" : "stop", text: `Removes ${list(exits)}, which reached transfer in the live code: a way to get funds out disappears.` });
+      reasons.push({ severity: verified ? "caution" : "stop", text: liveUnknown ? `Removes ${list(exits)}, which may have reached transfer in the live code (live call graph unavailable; assumed): a way to get funds out may disappear.` : `Removes ${list(exits)}, which reached transfer in the live code: a way to get funds out disappears.` });
     }
     // Other differences are informational: they do not set a flag.
     const other = [
@@ -161,7 +164,7 @@ export function gradeUpgrade(i: UpgradeGradeInput): UpgradeGrade {
       d.addedHostImports.length && `+host imports ${d.addedHostImports.join(", ")}`,
     ].filter(Boolean);
     if (other.length && i.live) reasons.push({ severity: "info", text: `Export diff vs live: ${other.join("; ")}.` });
-    if (!DANGER.some((f) => flags.includes(f))) reasons.push({ severity: "info", text: "No new code-change, key or money path, and no exit method removed (wasm export and call-graph diff; logic inside existing methods is not compared)." });
+    if (!DANGER.some((f) => flags.includes(f))) reasons.push({ severity: "info", text: "No new code-change, key or NEAR transfer path, and no exit method removed (wasm export and call-graph diff). Not compared: logic inside existing methods, and token transfers, which are cross-contract calls (e.g. ft_transfer), not transfer actions." });
   }
 
   if (aiHigh) flag("AI_REVIEW_HIGH");
@@ -183,7 +186,7 @@ export function gradeUpgrade(i: UpgradeGradeInput): UpgradeGrade {
       : unverified
         ? `CAUTION: the pending code for ${i.target} is not verified; its export diff shows no new dangerous path.`
         : `CAUTION: verified code for ${i.target} ${describe(danger)}.`;
-  } else headline = `OK: the pending code for ${i.target} is verified and adds no new code-change, key or money path.`;
+  } else headline = `OK: the pending code for ${i.target} is verified and adds no new code-change, key or NEAR transfer path.`;
 
   return { verdict, flags, reasons, diff, fire: verdict === "STOP", headline };
 }

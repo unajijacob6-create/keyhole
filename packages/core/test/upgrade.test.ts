@@ -3,7 +3,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { gradeUpgrade, analyzeWasm, codeHash, type WasmAnalysis, type Capability, type UpgradeGradeInput } from "../src/index.ts";
+import { gradeUpgrade, analyzeWasm, codeHash, HOST_CAPABILITIES, type WasmAnalysis, type Capability, type UpgradeGradeInput } from "../src/index.ts";
 
 /** A WasmAnalysis with the given exports and, per capability, the methods with a specific path. */
 function mk(exports: string[], caps: Partial<Record<Capability, string[] | null>> = {}, via: Partial<Record<Capability, string[]>> = {}): WasmAnalysis {
@@ -131,6 +131,20 @@ describe("gradeUpgrade rules (synthetic analyses)", () => {
     expect(g.reasons.some((r) => r.text.includes("assumed"))).toBe(true);
   });
 
+  it("call graph unavailable in the live code: a removed export of code that imports transfer may have been an exit (assumed)", () => {
+    const liveUnknown = mk(["deposit", "withdraw", "get_balance"], { transfer: null });
+    const g = gradeUpgrade(base({ live: liveUnknown, pending: mk(["deposit", "get_balance"], { transfer: [] }) }));
+    expect(g.flags).toEqual(["UNVERIFIED_PENDING_CODE", "EXIT_METHOD_REMOVED"]);
+    expect(g.reasons.find((r) => r.text.includes("Removes"))?.text).toMatch(/may have reached transfer.*assumed/);
+    // Live code without transfer at all: nothing to lose.
+    expect(gradeUpgrade(base({ live: mk(["deposit", "withdraw"], {}), pending: mk(["deposit"], {}) })).flags).toEqual(["UNVERIFIED_PENDING_CODE"]);
+  });
+
+  it("the 'no new path' reason says what 'money' covers (native NEAR transfers, not token calls)", () => {
+    const g = gradeUpgrade(base({ verified: VERIFIED }));
+    expect(g.reasons.find((r) => r.text.startsWith("No new"))?.text).toMatch(/NEAR transfer.*token transfers/);
+  });
+
   it("no live analysis (e.g. first deploy): every capability of the pending code is new", () => {
     const g = gradeUpgrade(base({ live: null, live_hash: "11111111111111111111111111111111", pending: mk(["withdraw", "upgrade"], { transfer: ["withdraw"], deploy_contract: ["upgrade"] }) }));
     expect(g.flags).toEqual(["UNVERIFIED_PENDING_CODE", "NEW_CODE_CHANGE_PATH", "NEW_MONEY_PATH"]);
@@ -142,6 +156,13 @@ describe("gradeUpgrade rules (synthetic analyses)", () => {
     expect(g.fire).toBe(g.verdict === "STOP");
     for (const r of g.reasons) expect(r.text.length).toBeGreaterThan(15);
     expect(g.headline).toMatch(/^STOP: /);
+  });
+});
+
+describe("money host functions (nearcore runtime/near-vm-runner/src/imports.rs)", () => {
+  it("transfer_to_gas_key moves NEAR out (TransferToGasKeyAction carries a deposit), so it is a transfer", () => {
+    expect(HOST_CAPABILITIES.promise_batch_action_transfer_to_gas_key).toBe("transfer");
+    expect(HOST_CAPABILITIES.promise_batch_action_transfer).toBe("transfer");
   });
 });
 

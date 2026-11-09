@@ -6,7 +6,7 @@ import { recheckCommand } from "./evidence.ts";
 import { Rpc, ARCHIVAL_RPC, type Network } from "./rpc.ts";
 import { analyzeWasm, exportDiff } from "./wasm.ts";
 import { codeHash, EMPTY_CODE_HASH } from "./hash.ts";
-import { listUpgradeProposals, stagedUpgrade, stagedCode, fetchPendingCode, txApi, type UpgradeProposal, type StagedUpgrade, type TxApi } from "./pending.ts";
+import { listUpgradeProposals, isLive, stagedUpgrade, stagedCode, fetchPendingCode, txApi, type UpgradeProposal, type StagedUpgrade, type TxApi } from "./pending.ts";
 import { gradeUpgrade, type UpgradeGrade } from "./upgrade.ts";
 import { discoverOwners, analyzeSputnikPolicy } from "./controller.ts";
 import { sourcescan } from "./sources.ts";
@@ -100,7 +100,14 @@ export function formatProposals(ps: UpgradeProposal[], nowMs: number): string[] 
   const cols: [string, number][] = [["id", 6], ["state", 9], ["kind", 14], ["target", 30], ["method", 17], ["hash", 10], ["votes", 6], ["age", 5], ["expires", 0]];
   L.push("  " + cols.map(([c, n]) => pad(c, n)).join("").trimEnd());
   for (const p of ps) {
-    const exp = p.state === "pending" ? `in ${age(p.expires_at_ms - nowMs)}` : p.state === "expired" && p.status === "InProgress" ? `${age(nowMs - p.expires_at_ms)} ago` : "-";
+    const exp =
+      p.state === "pending"
+        ? `in ${age(p.expires_at_ms - nowMs)}`
+        : isLive(p, nowMs)
+          ? `in ${age(p.expires_at_ms - nowMs)} (Finalize can re-run it)`
+          : p.state === "expired" && p.status === "InProgress"
+            ? `${age(nowMs - p.expires_at_ms)} ago`
+            : "-";
     const row = [String(p.id), p.state, p.kind, p.target, p.method ?? "-", shortHash(p.code_hash), `${p.votes.approve}/${p.required ?? "?"}`, age(nowMs - p.submitted_at_ms), exp];
     L.push("  " + row.map((v, k) => pad(v, cols[k][1])).join("").trimEnd());
   }
@@ -114,12 +121,26 @@ interface FetchResult {
   subject: string;
   bytes: null | { size: number; source: string; tx?: string; signer?: string; height?: number };
   retrospective: null | { previous_hash: string; since_height: number };
+  /** An executed proposal whose code is not the live code now (superseded, or the call staged
+   *  rather than deployed): the grade then says what redeploying it would change. */
+  superseded: boolean;
   verified: { reproducible: boolean | null; sourcescan: boolean | null; registry_review: string | null };
   grade: UpgradeGrade;
 }
 
+interface Candidate {
+  target: string;
+  hash: string;
+  dao: string | null;
+  subject: string;
+  staged: StagedUpgrade | null;
+  /** Proposal state, or "pending" for staged code. Only an executed proposal is graded
+   *  retrospectively: a pending proposal for the code already live changes nothing (NO_CHANGE). */
+  state: UpgradeProposal["state"];
+}
+
 /** Fetch the code a proposal or a staged upgrade would deploy, diff it against the live code, grade it. */
-async function fetchAndGrade(rpc: Rpc, api: TxApi, c: { target: string; hash: string; dao: string | null; subject: string; staged: StagedUpgrade | null }): Promise<FetchResult> {
+async function fetchAndGrade(rpc: Rpc, api: TxApi, c: Candidate, registry: Rpc = registryRpc()): Promise<FetchResult> {
   const acct = await rpc.viewAccount(c.target);
   let liveHash = effectiveHash(acct);
   const liveCode = liveHash !== EMPTY_CODE_HASH ? (await rpc.viewCode(c.target)).code : null;
@@ -127,7 +148,12 @@ async function fetchAndGrade(rpc: Rpc, api: TxApi, c: { target: string; hash: st
   let pendingCode: Uint8Array | null = null;
   let bytes: FetchResult["bytes"] = null;
   let retrospective: FetchResult["retrospective"] = null;
-  if (c.hash === liveHash && liveCode) {
+  const superseded = c.state === "executed" && c.hash !== liveHash;
+  if (c.hash === liveHash && liveCode && c.state !== "executed") {
+    // The proposed code is the live code: the bytes are known and the grade is NO_CHANGE.
+    pendingCode = liveCode;
+    bytes = { size: liveCode.length, source: "live code (identical to the proposed hash)" };
+  } else if (c.hash === liveHash && liveCode) {
     // Already deployed: grade the upgrade as it landed, against the code it replaced (archival).
     pendingCode = liveCode;
     bytes = { size: liveCode.length, source: "live code (already deployed)" };
@@ -161,7 +187,7 @@ async function fetchAndGrade(rpc: Rpc, api: TxApi, c: { target: string; hash: st
   }
   if (pendingCode && (await codeHash(pendingCode)) !== c.hash) throw new Error("internal: fetched code does not hash to the proposed hash");
   const ss = await sourcescan(rpc, c.target, c.hash);
-  const reg = await registryLookup(registryRpc(), c.target, c.hash);
+  const reg = await registryLookup(registry, c.target, c.hash);
   const builds = reg.forHash.filter((r) => r.attestation.kind === "ReproducibleBuild");
   const reviews = reg.forHash.filter((r) => r.attestation.kind === "AiReview").map((r) => String((r.attestation as any).verdict_summary ?? ""));
   const order = ["high", "medium", "low", "none"];
@@ -172,7 +198,7 @@ async function fetchAndGrade(rpc: Rpc, api: TxApi, c: { target: string; hash: st
     registry_review: reviews[0] ?? null,
   };
   const grade = gradeUpgrade({ target: c.target, live_hash: liveHash, pending_hash: c.hash, live, pending: pendingCode ? analyzeWasm(pendingCode) : null, verified });
-  return { target: c.target, hash: c.hash, subject: c.subject, bytes, retrospective, verified, grade };
+  return { target: c.target, hash: c.hash, subject: c.subject, bytes, retrospective, superseded, verified, grade };
 }
 
 function formatFetch(f: FetchResult): string[] {
@@ -181,6 +207,7 @@ function formatFetch(f: FetchResult): string[] {
   L.push(`  hash ${f.hash}`);
   if (!f.bytes) L.push("  bytes: not found (no store_blob / stage call with matching sha256 in the pages scanned, and not staged)");
   else L.push(`  bytes: ${f.bytes.source}${f.bytes.tx ? `, tx ${f.bytes.tx} by ${f.bytes.signer} at block ${f.bytes.height?.toLocaleString("en-US")}` : ""}, ${f.bytes.size.toLocaleString("en-US")} bytes, sha256 matches the hash`);
+  if (f.superseded) L.push(`  note: this proposal was executed, but its code is not the live code of ${f.target} now; graded against the current live code (what deploying it again would change)`);
   if (f.retrospective) L.push(`  already live since block ${f.retrospective.since_height.toLocaleString("en-US")}: graded against the code it replaced (${f.retrospective.previous_hash})`);
   L.push(`  verified: SourceScan ${f.verified.sourcescan === null ? "unknown" : f.verified.sourcescan ? "yes" : "no"}, reproducible build ${f.verified.reproducible === null ? "no attestation" : f.verified.reproducible ? "matches" : "does not match"}${f.verified.registry_review ? `, AI review "${f.verified.registry_review.slice(0, 80)}"` : ""}`);
   const g = f.grade;
@@ -197,15 +224,38 @@ function formatFetch(f: FetchResult): string[] {
   return L;
 }
 
-/** Pick what --fetch-code grades: newest pending proposal with a hash, else the newest with a hash. */
-function pick(ps: UpgradeProposal[]): UpgradeProposal | undefined {
-  return ps.find((p) => p.state === "pending" && p.code_hash) ?? ps.find((p) => p.code_hash);
+/** near-plugins staging state. `staging_timestamp` is when `up_deploy_code` starts accepting the
+ *  staged code (stage time + staging_duration, near-plugins `up_stage_code`), so it is shown as
+ *  "deployable from/since", not as the time the code was staged. */
+export function formatStaged(staged: StagedUpgrade, nowMs: number): string[] {
+  const L = [`near-plugins staging: ${staged.pending ? "PENDING" : "nothing pending"}; staged ${staged.staged_hash ?? "none"}, live ${staged.live_hash}${staged.staged_hash && !staged.pending ? " (staged == live)" : ""}`];
+  const t = staged.staging_timestamp_ms;
+  if (t) {
+    const when = `${new Date(t).toISOString().slice(0, 16).replace("T", " ")} UTC`;
+    const rel = t > nowMs ? `deployable from ${when} (in ${age(t - nowMs)})` : `deployable since ${when} (${age(nowMs - t)} ago)`;
+    L.push(`  ${rel}; ${staged.staging_duration_ms ? `staging delay ${age(staged.staging_duration_ms)}` : "no staging delay: the deployer role can deploy staged code at once"}`);
+  }
+  return L;
 }
 
-export async function pendingCommand(account: string, o: { network?: Network; json?: boolean; last?: number; fetchCode?: boolean; dao?: string; api?: TxApi; rpc?: Rpc; nowMs?: number }): Promise<{ text: string; json: unknown; verdict: UpgradeGrade["verdict"] | null }> {
+/** `--last N`: a positive integer, or absent. A typo must not silently list nothing. */
+export function parseLast(v: string | undefined): number | undefined {
+  if (v === undefined) return undefined;
+  if (!/^[1-9]\d*$/.test(v)) throw new Error(`--last needs a positive integer, got "${v}"`);
+  return Number(v);
+}
+
+/** Pick what --fetch-code grades: newest proposal that can still execute (isLive) with a hash,
+ *  else the newest with a hash. */
+function pick(ps: UpgradeProposal[], nowMs: number): UpgradeProposal | undefined {
+  return ps.find((p) => isLive(p, nowMs) && p.code_hash) ?? ps.find((p) => p.code_hash);
+}
+
+export async function pendingCommand(account: string, o: { network?: Network; json?: boolean; last?: number; fetchCode?: boolean; dao?: string; api?: TxApi; rpc?: Rpc; registry?: Rpc; nowMs?: number }): Promise<{ text: string; json: unknown; verdict: UpgradeGrade["verdict"] | null }> {
   const network = o.network ?? (account.endsWith(".testnet") ? "testnet" : "mainnet");
   const rpc = o.rpc ?? new Rpc({ network });
   const api = o.api ?? txApi(network);
+  const registry = o.registry ?? registryRpc();
   const nowMs = o.nowMs ?? Date.now();
   const last = o.last;
   const L: string[] = [];
@@ -218,11 +268,11 @@ export async function pendingCommand(account: string, o: { network?: Network; js
     L.push(`${account}  (${network}, Sputnik DAO; proposals expire after ${age(Number(BigInt(policy.proposal_period ?? 0) / 1_000_000n))}; approvals needed: upgrade_remote ${req("upgrade_remote")}, upgrade_self ${req("upgrade_self")}, call ${req("call")})`);
     L.push(`Upgrade proposals, newest first${last ? ` (last ${last})` : ""}:`);
     L.push(...formatProposals(ps, nowMs));
-    const p = o.fetchCode ? pick(ps) : undefined;
+    const p = o.fetchCode ? pick(ps, nowMs) : undefined;
     if (o.fetchCode && !p) L.push("", "--fetch-code: no upgrade proposal with a determinable code hash.");
     if (p) {
       const staged = p.kind === "FunctionCall" && p.target !== account ? await stagedUpgrade(rpc, p.target) : null;
-      fetch = await fetchAndGrade(rpc, api, { target: p.target, hash: p.code_hash!, dao: account, subject: `#${p.id} (${p.state}, ${p.kind} ${p.target}${p.method ? " " + p.method : ""})`, staged });
+      fetch = await fetchAndGrade(rpc, api, { target: p.target, hash: p.code_hash!, dao: account, subject: `#${p.id} (${p.state}, ${p.kind} ${p.target}${p.method ? " " + p.method : ""})`, staged, state: p.state }, registry);
       L.push("", ...formatFetch(fetch));
     }
     return { text: L.join("\n"), json: { schema: "keyhole.pending/1", network, account, kind: "dao", proposals: ps, fetch }, verdict: fetch?.grade.verdict ?? null };
@@ -233,8 +283,7 @@ export async function pendingCommand(account: string, o: { network?: Network; js
   L.push(`${account}  (${network}, contract)`);
   if (!staged) L.push("near-plugins staging: not an Upgradable contract (no up_staged_code_hash)");
   else {
-    L.push(`near-plugins staging: ${staged.pending ? "PENDING" : "nothing pending"}; staged ${staged.staged_hash ?? "none"}, live ${staged.live_hash}${staged.staged_hash && !staged.pending ? " (staged == live)" : ""}`);
-    if (staged.staging_timestamp_ms) L.push(`  staged at ${new Date(staged.staging_timestamp_ms).toISOString().slice(0, 16).replace("T", " ")} UTC (${age(nowMs - staged.staging_timestamp_ms)} ago); staging delay ${staged.staging_duration_ms ? age(staged.staging_duration_ms) : "none: the deployer role can deploy it at once"}`);
+    L.push(...formatStaged(staged, nowMs));
   }
   const daos: { account: string; source: string }[] = [];
   if (o.dao) daos.push({ account: o.dao, source: "--dao" });
@@ -259,14 +308,14 @@ export async function pendingCommand(account: string, o: { network?: Network; js
   if (!daos.length) L.push("", "No Sputnik DAO owner found (use --dao <account> to name one).");
   if (o.fetchCode) {
     const all = Object.values(byDao).flat().sort((x, y) => y.submitted_at_ms - x.submitted_at_ms);
-    const p = pick(all);
+    const p = pick(all, nowMs);
     const c = staged?.pending
-      ? { target: account, hash: staged.staged_hash!, dao: daos[0]?.account ?? null, subject: `staged code on ${account}`, staged }
+      ? { target: account, hash: staged.staged_hash!, dao: daos[0]?.account ?? null, subject: `staged code on ${account}`, staged, state: "pending" as const }
       : p
-        ? { target: account, hash: p.code_hash!, dao: p.dao, subject: `#${p.id} of ${p.dao} (${p.state}, ${p.kind}${p.method ? " " + p.method : ""})`, staged }
+        ? { target: account, hash: p.code_hash!, dao: p.dao, subject: `#${p.id} of ${p.dao} (${p.state}, ${p.kind}${p.method ? " " + p.method : ""})`, staged, state: p.state }
         : null;
     if (c) {
-      fetch = await fetchAndGrade(rpc, api, c);
+      fetch = await fetchAndGrade(rpc, api, c, registry);
       L.push("", ...formatFetch(fetch));
     } else L.push("", "--fetch-code: nothing staged and no upgrade proposal with a determinable code hash.");
   }
@@ -276,8 +325,7 @@ export async function pendingCommand(account: string, o: { network?: Network; js
 export async function main(argv = process.argv.slice(2)) {
   const [cmd, a, b] = argv.filter((x, i, arr) => !x.startsWith("--") && !(i > 0 && ["--network", "--registry", "--last", "--dao"].includes(arr[i - 1])));
   if (cmd === "pending" && a) {
-    const lastArg = arg("--last");
-    const r = await pendingCommand(a, { network: arg("--network") as Network | undefined, last: lastArg ? Number(lastArg) : undefined, fetchCode: has("--fetch-code"), dao: arg("--dao") });
+    const r = await pendingCommand(a, { network: arg("--network") as Network | undefined, last: parseLast(arg("--last")), fetchCode: has("--fetch-code"), dao: arg("--dao") });
     console.log(has("--json") ? JSON.stringify(r.json, null, 2) : r.text);
     return r.verdict === "STOP" ? 2 : 0;
   }

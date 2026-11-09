@@ -11,7 +11,7 @@
 //
 // Browser-safe: WebCrypto, fetch and the shared Rpc client only. Rules: docs/GUARDIAN_DESIGN.md.
 import { Rpc, RpcAnswerError, type Network } from "./rpc.ts";
-import { base58, base64ToBytes, codeHash, sha256 } from "./hash.ts";
+import { base58, base64ToBytes, bytesToBase64, codeHash, sha256 } from "./hash.ts";
 import { analyzeSputnikPolicy } from "./controller.ts";
 import { effectiveHash } from "./history.ts";
 
@@ -106,7 +106,8 @@ function hashFromJsonArgs(bytes: Uint8Array): string | null {
 }
 
 /** Code hash carried by FunctionCall args: a JSON hash field (base58, hex or 32-byte array), or the
- *  args are the wasm itself (`\0asm`), in which case the hash is sha256 of the args. */
+ *  args are the wasm itself (`\0asm`, or a borsh Vec<u8> of it), in which case the hash is sha256 of
+ *  that wasm. */
 export async function hashFromArgs(argsBase64: string): Promise<{ hash: string; from: "args-hash" | "args-code" } | null> {
   let bytes: Uint8Array;
   try {
@@ -114,7 +115,8 @@ export async function hashFromArgs(argsBase64: string): Promise<{ hash: string; 
   } catch {
     return null;
   }
-  if (hasWasmMagic(bytes)) return { hash: await codeHash(bytes), from: "args-code" };
+  const code = codeInArgs(bytes);
+  if (code) return { hash: await codeHash(code), from: "args-code" };
   const h = hashFromJsonArgs(bytes);
   return h ? { hash: h, from: "args-hash" } : null;
 }
@@ -207,6 +209,14 @@ export function decodeUpgradeProposal(dao: string, raw: any, policy: any, nowMs:
   };
 }
 
+/** Can this proposal still execute? `pending`, or `failed` inside its period: sputnikdao2 v3
+ *  (`Action::Finalize`, commit 3d568f9) recomputes a Failed proposal's status and re-executes it if
+ *  the approvals still stand, in one call by any role with Finalize permission. v2.0 (c2cf155) only
+ *  lets Finalize expire it; the DAO's version is not checked here, so this errs towards "live". */
+export function isLive(p: UpgradeProposal, nowMs: number): boolean {
+  return p.state === "pending" || (p.state === "failed" && nowMs <= p.expires_at_ms);
+}
+
 function safeB64(s: string): Uint8Array {
   try {
     return base64ToBytes(s);
@@ -256,6 +266,8 @@ export interface StagedUpgrade {
   contract: string;
   staged_hash: string | null;
   live_hash: string;
+  /** near-plugins `staging_timestamp`: the earliest time `up_deploy_code` accepts the staged code,
+   *  i.e. stage time + staging_duration (near-plugins `up_stage_code`), not the stage time itself. */
   staging_timestamp_ms: number | null;
   staging_duration_ms: number | null;
   pending: boolean;
@@ -287,14 +299,44 @@ export async function stagedUpgrade(rpc: Rpc, contract: string): Promise<StagedU
   };
 }
 
-/** The staged bytes themselves (near-plugins `up_staged_code`), checked against `hash`. */
+/** The staged bytes themselves (near-plugins `up_staged_code`), checked against `hash`.
+ *  near-plugins declares it `#[result_serializer(borsh)]`, so the view returns borsh
+ *  `Option<Vec<u8>>` (tag byte, u32 LE length, bytes), not JSON; a JSON view cannot read it.
+ *  A JSON answer (base64 string or byte array) is still accepted for other implementations. */
 export async function stagedCode(rpc: Rpc, contract: string, hash: string): Promise<Uint8Array | null> {
-  const raw = await rpc.tryView<unknown>(contract, "up_staged_code");
-  let code: Uint8Array | null = null;
-  if (typeof raw === "string") code = safeB64(raw);
-  else if (Array.isArray(raw)) code = Uint8Array.from(raw as number[]);
+  let raw: Uint8Array;
+  try {
+    // Same request shape as Rpc.view, so recorded fixtures and the per-instance cache are shared.
+    const r = await rpc.call<{ result: number[] }>("query", { request_type: "call_function", account_id: contract, method_name: "up_staged_code", args_base64: bytesToBase64(new TextEncoder().encode("{}")), finality: "final" });
+    raw = new Uint8Array(r.result);
+  } catch (e) {
+    if (e instanceof RpcAnswerError) return null; // no such method / account: nothing staged we can read
+    throw e;
+  }
+  const code = borshOptionBytes(raw) ?? jsonBytes(raw);
   if (!code || !code.length) return null;
   return (await codeHash(code)) === hash ? code : null;
+}
+
+const u32le = (b: Uint8Array, at: number) => (b[at] | (b[at + 1] << 8) | (b[at + 2] << 16) | (b[at + 3] << 24)) >>> 0;
+
+/** borsh Option<Vec<u8>>: [0] = None; [1, len u32 LE, ...len bytes] = Some. Anything else: null. */
+function borshOptionBytes(b: Uint8Array): Uint8Array | null {
+  if (b.length === 1 && b[0] === 0) return new Uint8Array();
+  if (b.length >= 5 && b[0] === 1 && u32le(b, 1) === b.length - 5) return b.subarray(5);
+  return null;
+}
+
+function jsonBytes(b: Uint8Array): Uint8Array | null {
+  let v: unknown;
+  try {
+    v = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(b));
+  } catch {
+    return null;
+  }
+  if (typeof v === "string") return safeB64(v);
+  if (Array.isArray(v) && v.every((x) => Number.isInteger(x) && x >= 0 && x <= 255)) return Uint8Array.from(v as number[]);
+  return null;
 }
 
 // ── The bytes: FastNEAR transactions API ────────────────────────────────────────────────────────
@@ -330,7 +372,9 @@ export function txApi(network: Network, fetchImpl: typeof fetch = (...a) => fetc
 /** /v0/transactions accepts at most 20 hashes per request (its 400 answer says "Limit is 20"). */
 const TX_BATCH = 20;
 
-/** FunctionCall actions in a transaction, including those inside a NEP-366 delegate action. */
+/** FunctionCall actions in a transaction, including those inside a NEP-366 delegate action and a
+ *  `DelegateV2` (nearcore ActionView::DelegateV2, whose payload is the versioned enum
+ *  `{"V2": DelegateActionV2}` in JSON; same receiver_id/actions fields). */
 function functionCalls(tx: any): { receiver: string; method: string; args: string }[] {
   const out: { receiver: string; method: string; args: string }[] = [];
   const walk = (receiver: string, actions: any[]) => {
@@ -338,6 +382,8 @@ function functionCalls(tx: any): { receiver: string; method: string; args: strin
       if (a?.FunctionCall) out.push({ receiver, method: a.FunctionCall.method_name, args: a.FunctionCall.args ?? "" });
       const d = a?.Delegate?.delegate_action;
       if (d) walk(d.receiver_id, d.actions);
+      const v = a?.DelegateV2?.delegate_action;
+      for (const inner of v && typeof v === "object" ? Object.values(v) : []) if ((inner as any)?.receiver_id) walk((inner as any).receiver_id, (inner as any).actions);
     }
   };
   walk(tx?.receiver_id, tx?.actions);
@@ -348,10 +394,7 @@ function functionCalls(tx: any): { receiver: string; method: string; args: strin
  *  Vec<u8> (u32 little-endian length, then the bytes) as some older stage methods take it. */
 function codeInArgs(args: Uint8Array): Uint8Array | null {
   if (hasWasmMagic(args)) return args;
-  if (hasWasmMagic(args, 4)) {
-    const len = args[0] | (args[1] << 8) | (args[2] << 16) | (args[3] << 24);
-    if (len === args.length - 4) return args.subarray(4);
-  }
+  if (hasWasmMagic(args, 4) && u32le(args, 0) === args.length - 4) return args.subarray(4);
   return null;
 }
 

@@ -138,19 +138,30 @@ trigger does: `fire` is true exactly when the verdict is STOP.
 | source | how Keyhole reads the hash | how it gets the bytes |
 |---|---|---|
 | Sputnik `UpgradeRemote` / `UpgradeSelf` | the proposal's `hash` field | the DAO's `store_blob` transaction: its args are the wasm |
-| Sputnik `FunctionCall` to an upgrade method (`upgrade`, `up_deploy_code`, `up_stage_code`, `deploy`, `deploy_code`, `update_contract`, `unrestricted_upgrade`, `add_release_info`, `stage_code`, `set_code`, `upgrade_contract`; whole-name match, so `deploy_token` does not count) | a top-level `hash` / `code_hash` / `codeHash` / `new_code_hash` arg in base58, hex, a 32-byte array or padded base64; or, if the args are wasm (`\0asm`), sha256 of the args | the target's staged code (`up_staged_code`), or a stage call / `store_blob` on the DAO or the target |
-| near-plugins `up_staged_code_hash` (base58 string, or a raw 32-byte array from older plugin versions) | that view | `up_staged_code` |
+| Sputnik `FunctionCall` to an upgrade method (`upgrade`, `up_deploy_code`, `up_stage_code`, `deploy`, `deploy_code`, `update_contract`, `unrestricted_upgrade`, `add_release_info`, `stage_code`, `set_code`, `upgrade_contract`; whole-name match, so `deploy_token` does not count) | a top-level `hash` / `code_hash` / `codeHash` / `new_code_hash` arg in base58, hex, a 32-byte array or padded base64; or, if the args are wasm (`\0asm`, raw or as a borsh `Vec<u8>`), sha256 of that wasm | the target's staged code (`up_staged_code`), or a stage call / `store_blob` on the DAO or the target |
+| near-plugins `up_staged_code_hash` (base58 string, or a raw 32-byte array from older plugin versions) | that view | `up_staged_code` (a borsh `Option<Vec<u8>>`, not JSON: near-plugins declares it `#[result_serializer(borsh)]`) |
 
 Bytes are found through the FastNEAR transactions API (`/v0/account`, newest first, at most 20
 pages; `/v0/transactions`, at most 20 hashes per request). Keyhole accepts them **only if
 sha256(bytes) equals the proposed hash**, so the API is not trusted for content. Staged code equal
 to the live code means nothing is pending (near-plugins keeps the staged code after deploying).
+near-plugins `staging_timestamp` is the earliest time `up_deploy_code` accepts the staged code
+(`up_stage_code` sets it to the block time plus `staging_duration`), so `keyhole pending` shows it
+as "deployable from / since", not as the time the code was staged.
 
 A proposal's state is `pending` while Sputnik status is `InProgress` and `submission_time +
 proposal_period` has not passed; after that it is `expired` (Sputnik's own rule; it uses the current
 policy's period). `Approved` → `executed`; `Rejected`, `Removed`, `Expired`, `Moved`, `Failed` map
 to their lower-case names. `required` is the number of approvals the DAO's policy needs for the
 proposal kind's label (`upgrade_remote`, `upgrade_self`, `call`), computed as in section 1.
+
+`failed` is not necessarily over. In sputnikdao2 v3 (commit `3d568f9`, which `sputnik-dao.near`
+`get_contracts_metadata` lists as version 3.1, the code of `ref-finance.sputnik-dao.near`),
+`Action::Finalize` recomputes the status of a `Failed` proposal and re-executes it if its approvals
+still stand and its period has not passed; one call by any role with Finalize permission does it.
+v2.0 (commit `c2cf155`, the code of `rainbowbridge.sputnik-dao.near`) only lets Finalize expire a
+proposal. `isLive(p, now)` (pending, or failed inside the period) is what `--fetch-code` picks
+first and what a watcher should treat as an open upgrade; it does not check the DAO's version.
 
 ### Flags
 
@@ -164,8 +175,8 @@ The diff is `exportDiff(live, pending)` plus the call graph of each side (sectio
 | `PENDING_CODE_UNAVAILABLE` | the pending bytes could not be fetched and checked |
 | `NEW_CODE_CHANGE_PATH` | the pending code adds the `deploy_contract`, `use_global_contract`, `add_full_access_key` or `delete_account` capability (import level), or an exported method gains a specific path to one of them |
 | `NEW_KEY_PATH` | the same for `add_function_call_key` / `delete_key` |
-| `NEW_MONEY_PATH` | an added method, or an existing method that had none, has a specific path to `transfer` |
-| `EXIT_METHOD_REMOVED` | a removed export reached `transfer` in the live code (specific path or via the dispatcher) |
+| `NEW_MONEY_PATH` | an added method, or an existing method that had none, has a specific path to `transfer` (the `Transfer` or `TransferToGasKey` action: native NEAR leaving the account) |
+| `EXIT_METHOD_REMOVED` | a removed export reached `transfer` in the live code (specific path or via the dispatcher; if the live call graph is unavailable, any removed export of code that imports `transfer`, marked "assumed") |
 | `AI_REVIEW_HIGH` | an AI review of the pending code reports high risk (passed in, or a registry `AiReview` whose summary starts with `high:`) |
 
 If the call graph of the pending code is unavailable, added methods are assumed to reach every
@@ -181,14 +192,27 @@ code, the pending code is compared with an empty contract, so every capability c
 | **OK** `[OK]` | otherwise: verified code with no new path and no removed exit, or `NO_CHANGE` |
 
 Notes:
-- Unverified code is never OK. The diff only sees exports and host-call reachability; a change inside
+- "Money" here means native NEAR. Fungible-token balances (for example Ref and Burrow deposits) move
+  with cross-contract calls such as `ft_transfer`, i.e. the `function_call` capability, which no flag
+  covers: a new method that calls `ft_transfer` to an attacker is not `NEW_MONEY_PATH`, and removing
+  an FT `withdraw` is not `EXIT_METHOD_REMOVED`. For such venues the verdict rests on verification
+  (unverified code is at least CAUTION) and the AI review.
+- Unverified code is never OK (except `NO_CHANGE`: the proposed code is the code already running).
+  The diff only sees exports and host-call reachability; a change inside
   an existing method (for example a `withdraw` that sends half) is invisible to it.
 - Verified code that adds a money or code-change path is CAUTION, not OK: a reviewed source can
   still add a power the depositor did not sign up for.
 - A medium-risk AI review is shown as a caution reason but sets no flag and does not change the
   verdict. AI never lowers a verdict.
-- For a proposal whose code is already live, `keyhole pending --fetch-code` grades it
-  retrospectively against the code it replaced (found by the archival search of section 3).
+- For an *executed* proposal whose code is already live, `keyhole pending --fetch-code` grades it
+  retrospectively against the code it replaced (found by the archival search of section 3). A
+  *pending* proposal for the code already live is `NO_CHANGE`. An executed proposal whose code is no
+  longer live is graded against the current code (what deploying it again would change), and the
+  output says so.
+- Not graded: what an upgrade call does besides deploying. near-plugins `up_deploy_code(hash,
+  function_call_args)` deploys and then calls any method of the contract in the same batch, as the
+  contract itself; Sputnik `UpgradeRemote` passes the blob to whatever `method_name` names. Only the
+  code hash and the code are compared.
 
 Worked examples (from the unit tests, on wasm committed in this repo):
 

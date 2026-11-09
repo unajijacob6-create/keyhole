@@ -14,7 +14,9 @@ import {
   listUpgradeProposals,
   hashFromArgs,
   normaliseHash,
+  isLive,
   stagedUpgrade,
+  stagedCode,
   fetchPendingCode,
   txApi,
   UPGRADE_METHODS,
@@ -254,6 +256,10 @@ describe("fetchPendingCode", () => {
     expect(await run({ [b]: { body: fc("store_blob", blob, "other.near") } })).toBeNull(); // not sent to the DAO
     expect((await run({ [c]: { body: fc("up_stage_code", borsh) } }))?.code).toEqual(blob);
     expect((await run({ [d]: { body: delegate } }))?.tx).toBe(d);
+    // DelegateV2 (nearcore ActionView::DelegateV2 { delegate_action: VersionedDelegateActionPayload::V2(..) },
+    // externally tagged in JSON). Shape taken from nearcore source, not observed on mainnet.
+    const v2 = { receiver_id: "relayed.near", actions: [{ DelegateV2: { delegate_action: { V2: delegate.actions[0].Delegate.delegate_action }, signature: "ed25519:x" } }] };
+    expect((await run({ [d]: { body: v2 } }))?.tx).toBe(d);
   });
 
   it("rejects a hash that is not 32 bytes of base58", async () => {
@@ -294,5 +300,110 @@ describe("keyhole pending (CLI, recorded)", () => {
     expect(lines.find((l) => /^\s+326\s/.test(l))).toMatch(/executed\s+FunctionCall\s+omni\.bridge\.near\s+up_deploy_code\s+F2no3vqr…\s+3\/3/);
     expect((r.json as any).proposals).toHaveLength(6);
     expect(r.verdict).toBeNull();
+  });
+});
+
+// ── Review fixes: protocol details checked against near-plugins / nearcore sources and live RPC ──
+
+const u32le = (n: number) => [n & 0xff, (n >>> 8) & 0xff, (n >>> 16) & 0xff, (n >>> 24) & 0xff];
+
+describe("stagedCode (near-plugins up_staged_code is #[result_serializer(borsh)])", () => {
+  // Live shape (btc-client.bridge.near, 2026-11-09): 456,865 result bytes = tag 0x01, u32 LE length
+  // 456,860, then the wasm, whose sha256 is up_staged_code_hash. Not JSON, so a JSON view cannot read it.
+  const H = manifest.wasm["demo_vault_v1.wasm"].code_hash as string;
+  const borshSome = (b: Uint8Array) => new Uint8Array([1, ...u32le(b.length), ...b]);
+  const raw = (bytes: Uint8Array) => ({ [viewKey("s.near", "up_staged_code")]: { result: { result: [...bytes], logs: [], block_height: 1, block_hash: "x" } } });
+  it("decodes borsh Some(code) and checks the hash", async () => {
+    expect(await stagedCode(rpc(raw(borshSome(v1))), "s.near", H)).toEqual(v1);
+    expect(await stagedCode(rpc(raw(borshSome(v1))), "s.near", "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi")).toBeNull();
+  });
+  it("borsh None, a truncated answer and a missing account give null", async () => {
+    expect(await stagedCode(rpc(raw(new Uint8Array([0]))), "s.near", H)).toBeNull();
+    expect(await stagedCode(rpc(raw(borshSome(v1).subarray(0, 100))), "s.near", H)).toBeNull();
+    expect(await stagedCode(rpc({ [viewKey("s.near", "up_staged_code")]: { error: { name: "HANDLER_ERROR", cause: { name: "UNKNOWN_ACCOUNT" } } } }), "s.near", H)).toBeNull();
+  });
+  it("still accepts a JSON base64 string answer (non-borsh implementations)", async () => {
+    expect(await stagedCode(rpc({ [viewKey("s.near", "up_staged_code")]: viewResult(bytesToBase64(v1)) }), "s.near", H)).toEqual(v1);
+  });
+});
+
+describe("isLive: a Failed proposal inside its period can still execute (sputnikdao2 v3 Action::Finalize)", () => {
+  // sputnikdao2 at 3d568f9 (v3.1, the version ref-finance.sputnik-dao.near runs per sputnik-dao.near
+  // get_contracts_metadata): proposal_status accepts InProgress | Failed, and Finalize re-executes a
+  // Failed proposal that still has its approvals. v2.0 (c2cf155) only lets Finalize expire it.
+  const policy = { roles: [{ name: "c", kind: { Group: ["a", "b"] }, permissions: ["*:*"], vote_policy: {} }], default_vote_policy: { weight_kind: "RoleWeight", quorum: "0", threshold: [1, 2] }, proposal_period: String(7n * 86400n * 1_000_000_000n) };
+  const raw = (status: string, ageMs: number) => ({ id: 5, proposer: "a", description: "", kind: { UpgradeSelf: { hash: "F2no3vqrFxm2c34mZqoMNawhRYYHbp22WuRqN6vEd3KP" } }, status, vote_counts: { c: [2, 0, 0] }, votes: {}, submission_time: String(BigInt(NOW - ageMs) * 1_000_000n) });
+  const live = (status: string, ageMs: number) => isLive(decodeUpgradeProposal("d", raw(status, ageMs), policy, NOW)!, NOW);
+  it("pending → live; Failed within the period → live; Failed after it, executed, expired → not", () => {
+    expect(live("InProgress", 86400_000)).toBe(true);
+    expect(live("Failed", 86400_000)).toBe(true);
+    expect(live("Failed", 8 * 86400_000)).toBe(false);
+    expect(live("Approved", 86400_000)).toBe(false);
+    expect(live("InProgress", 8 * 86400_000)).toBe(false);
+  });
+  it("the CLI table shows when a Failed proposal stops being re-executable", async () => {
+    const { formatProposals } = await import("../src/cli.ts");
+    const row = formatProposals([decodeUpgradeProposal("d", raw("Failed", 86400_000), policy, NOW)!], NOW)[1];
+    expect(row).toMatch(/failed .* in 6d \(Finalize can re-run it\)/);
+  });
+});
+
+describe("hashFromArgs: borsh Vec<u8> wasm args (as fetchPendingCode accepts them)", () => {
+  it("hashes the wasm inside a u32-length-prefixed argument", async () => {
+    const borsh = new Uint8Array([...u32le(v1.length), ...v1]);
+    expect(await hashFromArgs(bytesToBase64(borsh))).toEqual({ hash: manifest.wasm["demo_vault_v1.wasm"].code_hash, from: "args-code" });
+  });
+});
+
+describe("keyhole pending --fetch-code (offline)", () => {
+  const H1 = manifest.wasm["demo_vault_v1.wasm"].code_hash as string;
+  const v2 = new Uint8Array(fs.readFileSync(path.join(ROOT, "contracts/repro/demo_vault_v2.wasm")));
+  const policy = { roles: [{ name: "council", kind: { Group: ["a.near", "b.near"] }, permissions: ["*:*"], vote_policy: {} }], default_vote_policy: { weight_kind: "RoleWeight", quorum: "0", threshold: [1, 2] }, proposal_period: String(7n * 86400n * 1_000_000_000n) };
+  const proposal = (status: string, hash: string, ageMs: number) => ({ id: 0, proposer: "a.near", description: "", kind: { UpgradeRemote: { receiver_id: "vault.near", method_name: "upgrade", hash } }, status, vote_counts: { council: [1, 0, 0] }, votes: { "a.near": "Approve" }, submission_time: String(BigInt(NOW - ageMs) * 1_000_000n) });
+  const chain = (raw: unknown) => ({
+    [viewKey("d.near", "get_policy")]: viewResult(policy),
+    [viewKey("d.near", "get_last_proposal_id")]: viewResult(1),
+    [viewKey("d.near", "get_proposals", { from_index: 0, limit: 1 })]: viewResult([raw]),
+    [requestKey("query", { request_type: "view_account", account_id: "vault.near", finality: "final" })]: { result: { amount: "0", locked: "0", code_hash: H1, storage_usage: 1, block_height: 1, block_hash: "x" } },
+    [requestKey("query", { request_type: "view_code", account_id: "vault.near", finality: "final" })]: { result: { hash: H1, code_base64: bytesToBase64(v1), block_height: 1, block_hash: "x" } },
+  });
+  // No registry or SourceScan fixtures: both lookups fail and count as "no attestation", offline.
+  const registry = () => new Rpc({ network: "testnet", transport: fixtureTransport({}), retries: 0 });
+
+  it("a *pending* proposal for the code already live is NO_CHANGE / OK, not graded against older code", async () => {
+    const { pendingCommand } = await import("../src/cli.ts");
+    const r = await pendingCommand("d.near", { rpc: rpc(chain(proposal("InProgress", H1, 3600_000))), registry: registry(), nowMs: NOW, fetchCode: true, api: async () => ({ account_txs: [] }) });
+    expect((r.json as any).fetch.retrospective).toBeNull();
+    expect((r.json as any).fetch.grade.flags).toEqual(["NO_CHANGE"]);
+    expect(r.verdict).toBe("OK");
+  });
+
+  it("an executed proposal whose code is no longer live says so, and grades what redeploying it would change", async () => {
+    const { pendingCommand } = await import("../src/cli.ts");
+    const H2 = await codeHash(v2);
+    const api: TxApi = async (p, body: any) =>
+      p === "/v0/account"
+        ? { account_txs: [{ transaction_hash: "Blob", tx_block_height: 9, is_success: true }], resume_token: null }
+        : { transactions: body.tx_hashes.map((h: string) => ({ transaction: { hash: h, signer_id: "a.near", receiver_id: "d.near", actions: [{ FunctionCall: { method_name: "store_blob", args: bytesToBase64(v2), gas: 1, deposit: "0" } }] } })) };
+    const r = await pendingCommand("d.near", { rpc: rpc(chain(proposal("Approved", H2, 30 * 86400_000))), registry: registry(), nowMs: NOW, fetchCode: true, api });
+    expect((r.json as any).fetch.superseded).toBe(true);
+    expect(r.text).toMatch(/executed, but its code is not the live code of vault\.near/);
+    expect(r.verdict).toBe("STOP"); // v1 → v2 adds `sweep`, unverified
+  });
+
+  it("near-plugins staging_timestamp is the earliest deploy time (stage time + staging_duration), not the stage time", async () => {
+    const { formatStaged } = await import("../src/cli.ts");
+    const later = formatStaged({ contract: "s.near", staged_hash: "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi", live_hash: H1, staging_timestamp_ms: NOW + 3600_000, staging_duration_ms: 86400_000, pending: true }, NOW).join("\n");
+    expect(later).not.toMatch(/staged at/);
+    expect(later).toMatch(/deployable from .* \(in 1h\); staging delay 24h/);
+    const past = formatStaged({ contract: "s.near", staged_hash: H1, live_hash: H1, staging_timestamp_ms: NOW - 3 * 86400_000, staging_duration_ms: null, pending: false }, NOW).join("\n");
+    expect(past).toMatch(/deployable since .* \(3d ago\); no staging delay/);
+  });
+
+  it("--last must be a positive integer", async () => {
+    const { parseLast } = await import("../src/cli.ts");
+    expect(parseLast(undefined)).toBeUndefined();
+    expect(parseLast("10")).toBe(10);
+    for (const bad of ["ten", "0", "-3", "2.5", ""]) expect(() => parseLast(bad)).toThrow(/--last/);
   });
 });
