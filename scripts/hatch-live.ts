@@ -8,7 +8,7 @@ import { armDelegateHatch, decodeHatch, fireHatch, hatchHealth, probeDeposit, ve
 import { account, cfg, log, NEAR, provider, saveKey, TGAS, txLink, view, yoctoToNear } from "./lib/near.ts";
 
 const VENUE = "wrap.testnet";
-const rpc = () => new Rpc({ network: "testnet" }); // fresh client per read: no cached answers
+const rpc = () => new Rpc({ network: "testnet", cache: false });
 const master = account(cfg.master);
 const userId = `hl-${Date.now().toString(36)}.${cfg.master}`;
 const kp = KeyPair.fromRandom("ed25519");

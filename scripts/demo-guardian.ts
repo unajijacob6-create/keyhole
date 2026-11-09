@@ -27,7 +27,7 @@ const argv = process.argv.slice(2);
 if (argv.includes("--replay")) process.exit((await replayGuardianRun(argv[argv.indexOf("--replay") + 1] && !argv[argv.indexOf("--replay") + 1].startsWith("--") ? argv[argv.indexOf("--replay") + 1] : RUN_FILE)) ? 0 : 1);
 
 const t0 = Date.now();
-const rpc = new Rpc({ network: "testnet" });
+const rpc = new Rpc({ network: "testnet", cache: false }); // a long-running watcher must not read cached answers
 const ts = () => `+${((Date.now() - t0) / 1000).toFixed(1).padStart(5)}s`;
 type Step = { t: number; step: number; title: string; lines: string[] };
 export interface GuardianRun {
@@ -91,6 +91,7 @@ const heightOf = async (hash: string, signer: string): Promise<number> => {
 };
 const record = async (key: string, r: any, signer: string) => {
   const h = txOf(r);
+  if (!h) throw new Error(`no transaction hash returned for ${key}`);
   run.tx[key] = h;
   run.signers[key] = signer;
   run.heights[key] = await heightOf(h, signer);
@@ -129,7 +130,7 @@ run.vault = vaultId;
   saveKey(vaultId, kp);
   const v = account(vaultId);
   await record("deploy_vault", await v.deployContract(HONEST), vaultId);
-  await record("init_vault", await v.callFunction({ contractId: vaultId, methodName: "new", args: { owner_id: cfg.dao }, gas: TGAS(30) }), vaultId);
+  await record("init_vault", await v.callFunctionRaw({ contractId: vaultId, methodName: "new", args: { owner_id: cfg.dao }, gas: TGAS(30), waitUntil: "FINAL" } as any), vaultId);
   // Leave only the DAO able to change the code: delete the vault's own full-access key.
   await record("delete_vault_key", await v.deleteKey(kp.getPublicKey()), vaultId);
   say(`${vaultId}: guarded vault (withdraw_all needs exactly 1 yoctoNEAR, like Ref and Burrow), owner ${cfg.dao}, no access keys left`);
@@ -139,8 +140,8 @@ run.vault = vaultId;
 step(1, "Alice deposits 1 NEAR, Bob deposits 0.5 NEAR");
 const alice = account(cfg.alice);
 const bob = account(cfg.bob);
-await record("alice_deposit", await alice.callFunction({ contractId: vaultId, methodName: "deposit", args: {}, deposit: NEAR(1), gas: TGAS(30) }), cfg.alice);
-await record("bob_deposit", await bob.callFunction({ contractId: vaultId, methodName: "deposit", args: {}, deposit: NEAR(0.5), gas: TGAS(30) }), cfg.bob);
+await record("alice_deposit", await alice.callFunctionRaw({ contractId: vaultId, methodName: "deposit", args: {}, deposit: NEAR(1), gas: TGAS(30), waitUntil: "FINAL" } as any), cfg.alice);
+await record("bob_deposit", await bob.callFunctionRaw({ contractId: vaultId, methodName: "deposit", args: {}, deposit: NEAR(0.5), gas: TGAS(30), waitUntil: "FINAL" } as any), cfg.bob);
 say(`vault total ${yoctoToNear(await view<string>(vaultId, "get_total"))} NEAR (alice ${yoctoToNear(await vbal(vaultId, cfg.alice))}, bob ${yoctoToNear(await vbal(vaultId, cfg.bob))})`);
 
 // ── 2. inspect ──

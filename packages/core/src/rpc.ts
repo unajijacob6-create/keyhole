@@ -47,6 +47,9 @@ export interface RpcOptions {
   network?: Network;
   transport?: Transport;
   retries?: number;
+  /** Share identical requests within this client (default true). A one-shot inspect wants this; a
+   *  long-running watcher must pass false, or it will keep reading its first answer. */
+  cache?: boolean;
   /** Called for every request (method, params) and its result or error. Used to record fixtures. */
   onExchange?: (key: string, result: unknown, error: unknown) => void;
 }
@@ -63,6 +66,7 @@ export class Rpc {
   private retries: number;
   private onExchange?: RpcOptions["onExchange"];
   private cache = new Map<string, Promise<unknown>>();
+  private useCache: boolean;
 
   constructor(opts: RpcOptions = {}) {
     this.network = opts.network ?? "mainnet";
@@ -70,11 +74,14 @@ export class Rpc {
     this.transport = opts.transport ?? fetchTransport;
     this.retries = opts.retries ?? 5;
     this.onExchange = opts.onExchange;
+    this.useCache = opts.cache ?? true;
   }
 
   /** Same request within one Rpc instance is fetched once (finality-pinned reads are cheap to share). */
   call<T = any>(method: string, params: unknown): Promise<T> {
     const key = requestKey(method, params);
+    // Only reads pinned to "final"/"optimistic" go stale; block-pinned reads never change.
+    if (!this.useCache && /"finality"/.test(key)) return this.send(method, params, key) as Promise<T>;
     let p = this.cache.get(key);
     if (!p) {
       p = this.send(method, params, key);

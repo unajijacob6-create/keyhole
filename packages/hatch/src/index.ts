@@ -308,7 +308,7 @@ export async function armFunctionCallHatch(o: { owner: Account; provider: Provid
   if (!o.methods.includes(o.method)) throw new Error(`${o.method} is not in the key's method list`);
   const keyPair = KeyPair.fromRandom("ed25519");
   const pk = keyPair.getPublicKey().toString();
-  await o.owner.signAndSendTransaction({ receiverId: o.owner.accountId, actions: [actions.addKey(PublicKey.from(pk), actions.functionCallAccessKey(o.venue, o.methods, o.allowance ?? 250_000_000_000_000_000_000_000n))], waitUntil: "FINAL" } as any);
+  await o.owner.signAndSendTransaction({ receiverId: o.owner.accountId, actions: [actions.addFunctionCallAccessKey(PublicKey.from(pk), o.venue, o.methods, o.allowance ?? 250_000_000_000_000_000_000_000n)], waitUntil: "FINAL" } as any);
   await waitForKey(o.provider, o.owner.accountId, pk);
   const head: any = await o.provider.viewBlock({ finality: "final" } as any);
   const hatch: Hatch = {

@@ -33,7 +33,7 @@ const save = (hs: Hatch[]) => {
   fs.mkdirSync(path.dirname(store), { recursive: true });
   fs.writeFileSync(store, JSON.stringify(hs, null, 1), { mode: 0o600 });
 };
-const rpc = new Rpc({ network });
+const rpc = new Rpc({ network, cache: false });
 
 if (cmd === "arm") {
   if (network !== "testnet") throw new Error("arm signs transactions: testnet only in this build");
