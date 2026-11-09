@@ -8,7 +8,10 @@
 import { verifiedCompletion, extractJson, DEFAULT_MODEL, type Receipt } from "../../reviewer/src/nearai.ts";
 import type { Reviewer } from "./assess.ts";
 
-const ACCOUNTISH = /^(?=.{5,64}$)(([a-z\d]+[-_])*[a-z\d]+\.)+(near|testnet|tg|aurora)$|^[0-9a-f]{64}$/;
+// Rust string literals sit back to back in the data section with no terminator, so an account id
+// can only be found as a fragment ending in a known suffix; a stray leading character from the
+// previous literal may be attached. Good enough as a hint for a reviewer, never used for grading.
+const ACCOUNT_FRAGMENT = /(?:[a-z0-9]+[-_.])*[a-z0-9]+\.(?:near|testnet)/g;
 
 /** Printable ASCII runs (>= minLen) in a wasm binary; data segments hold string literals. */
 export function printableStrings(bytes: Uint8Array, minLen = 6): Set<string> {
@@ -25,15 +28,16 @@ export function printableStrings(bytes: Uint8Array, minLen = 6): Set<string> {
   return out;
 }
 
-/** Account ids that appear in the pending code's strings but not in the live code's. */
+function accountFragments(bytes: Uint8Array): Set<string> {
+  const out = new Set<string>();
+  for (const s of printableStrings(bytes)) for (const m of s.match(ACCOUNT_FRAGMENT) ?? []) if (m.length <= 64) out.add(m);
+  return out;
+}
+
+/** Account-id-like fragments in the pending code's strings that the live code does not contain. */
 export function newAccountIds(live: Uint8Array | null, pending: Uint8Array): string[] {
-  const before = live ? printableStrings(live) : new Set<string>();
-  const ids = new Set<string>();
-  for (const s of printableStrings(pending)) {
-    if (before.has(s)) continue;
-    for (const tok of s.split(/[^a-z0-9._-]+/)) if (ACCOUNTISH.test(tok) && ![...before].some((b) => b.includes(tok))) ids.add(tok);
-  }
-  return [...ids].sort();
+  const before = live ? accountFragments(live) : new Set<string>();
+  return [...accountFragments(pending)].filter((f) => !before.has(f)).sort();
 }
 
 export const UPGRADE_SYSTEM = `You assess a PENDING code upgrade of a NEAR smart contract for the people who have money deposited in it.
@@ -48,15 +52,29 @@ export interface TeeReview {
   receipt: Receipt;
 }
 
-export function teeReviewer(o: { model?: string; extraFacts?: (input: { target: string; pending_hash: string }) => string[]; onReceipt?: (r: TeeReview) => void } = {}): Reviewer {
+/** Models tried in order. The first is fast (about 1.4 s for this prompt on 2026-11-09), which
+ *  matters when the window before execution is minutes. */
+export const UPGRADE_MODELS = (process.env.KEYHOLE_UPGRADE_MODELS ?? `deepseek-ai/DeepSeek-V4.1-Flash-1017,${DEFAULT_MODEL}`).split(",").filter(Boolean);
+
+export function teeReviewer(o: { models?: string[]; onReceipt?: (r: TeeReview) => void } = {}): Reviewer {
   return async (input) => {
-    const facts = [...input.summary, ...(o.extraFacts?.(input) ?? [])];
+    const ids = newAccountIds(input.live_bytes, input.pending_bytes);
+    const facts = [...input.summary, ...(ids.length ? [`account-id-like string fragments new in the pending binary: ${ids.join(", ")}`] : [])];
     const user = `Contract: ${input.target}\nLive code hash: ${input.live_hash}\nPending code hash: ${input.pending_hash}\nStructural diff (live -> pending):\n${facts.map((f) => `- ${f}`).join("\n") || "- (no structural change)"}`;
-    const { content, receipt } = await verifiedCompletion({ model: o.model ?? DEFAULT_MODEL, system: UPGRADE_SYSTEM, user, maxTokens: 300, temperature: 0 });
-    const parsed = extractJson<{ risk: string; summary: string }>(content);
-    const risk = (["high", "medium", "low", "none"] as const).includes(parsed.risk as any) ? (parsed.risk as TeeReview["risk"]) : "high";
-    const r: TeeReview = { risk, summary: String(parsed.summary ?? "").slice(0, 200), model: receipt.model, receipt };
-    o.onReceipt?.(r);
-    return { risk: r.risk, summary: r.summary, receipt_id: receipt.chat_id };
+    let lastErr: unknown;
+    for (const model of o.models ?? UPGRADE_MODELS) {
+      try {
+        const { content, receipt } = await verifiedCompletion({ model, system: UPGRADE_SYSTEM, user, maxTokens: 400, temperature: 0 });
+        // A model that answers without the JSON verdict is skipped, not guessed at.
+        const parsed = extractJson<{ risk: string; summary: string }>(content);
+        if (!(["high", "medium", "low", "none"] as const).includes(parsed.risk as any)) throw new Error(`no usable risk in reply from ${receipt.model}`);
+        const r: TeeReview = { risk: parsed.risk as TeeReview["risk"], summary: String(parsed.summary ?? "").slice(0, 200), model: receipt.model, receipt };
+        o.onReceipt?.(r);
+        return { risk: r.risk, summary: r.summary, receipt_id: receipt.chat_id };
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    throw lastErr;
   };
 }

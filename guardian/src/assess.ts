@@ -44,7 +44,7 @@ export interface Assessment {
 }
 
 export interface Reviewer {
-  (input: { target: string; live_hash: string; pending_hash: string; summary: string[] }): Promise<{ risk: "high" | "medium" | "low" | "none"; summary: string; receipt_id?: string } | null>;
+  (input: { target: string; live_hash: string; pending_hash: string; summary: string[]; live_bytes: Uint8Array | null; pending_bytes: Uint8Array }): Promise<{ risk: "high" | "medium" | "low" | "none"; summary: string; receipt_id?: string } | null>;
 }
 
 export interface AssessDeps {
@@ -161,7 +161,7 @@ export async function assessPending(
   const summary = describeDiff(grade);
   if (deps.reviewer && o.hash && pending) {
     try {
-      review = await deps.reviewer({ target: o.target, live_hash: liveHash, pending_hash: o.hash, summary });
+      review = await deps.reviewer({ target: o.target, live_hash: liveHash, pending_hash: o.hash, summary, live_bytes: before, pending_bytes: pendingBytes! });
       if (review) grade = gradeUpgrade({ ...baseInput, review });
     } catch {
       review = null; // the deterministic grade stands on its own
