@@ -30,9 +30,13 @@ export interface FollowOptions {
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+type Settled = { ok: true; value: any } | { ok: false; error: unknown };
+const settle = (p: Promise<any>): Promise<Settled> => p.then((value) => ({ ok: true as const, value }), (error) => ({ ok: false as const, error }));
+/** Base URL of the neardata block API (override for tests: KH_NEARDATA_BASE=http://…/v0). */
+const neardata = (network: Network) => (globalThis as any).process?.env?.KH_NEARDATA_BASE ?? `https://${network}.neardata.xyz/v0`;
 const short = (h?: string) => (h ? `${h.slice(0, 6)}…` : "?");
 
-async function getJson(url: string, tries = 6): Promise<any> {
+async function getJson(url: string, tries = 3): Promise<any> {
   for (let i = 0; ; i++) {
     try {
       const r = await fetch(url, { redirect: "follow" });
@@ -47,18 +51,21 @@ async function getJson(url: string, tries = 6): Promise<any> {
 }
 
 export async function lastFinal(network: Network): Promise<number> {
-  return (await getJson(`https://${network}.neardata.xyz/v0/last_block/final`)).block.header.height;
+  return (await getJson(`${neardata(network)}/last_block/final`)).block.header.height;
 }
 
 export async function follow(opts: FollowOptions): Promise<WatchEvent[]> {
   const log = opts.log ?? ((l: string) => console.log(l));
   const rpc = new Rpc({ network: opts.network });
-  const base = `https://${opts.network}.neardata.xyz/v0`;
+  const base = neardata(opts.network);
   // Code hash per watched account as of the last event this run saw; before that, the previous
   // hash is read from the chain at height-1, so replays from an old height are correct too.
   const known = new Map<string, string>();
+  const started = Date.now();
+  const expired = () => Boolean(opts.signal?.aborted || (opts.durationMs && Date.now() - started > opts.durationMs));
   let head = 0;
   for (let i = 0; !head; i++) {
+    if (expired()) return [];
     try {
       head = await lastFinal(opts.network);
     } catch (e) {
@@ -67,12 +74,12 @@ export async function follow(opts: FollowOptions): Promise<WatchEvent[]> {
     }
   }
   let h = opts.from ?? head;
-  const started = Date.now();
   const recent: Map<string, TxSummary>[] = [];
-  const prefetch = new Map<number, Promise<any>>();
+  const prefetch = new Map<number, Promise<Settled>>();
   const seen: WatchEvent[] = [];
   log(`[watch] ${opts.network} from block ${h.toLocaleString("en-US")}; watching ${[...opts.watch].join(", ") || "(none)"}${opts.all ? "; network-wide deploy feed on" : ""}`);
   let scanned = 0;
+  let failures = 0;
   let lastBeat = Date.now();
   while (!opts.signal?.aborted) {
     if (opts.durationMs && Date.now() - started > opts.durationMs) break;
@@ -86,18 +93,25 @@ export async function follow(opts: FollowOptions): Promise<WatchEvent[]> {
       continue;
     }
     // Prefetch up to 6 blocks ahead when behind, so a mainnet follower keeps up (~1-2 blocks/s).
-    for (let k = 0; k < 6 && h + k <= head; k++) if (!prefetch.has(h + k)) prefetch.set(h + k, getJson(`${base}/block/${h + k}`));
+    // Prefetched promises are settled immediately (never left as unhandled rejections, which would
+    // terminate Node); a failed prefetch is simply retried below.
+    for (let k = 0; k < 6 && h + k <= head; k++) if (!prefetch.has(h + k)) prefetch.set(h + k, settle(getJson(`${base}/block/${h + k}`)));
     let block: any;
     try {
-      block = await (prefetch.get(h) ?? getJson(`${base}/block/${h}`));
+      const got = await (prefetch.get(h) ?? settle(getJson(`${base}/block/${h}`)));
+      if (!got.ok) throw got.error;
+      block = got.value;
     } catch (e) {
       // Transient neardata/network failure: log, back off and retry the same height.
       prefetch.delete(h);
-      log(`[watch] ${opts.network} block ${h}: ${String((e as Error).message).slice(0, 120)}; retrying`);
-      await sleep(3000);
+      failures++;
+      const wait = Math.min(60_000, 2000 * 2 ** Math.min(failures, 5));
+      log(`[watch] ${opts.network} block ${h}: ${String((e as Error)?.message ?? e).slice(0, 120)}; retry in ${wait / 1000}s`);
+      await sleep(wait);
       continue;
     }
     prefetch.delete(h);
+    failures = 0;
     scanned++;
     if (!block) {
       h++; // no block at this height
