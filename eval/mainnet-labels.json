@@ -1,0 +1,22 @@
+{
+  "note": "Hand-labelled mainnet ground truth (2026-11-09). Only contracts whose controller is established by protocol facts or by source that is verified to match the deployed code. Contracts whose true controller could not be established (e.g. intents.near via ctl-intents.near, wrap.near, usdt.tether-token.near) are excluded from accuracy and listed under 'unlabelled'.",
+  "entries": [
+    { "account": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: view_access_key_list shows 1 full-access key on the contract account (any full-access key can DeployContract)" },
+    { "account": "aurora", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: 1 full-access key on the account" },
+    { "account": "social.near", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: 1 full-access key on the account" },
+    { "account": "game.hot.tg", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: 66 full-access keys on the account" },
+    { "account": "x.paras.near", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: 1 full-access key on the account" },
+    { "account": "tkn.near", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: 1 full-access key on the account" },
+    { "account": "sputnik-dao.near", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: 3 full-access keys on the factory account" },
+    { "account": "token.sweat", "network": "mainnet", "expected_class": "GOVERNED", "evidence": "source Sweat-Foundation/sweat-token@75dc5b48 (CI rebuild matches the deployed hash; SourceScan-verified): #[upgradable(code_deployers(Role::UpgradeManager))]; acl_get_grantees(UpgradeManager) and acl_get_super_admins = [sweat-multisig.sputnik-dao.near]; that DAO needs 3 of 5 for upgrade-relevant proposals; no full-access keys" },
+    { "account": "omni.bridge.near", "network": "mainnet", "expected_class": "GOVERNED", "evidence": "source Near-One/omni-bridge@83e3ac1e (SourceScan-verified at the deployed hash): code_deployers(Role::UpgradableCodeDeployer, Role::DAO); UpgradableCodeDeployer has no grantees; DAO = [omni.bridge.near, rainbowbridge.sputnik-dao.near]; super admin rainbowbridge.sputnik-dao.near (3 of 5); no full-access keys" },
+    { "account": "ref-finance.sputnik-dao.near", "network": "mainnet", "expected_class": "GOVERNED", "evidence": "Sputnik DAO: replaces its own code only via an upgrade_self proposal; get_policy: single 'council' group of 5 with threshold [1,2] → 3 of 5 (sputnikdao2 policy.rs to_weight); no full-access keys" },
+    { "account": "jau.sputnik-dao.near", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "Sputnik DAO (global contract by hash): get_policy role 'Admin' (2 members) has upgrade_self/policy permissions with absolute threshold \"1\" → one member alone can pass an upgrade_self proposal" },
+    { "account": "v2-verifier.sourcescan.near", "network": "mainnet", "expected_class": "CUSTODIAL", "evidence": "protocol fact: full-access key on the account (its wasm imports no deploy host function, so the key is the only path)" }
+  ],
+  "unlabelled": [
+    { "account": "intents.near", "why": "upgrade gated by roles DAO (intents.sputnik-dao.near, 3 of 5) and Upgrader (ctl-intents.near, a controller contract whose own roles were not fully analysed)" },
+    { "account": "wrap.near", "why": "deploy host function linked, no upgrade method in exports; deployed code is not source-verified, so absence of a hidden path cannot be established" },
+    { "account": "usdt.tether-token.near", "why": "owner() is a 2-of-3 multisig, but the source of `upgrade` is not public, so the gate cannot be confirmed" }
+  ]
+}

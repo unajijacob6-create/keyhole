@@ -151,3 +151,5 @@ td.ctl { min-width: 22ch; }
 .term .dim { color: var(--muted); }
 .foot { padding-top: var(--s6); padding-bottom: var(--s6); border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--muted); }
 pre.code { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--s4); overflow-x: auto; font: 13px/1.5 var(--mono); margin: 0 0 var(--s4); max-width: 100%; }
+.verified { margin: var(--s5) 0; background: var(--bg); }
+.verified h3 { font-size: 1rem; }

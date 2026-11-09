@@ -22,7 +22,9 @@
     "attest:builds": "tsx scripts/attest-builds.ts",
     "demo:attack": "tsx scripts/demo-attack.ts",
     "review": "tsx reviewer/src/cli.ts",
-    "eval:review": "tsx scripts/eval-review.ts"
+    "eval:review": "tsx scripts/eval-review.ts",
+    "eval": "tsx scripts/eval.ts",
+    "judge": "tsx scripts/judge.ts"
   },
   "engines": {
     "node": ">=22"

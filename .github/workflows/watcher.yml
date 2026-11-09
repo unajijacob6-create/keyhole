@@ -46,9 +46,10 @@ jobs:
         run: |
           set -u
           POST=""; [ -n "${KEY_WATCHER_KEYHOLE_TESTNET}" ] && POST="--post"
-          npx tsx watcher/src/index.ts --network mainnet --all --watchlist scripts/data/watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-mainnet.jsonl --heartbeat 600 &
+          mkdir -p /tmp/run /tmp/feed/logs
+          npx tsx watcher/src/index.ts --network mainnet --all --watchlist scripts/data/watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-mainnet.jsonl --heartbeat 600 > /tmp/run/mainnet.log 2>&1 &
           M=$!
-          npx tsx watcher/src/index.ts --network testnet --watchlist scripts/data/testnet-watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-testnet.jsonl --heartbeat 600 &
+          npx tsx watcher/src/index.ts --network testnet --watchlist scripts/data/testnet-watchlist.json $POST --duration $DURATION --feed /tmp/run/feed-testnet.jsonl --heartbeat 600 > /tmp/run/testnet.log 2>&1 &
           T=$!
           publish() {
             for n in mainnet testnet; do
@@ -57,6 +58,7 @@ jobs:
               tail -n 500 /tmp/feed/feed-$n.jsonl > /tmp/feed/.t && mv /tmp/feed/.t /tmp/feed/feed-$n.jsonl
             done
             date -u +%FT%TZ > /tmp/feed/last-run.txt
+            for n in mainnet testnet; do [ -f /tmp/run/$n.log ] && tail -n 60 /tmp/run/$n.log > /tmp/feed/logs/$n.log; done
             (cd /tmp/feed && git add -A && git commit -qm "feed $(date -u +%FT%TZ)" && git push -q origin feed) || true
           }
           while kill -0 $M 2>/dev/null || kill -0 $T 2>/dev/null; do sleep 600; publish; done
@@ -65,4 +67,6 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run watcher.yml --ref main
+        run: |
+          gh workflow run watcher.yml --ref main 2>&1 | tee /tmp/dispatch.log || true
+          cd /tmp/feed 2>/dev/null && mkdir -p logs && cp /tmp/dispatch.log logs/dispatch.log && git add -A && git commit -qm "dispatch log" && git push -q origin feed || true

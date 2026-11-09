@@ -52,6 +52,24 @@ function changeText(r: KeyholeReport): string {
   return parts.length ? parts.map((p) => `<li><span class="sev info">[--]</span>${p}</li>`).join("") : `<li><span class="sev info">[--]</span>Not checked.</li>`;
 }
 
+function verifiedPanel(r: KeyholeReport): string {
+  const rows: [string, string, string][] = []; // [status glyph, check, detail]
+  const ok = "[ok]", no = "[--]", bad = "[!!]";
+  if (r.code) rows.push([r.code.hashMatchesBytes ? ok : bad, "Fetched code hashes to the on-chain code hash", `${r.code.hash.slice(0, 12)}… (${(r.code.size / 1024).toFixed(0)} KiB, ${r.code.source})`]);
+  if (r.sourcescan) rows.push([r.sourcescan.status === "verified" ? ok : r.sourcescan.status === "stale" ? bad : no, "Source verified on SourceScan at this hash", r.sourcescan.status]);
+  const builds = r.registry?.forHash.filter((a) => a.attestation.kind === "ReproducibleBuild") ?? [];
+  rows.push([builds.some((b) => (b.attestation as any).matches) ? ok : no, "Reproducible rebuild of the declared source matches", builds.length ? builds.map((b) => `${esc((b.attestation as any).repo).replace("https://github.com/", "")}@${esc(String((b.attestation as any).rev).slice(0, 8))} → ${(b.attestation as any).matches ? "match" : "no match"} (registry #${b.id}, by ${esc(b.attester)})`).join("; ") : "no rebuild attested for this hash"]);
+  const reviews = r.registry?.forHash.filter((a) => a.attestation.kind === "AiReview") ?? [];
+  for (const rv of reviews) {
+    const a = rv.attestation as any;
+    rows.push([/^(high|medium)/.test(a.verdict_summary) ? bad : ok, `Private AI review in a NEAR AI Cloud TEE (${esc(a.model)})`, `${esc(a.verdict_summary)} · TEE signer ${esc(String(a.signer).slice(0, 10))}… · response sha256 ${esc(String(a.response_sha256).slice(0, 10))}… (registry #${rv.id})`]);
+  }
+  if (!reviews.length) rows.push([no, "Private AI review in a NEAR AI Cloud TEE", "none for this hash"]);
+  if (r.nep330) rows.push([r.nep330.hasBuildInfo ? ok : no, "NEP-330 build metadata (reproducible build recipe)", r.nep330.present ? (r.nep330.hasBuildInfo ? `${esc(r.nep330.metadata?.build_info?.build_environment?.split("@")[0])}` : "metadata without build_info") : "not published"]);
+  if (r.lastChange) rows.push([r.lastChange.status === "unknown" ? no : ok, "Last code change found from archival RPC", r.lastChange.status === "found" ? `block ${r.lastChange.height?.toLocaleString("en-US")}` : r.lastChange.status === "unchanged-since" ? `unchanged since block ${r.lastChange.sinceHeight?.toLocaleString("en-US")}` : "unknown"]);
+  return `<section class="panel verified" aria-label="What was verified"><h3>What was verified</h3><ul class="reasons">${rows.map(([g, c, d]) => `<li><span class="sev ${g === ok ? "ok" : g === bad ? "caution" : "info"}">${g}</span><strong>${c}</strong> <span class="muted small">${d}</span></li>`).join("")}</ul></section>`;
+}
+
 export function renderReport(r: KeyholeReport): string {
   const g = r.grade;
   const groups: Record<"who" | "code" | "change", Reason[]> = { who: [], code: [], change: [] };
@@ -74,6 +92,7 @@ export function renderReport(r: KeyholeReport): string {
       <section class="group" aria-label="Is it the reviewed code?"><h3>Is it the reviewed code?</h3><ul class="reasons">${groups.code.map(reasonLi).join("") || '<li><span class="sev info">[--]</span>No code.</li>'}</ul></section>
       <section class="group" aria-label="What changed?"><h3>What changed?</h3><ul class="reasons">${groups.change.map(reasonLi).join("")}${changeText(r)}</ul></section>
     </div>
+    ${r.code ? verifiedPanel(r) : ""}
     <details><summary>Evidence: code, keys, owner</summary>
       <dl class="kv">
         ${r.code ? `<dt>code hash</dt><dd>${esc(r.code.hash)} (${esc(r.code.source)}${r.code.globalAccount ? " " + esc(r.code.globalAccount) : ""}, ${(r.code.size / 1024).toFixed(0)} KiB${r.code.hashMatchesBytes ? ", sha256 of the fetched bytes matches" : ", bytes do NOT match the served hash"})</dd>` : ""}

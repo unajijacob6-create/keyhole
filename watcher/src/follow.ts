@@ -57,7 +57,15 @@ export async function follow(opts: FollowOptions): Promise<WatchEvent[]> {
   // Code hash per watched account as of the last event this run saw; before that, the previous
   // hash is read from the chain at height-1, so replays from an old height are correct too.
   const known = new Map<string, string>();
-  let head = await lastFinal(opts.network);
+  let head = 0;
+  for (let i = 0; !head; i++) {
+    try {
+      head = await lastFinal(opts.network);
+    } catch (e) {
+      log(`[watch] ${opts.network}: cannot read the final block (${String((e as Error).message).slice(0, 80)}); retrying`);
+      await sleep(Math.min(30000, 2000 * (i + 1)));
+    }
+  }
   let h = opts.from ?? head;
   const started = Date.now();
   const recent: Map<string, TxSummary>[] = [];
@@ -79,7 +87,16 @@ export async function follow(opts: FollowOptions): Promise<WatchEvent[]> {
     }
     // Prefetch up to 6 blocks ahead when behind, so a mainnet follower keeps up (~1-2 blocks/s).
     for (let k = 0; k < 6 && h + k <= head; k++) if (!prefetch.has(h + k)) prefetch.set(h + k, getJson(`${base}/block/${h + k}`));
-    const block = await (prefetch.get(h) ?? getJson(`${base}/block/${h}`));
+    let block: any;
+    try {
+      block = await (prefetch.get(h) ?? getJson(`${base}/block/${h}`));
+    } catch (e) {
+      // Transient neardata/network failure: log, back off and retry the same height.
+      prefetch.delete(h);
+      log(`[watch] ${opts.network} block ${h}: ${String((e as Error).message).slice(0, 120)}; retrying`);
+      await sleep(3000);
+      continue;
+    }
     prefetch.delete(h);
     scanned++;
     if (!block) {
