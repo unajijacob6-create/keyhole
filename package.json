@@ -20,7 +20,9 @@
     "build:web": "npm run -w @keyhole/web build",
     "test:web": "npm run build:web && node web/tests/run-smoke.mjs",
     "attest:builds": "tsx scripts/attest-builds.ts",
-    "demo:attack": "tsx scripts/demo-attack.ts"
+    "demo:attack": "tsx scripts/demo-attack.ts",
+    "review": "tsx reviewer/src/cli.ts",
+    "eval:review": "tsx scripts/eval-review.ts"
   },
   "engines": {
     "node": ">=22"
@@ -29,12 +31,13 @@
   "devDependencies": {
     "@types/node": "^26.6.6",
     "bs58": "^6.0.0",
+    "playwright": "1.63.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vitest": "^5.1.0",
-    "playwright": "1.63.0"
+    "vitest": "^5.1.0"
   },
   "dependencies": {
+    "ethers": "^6.17.0",
     "near-api-js": "^7.4.0"
   }
 }

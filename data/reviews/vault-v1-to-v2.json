@@ -1,0 +1,69 @@
+{
+ "schema": "keyhole.review/1",
+ "label": "vault-v1-to-v2",
+ "model": "Qwen/Qwen3.8-27B",
+ "code_hash": "BJU8rR1MjywGrqRxGnDeu8EenKyUfQEeAXjGPKmJTrKA",
+ "binding": "reproducible-build",
+ "source_sha256": "e10e9ac7f857a22aad4bc471a8f8a8cef43344113142accd8c4a297c509c3870",
+ "base_source_sha256": "170550825a6ff042e6b313a746ebd70cb5ebd7a36b61f0cea0b4db7ca0b83f25",
+ "result": {
+  "risk": "high",
+  "summary": "New 'sweep' function allows the owner to drain all vault funds to any address, bypassing individual user balances and authorization.",
+  "findings": [
+   {
+    "severity": "high",
+    "category": "drain",
+    "title": "Owner can drain all vault funds",
+    "location": "sweep",
+    "rationale": "The new 'sweep' function allows the owner to transfer the entire 'total' balance to an arbitrary address, effectively stealing user deposits."
+   }
+  ]
+ },
+ "verdict_summary": "high: New 'sweep' function allows the owner to drain all vault funds to any address, bypassing individual user balances and authorization.",
+ "receipt": {
+  "model": "Qwen/Qwen3.8-27B",
+  "nonce": "bac970fd93f5961cfee9fe27dd5cc29d8d1887b633bc9aee9fc7a06e955e7525",
+  "attestation": {
+   "model_signing_addresses": [
+    "0x835ab53d20294ef795906dff21ae4c045336aa26"
+   ],
+   "gateway_signing_address": "0xb98a789cdc4817275f5155593ba73ef2a957e779",
+   "nonce_echoed": true,
+   "has_intel_quote": true,
+   "has_nvidia_payload": true
+  },
+  "chat_id": "116e0a613d1e4ad99a86ed721925b993",
+  "request_hash": "c0ac39e81a8c497c240d358f0f8c928e1d2320cf49787423b18797ef47c535fb",
+  "response_hash": "c8de25524f590e66d9ed1915c0749c8a32434c7952339b4b7283f5803c36a420",
+  "signature": {
+   "text": "Qwen/Qwen3.8-27B:c0ac39e81a8c497c240d358f0f8c928e1d2320cf49787423b18797ef47c535fb:c8de25524f590e66d9ed1915c0749c8a32434c7952339b4b7283f5803c36a420",
+   "signature": "0x7e5613ed2aa3171f0540eea87b79b36f0efa19fb011f3438a5c3bbf06dc1fa2b6cf0975cdeb82f7962a06a8d56f5b6edd47d8feeec03c3e61cb9d7aa544c97ed1b",
+   "signing_address": "0x835ab53d20294ef795906dff21ae4c045336aa26",
+   "signing_algo": "ecdsa",
+   "signature_kind": "provider_tee"
+  },
+  "recovered_signer": "0x835ab53d20294ef795906dff21ae4c045336aa26",
+  "verified": true,
+  "signed_by": "provider_tee",
+  "checks": [
+   "signed text = model:sha256(request):sha256(response)",
+   "signer matches exactly one attested model TEE",
+   "attestation nonce echoed (fresh report)"
+  ],
+  "usage": {
+   "prompt_tokens": 2224,
+   "total_tokens": 2358,
+   "completion_tokens": 134,
+   "prompt_tokens_details": {
+    "cached_tokens": 1856
+   },
+   "reasoning_tokens": 0,
+   "completion_tokens_details": {
+    "reasoning_tokens": 0
+   }
+  },
+  "at": "2026-11-09T18:08:45.289Z"
+ },
+ "response_body": "{\"id\":\"116e0a613d1e4ad99a86ed721925b993\",\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"risk\\\": \\\"high\\\",\\n  \\\"summary\\\": \\\"New 'sweep' function allows the owner to drain all vault funds to any address, bypassing individual user balances and authorization.\\\",\\n  \\\"findings\\\": [\\n    {\\n      \\\"severity\\\": \\\"high\\\",\\n      \\\"category\\\": \\\"drain\\\",\\n      \\\"title\\\": \\\"Owner can drain all vault funds\\\",\\n      \\\"location\\\": \\\"sweep\\\",\\n      \\\"rationale\\\": \\\"The new 'sweep' function allows the owner to transfer the entire 'total' balance to an arbitrary address, effectively stealing user deposits.\\\"\\n    }\\n  ]\\n}\"},\"finish_reason\":\"stop\",\"logprobs\":null,\"matched_stop\":248046}],\"model\":\"Qwen/Qwen3.8-27B\",\"created\":1794247721,\"usage\":{\"prompt_tokens\":2224,\"total_tokens\":2358,\"completion_tokens\":134,\"prompt_tokens_details\":{\"cached_tokens\":1856},\"reasoning_tokens\":0,\"completion_tokens_details\":{\"reasoning_tokens\":0}}}",
+ "at": "2026-11-09T18:08:45.290Z"
+}

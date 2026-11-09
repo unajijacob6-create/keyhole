@@ -11,7 +11,8 @@ export type Flag =
   | "NO_SOURCE_METADATA"
   | "NO_BUILD_INFO"
   | "SOURCE_REPO_UNREACHABLE"
-  | "GLOBAL_BY_ACCOUNT";
+  | "GLOBAL_BY_ACCOUNT"
+  | "AI_REVIEW_RISK";
 
 export type PathControl = "single-key" | "governed" | "unresolved" | "blocked";
 
@@ -33,7 +34,10 @@ export interface GradeInput {
   verification: {
     sourcescan: "verified" | "stale" | "none" | "unknown";
     reproducibleBuildMatch: boolean | null; // from the Keyhole registry
+    /** An attested AI review of this exact code found nothing above low risk. */
     aiReviewed: boolean;
+    /** Attested AI reviews of this code hash that report medium or high risk ("high: …"). */
+    aiRisk?: { risk: "high" | "medium"; summary: string }[];
     evidence: Evidence[];
   };
   nep330: { present: boolean; hasBuildInfo: boolean; repoStatus: string; evidence: Evidence[] };
@@ -125,7 +129,7 @@ export function grade(s: GradeInput): Grade {
     flags.push("SOURCE_REPO_UNREACHABLE");
     reasons.push({ code: "SOURCE_REPO_UNREACHABLE", severity: "caution", text: "The source repository named in NEP-330 metadata is not publicly reachable.", evidence: s.nep330.evidence });
   }
-  if (v.aiReviewed) reasons.push({ code: "AI_REVIEWED", severity: "info", text: "An attested AI review receipt exists for this code hash (evidence, not a guarantee).", evidence: v.evidence });
+  if (v.aiReviewed) reasons.push({ code: "AI_REVIEWED", severity: "info", text: "An attested AI review of this code hash found no medium or high risk (evidence, not a guarantee).", evidence: v.evidence });
 
   // ── What changed? ──
   const changedRecently = s.lastChange?.timestampMs != null && s.nowMs - s.lastChange.timestampMs < DAY;
@@ -139,9 +143,17 @@ export function grade(s: GradeInput): Grade {
     reasons.push({ code: "FULL_ACCESS_KEY_ADDED_24H", severity: "stop", text: `A full-access key (${short(recentKey.publicKey)}) was added ${ago(s.nowMs - recentKey.timestampMs)} ago.`, evidence: recentKey.evidence });
   }
 
+  // AI opinions come after the deterministic facts, so the first STOP reason is always a fact.
+  for (const r of v.aiRisk ?? []) {
+    if (!flags.includes("AI_REVIEW_RISK")) flags.push("AI_REVIEW_RISK");
+    reasons.push({ code: "AI_REVIEW_RISK", severity: r.risk === "high" ? "stop" : "caution", text: `An attested AI review of this code reports ${r.risk} risk: ${r.summary}`, evidence: v.evidence });
+  }
+
   // ── Verdict ──
   let verdict: Verdict;
-  if ((changedRecently && !verified && !v.aiReviewed) || recentKey) verdict = "STOP";
+  const highRisk = (v.aiRisk ?? []).some((r) => r.risk === "high");
+  if ((changedRecently && !verified && !v.aiReviewed) || recentKey || (highRisk && changedRecently)) verdict = "STOP";
+  else if (highRisk) verdict = "CAUTION";
   else if ((cls === "IMMUTABLE" || cls === "GOVERNED") && verified && !changedRecently) verdict = "OK";
   else verdict = "CAUTION";
 

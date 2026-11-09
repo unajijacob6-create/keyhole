@@ -198,7 +198,11 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
 
   const builds = registry?.forHash.filter((r) => r.attestation.kind === "ReproducibleBuild") ?? [];
   const reproducibleBuildMatch = builds.length ? builds.some((r) => (r.attestation as any).matches === true) : null;
-  const aiReviewed = registry?.forHash.some((r) => r.attestation.kind === "AiReview") ?? false;
+  // AiReview verdict_summary is "<risk>: <text>". Only none/low-risk reviews count as "reviewed".
+  const reviews = (registry?.forHash ?? []).filter((r) => r.attestation.kind === "AiReview").map((r) => String((r.attestation as any).verdict_summary ?? ""));
+  const riskOf = (s: string) => (s.match(/^(high|medium|low|none)\b/)?.[1] ?? "unknown") as string;
+  const aiReviewed = reviews.some((s) => ["none", "low"].includes(riskOf(s)));
+  const aiRisk = reviews.filter((s) => ["high", "medium"].includes(riskOf(s))).map((s) => ({ risk: riskOf(s) as "high" | "medium", summary: s.replace(/^\w+:\s*/, "") }));
 
   // Last change: prefer the archival search; fall back to the registry's ChangeObserved record.
   let lc: GradeInput["lastChange"] = null;
@@ -212,7 +216,7 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
     hasCode: true,
     paths,
     immutabilityFacts,
-    verification: { sourcescan: ss.status, reproducibleBuildMatch, aiReviewed, evidence: [...ss.evidence, ...(registry?.evidence.slice(0, 1) ?? [])] },
+    verification: { sourcescan: ss.status, reproducibleBuildMatch, aiReviewed, aiRisk, evidence: [...ss.evidence, ...(registry?.evidence.slice(0, 1) ?? [])] },
     nep330: { present: nep.present, hasBuildInfo: nep.hasBuildInfo, repoStatus: nep.repoStatus, evidence: nep.evidence },
     globalByAccount: acct.global_contract_account_id ?? null,
     lastChange: lc,

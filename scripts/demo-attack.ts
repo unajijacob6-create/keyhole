@@ -21,6 +21,8 @@ import { follow, lastFinal } from "../watcher/src/follow.ts";
 import { registryPoster } from "../watcher/src/poster.ts";
 import { account, accountExists, cfg, NEAR, saveKey, TGAS, txLink, view, yoctoToNear, provider } from "./lib/near.ts";
 import { ensureDemoAccounts } from "./lib/bootstrap.ts";
+import { review, stripRust, verifyReceiptOffline } from "../reviewer/src/review.ts";
+import { normaliseRecord, Rpc } from "../packages/core/src/index.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const t0 = Date.now();
@@ -157,15 +159,32 @@ say(`registry ${cfg.registry} record #${(obs as any).id}: ChangeObserved ${V1_HA
 const d = exportDiff(analyzeWasm(V1), analyzeWasm(V2));
 say(`export diff v1 → v2: ${[...d.addedMethods.map((m) => "+ " + m), ...d.removedMethods.map((m) => "- " + m), ...d.addedHostImports.map((m) => "+ import " + m)].join("  ") || "(none)"}`);
 
-// ── 5. inspect again ──
-step(5, `Keyhole inspects ${cfg.vault} again`);
+// ── 5. private AI review of the new code (optional: needs NEAR AI Cloud access) ──
+step(5, "private review of the new code in a NEAR AI Cloud TEE");
+try {
+  const src = (f: string) => ({ "lib.rs": stripRust(fs.readFileSync(path.join(ROOT, f), "utf8")) });
+  const rv = await review({ label: "demo-v2", files: src("contracts/demo-vault-v2/src/lib.rs"), base: src("contracts/demo-vault-v1/src/lib.rs"), codeHash: V2_HASH, binding: "reproducible-build" });
+  const ok = verifyReceiptOffline(rv);
+  say(`${rv.model}: risk ${rv.result.risk} — ${rv.result.summary}`);
+  say(`receipt: TEE signer ${rv.receipt.recovered_signer}, nonce echoed ${rv.receipt.attestation.nonce_echoed}, signature verified ${ok.ok} (only hashes leave memory)`);
+  const existing = ((await new Rpc({ network: "testnet" }).view<any[]>(cfg.registry, "get_attestations", { code_hash: V2_HASH, from_index: 0, limit: 50 })) ?? []).map(normaliseRecord);
+  if (!existing.some((r) => r.attestation.kind === "AiReview" && r.attester === cfg.attester)) {
+    const p = await poster.attest!(V2_HASH, { kind: "AiReview", model: rv.model, request_sha256: rv.receipt.request_hash, response_sha256: rv.receipt.response_hash, signer: rv.receipt.recovered_signer, chat_id: rv.receipt.chat_id.slice(0, 200), verdict_summary: rv.verdict_summary });
+    say(`registry AiReview #${p.id}`);
+  } else say("an AiReview for this code hash from this attester is already in the registry");
+} catch (e) {
+  say(`skipped (${String((e as Error).message).slice(0, 80)}). A recorded receipt for this exact diff is in data/reviews/vault-v1-to-v2.json.`);
+}
+
+// ── 6. inspect again ──
+step(6, `Keyhole inspects ${cfg.vault} again`);
 rep = await inspect(cfg.vault, inspectOpts);
 say(verdictLine(rep));
 snap(rep);
-topReasons(rep);
+topReasons(rep, 4);
 
-// ── 6. guarded deposit is refused ──
-step(6, "agent tries to deposit again");
+// ── 7. guarded deposit is refused ──
+step(7, "agent tries to deposit again");
 let refused = false;
 try {
   await guardCall(cfg.vault, { methodName: "deposit", deposit: NEAR(0.1) }, { execute, policy: { onCaution: "allow" }, inspect: inspectOpts, log: say });

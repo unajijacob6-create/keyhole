@@ -1,0 +1,59 @@
+{
+ "schema": "keyhole.review/1",
+ "label": "vault-v1",
+ "model": "Qwen/Qwen3.8-27B",
+ "code_hash": "E1arxbbpY645mRqub4aNTGw6bGLzznfEcSsL84VKdaKi",
+ "binding": "reproducible-build",
+ "source_sha256": "170550825a6ff042e6b313a746ebd70cb5ebd7a36b61f0cea0b4db7ca0b83f25",
+ "base_source_sha256": null,
+ "result": {
+  "risk": "none",
+  "summary": "Standard vault implementation with correct deposit/withdraw logic, balance checks, and refund handling. No malicious patterns detected.",
+  "findings": []
+ },
+ "verdict_summary": "none: Standard vault implementation with correct deposit/withdraw logic, balance checks, and refund handling. No malicious patterns detected.",
+ "receipt": {
+  "model": "Qwen/Qwen3.8-27B",
+  "nonce": "ea7e5d64c1dd4c08c9fe15278cf6ab011a4208bb2e9c42786fd1cf1e9d5a0aa1",
+  "attestation": {
+   "model_signing_addresses": [
+    "0x835ab53d20294ef795906dff21ae4c045336aa26"
+   ],
+   "gateway_signing_address": "0xb98a789cdc4817275f5155593ba73ef2a957e779",
+   "nonce_echoed": true,
+   "has_intel_quote": true,
+   "has_nvidia_payload": true
+  },
+  "chat_id": "d9dbebfe3e1343b8a6e19c8a834038d8",
+  "request_hash": "ccc45af58c1b22950ffacdb02fde1753bbdf942c801dc99983e613097be68ceb",
+  "response_hash": "8bc1de98bf5753e8b3307022962ab90464f55bf5c5907d6ee2660812dc47785d",
+  "signature": {
+   "text": "Qwen/Qwen3.8-27B:ccc45af58c1b22950ffacdb02fde1753bbdf942c801dc99983e613097be68ceb:8bc1de98bf5753e8b3307022962ab90464f55bf5c5907d6ee2660812dc47785d",
+   "signature": "0xe109a2b0abafd3fdc946f641e04ce2de6a3794bf8015758c71e418ef74eee963048379d31a335c601181923738f00e2d459c08308bf6ab637e4864836492862e1b",
+   "signing_address": "0x835ab53d20294ef795906dff21ae4c045336aa26",
+   "signing_algo": "ecdsa",
+   "signature_kind": "provider_tee"
+  },
+  "recovered_signer": "0x835ab53d20294ef795906dff21ae4c045336aa26",
+  "verified": true,
+  "signed_by": "provider_tee",
+  "checks": [
+   "signed text = model:sha256(request):sha256(response)",
+   "signer matches exactly one attested model TEE",
+   "attestation nonce echoed (fresh report)"
+  ],
+  "usage": {
+   "prompt_tokens": 1175,
+   "total_tokens": 1219,
+   "completion_tokens": 44,
+   "prompt_tokens_details": null,
+   "reasoning_tokens": 0,
+   "completion_tokens_details": {
+    "reasoning_tokens": 0
+   }
+  },
+  "at": "2026-11-09T18:08:37.624Z"
+ },
+ "response_body": "{\"id\":\"d9dbebfe3e1343b8a6e19c8a834038d8\",\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n\\\"risk\\\": \\\"none\\\",\\n\\\"summary\\\": \\\"Standard vault implementation with correct deposit/withdraw logic, balance checks, and refund handling. No malicious patterns detected.\\\",\\n\\\"findings\\\": []\\n}\"},\"finish_reason\":\"stop\",\"logprobs\":null,\"matched_stop\":248046}],\"model\":\"Qwen/Qwen3.8-27B\",\"created\":1794247716,\"usage\":{\"prompt_tokens\":1175,\"total_tokens\":1219,\"completion_tokens\":44,\"prompt_tokens_details\":null,\"reasoning_tokens\":0,\"completion_tokens_details\":{\"reasoning_tokens\":0}}}",
+ "at": "2026-11-09T18:08:37.625Z"
+}

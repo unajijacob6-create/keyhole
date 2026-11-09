@@ -92,3 +92,16 @@ describe("grade: verification and change flags", () => {
     expect(grade(input)).toEqual(grade(structuredClone(input)));
   });
 });
+
+describe("grade: AI review risk", () => {
+  const changed = { timestampMs: NOW - 2 * HOUR, source: "t", evidence: [] };
+  it("a high-risk AI review keeps a recent unverified change at STOP", () => {
+    const g = grade(base({ verification: { sourcescan: "none", reproducibleBuildMatch: null, aiReviewed: false, aiRisk: [{ risk: "high", summary: "adds owner-only sweep" }], evidence: [] }, lastChange: changed }));
+    expect(g.verdict).toBe("STOP");
+    expect(g.flags).toContain("AI_REVIEW_RISK");
+  });
+  it("a high-risk AI review alone (no recent change) is CAUTION, never OK", () => {
+    const g = grade(base({ verification: { sourcescan: "verified", reproducibleBuildMatch: null, aiReviewed: false, aiRisk: [{ risk: "high", summary: "x" }], evidence: [] } }));
+    expect(g.verdict).toBe("CAUTION");
+  });
+});

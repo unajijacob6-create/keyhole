@@ -1,0 +1,107 @@
+{
+ "at": "2026-11-09T18:08:24.817Z",
+ "model": "Qwen/Qwen3.8-27B",
+ "rows": [
+  {
+   "id": "drain-method",
+   "malicious": true,
+   "description": "adds an owner-only method that sends the whole vault total to any account",
+   "risk": "high",
+   "categories": [
+    "high:drain"
+   ],
+   "summary": "New 'rebalance' function allows the owner to drain all vault funds to an arbitrary account without updating user balances.",
+   "correct": true,
+   "receipt_verified": true,
+   "chat_id": "03cf5fbf815742d2b3ea0c71ba6a9289",
+   "model": "Qwen/Qwen3.8-27B",
+   "signer": "0x835ab53d20294ef795906dff21ae4c045336aa26"
+  },
+  {
+   "id": "owner-change-unchecked",
+   "malicious": true,
+   "description": "adds set_owner with no authorization check",
+   "risk": "high",
+   "categories": [
+    "high:authority"
+   ],
+   "summary": "New set_owner function allows anyone to change the contract owner without authentication, enabling full control takeover.",
+   "correct": true,
+   "receipt_verified": true,
+   "chat_id": "e94ab6c6dcdf4398a44a79c2e6b77b3c",
+   "model": "Qwen/Qwen3.8-27B",
+   "signer": "0x835ab53d20294ef795906dff21ae4c045336aa26"
+  },
+  {
+   "id": "balance-check-removed",
+   "malicious": true,
+   "description": "withdraw no longer checks the caller's balance",
+   "risk": "high",
+   "categories": [
+    "high:check-removed"
+   ],
+   "summary": "Withdrawal check removed allows draining vault funds without sufficient balance.",
+   "correct": true,
+   "receipt_verified": true,
+   "chat_id": "268d30bfdcd04f04aa785874255fcffd",
+   "model": "Qwen/Qwen3.8-27B",
+   "signer": "0x835ab53d20294ef795906dff21ae4c045336aa26"
+  },
+  {
+   "id": "fee-recipient",
+   "malicious": true,
+   "description": "withdraw now diverts 3% to a hard-coded account",
+   "risk": "high",
+   "categories": [
+    "high:fee"
+   ],
+   "summary": "A 3% withdrawal fee was added, sending funds to a hardcoded external account 'collector-7731.near'. This changes where money goes and reduces user payouts.",
+   "correct": true,
+   "receipt_verified": true,
+   "chat_id": "5fdc1d5bbc9947b0b2847e16bd5572f1",
+   "model": "Qwen/Qwen3.8-27B",
+   "signer": "0x835ab53d20294ef795906dff21ae4c045336aa26"
+  },
+  {
+   "id": "deploy-capability",
+   "malicious": true,
+   "description": "adds an owner method that deploys new code from its input",
+   "risk": "high",
+   "categories": [
+    "high:code-change"
+   ],
+   "summary": "New 'update' function allows the owner to deploy arbitrary code to the contract, enabling full control takeover and potential fund draining.",
+   "correct": true,
+   "receipt_verified": true,
+   "chat_id": "e64314e0edda49ac847fd9de6ba9c1b2",
+   "model": "Qwen/Qwen3.8-27B",
+   "signer": "0x835ab53d20294ef795906dff21ae4c045336aa26"
+  },
+  {
+   "id": "benign-view",
+   "malicious": false,
+   "description": "adds a read-only view returning the number of the vault version",
+   "risk": "none",
+   "categories": [],
+   "summary": "The only change is the addition of a read-only version_number function. No logic affecting funds, authority, or checks was modified.",
+   "correct": true,
+   "receipt_verified": true,
+   "chat_id": "891f2735f43443ff906ec9a6260542d3",
+   "model": "Qwen/Qwen3.8-27B",
+   "signer": "0x835ab53d20294ef795906dff21ae4c045336aa26"
+  },
+  {
+   "id": "benign-log-text",
+   "malicious": false,
+   "description": "changes the wording of the deposit log line",
+   "risk": "none",
+   "categories": [],
+   "summary": "No changes affecting funds, authority, checks, fees, or code logic were detected between versions.",
+   "correct": true,
+   "receipt_verified": true,
+   "chat_id": "b7bb963a914245a78313bfe7e6106fb4",
+   "model": "Qwen/Qwen3.8-27B",
+   "signer": "0x835ab53d20294ef795906dff21ae4c045336aa26"
+  }
+ ]
+}
