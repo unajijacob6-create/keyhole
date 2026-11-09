@@ -150,6 +150,11 @@ export async function guardCall<T>(accountId: string, call: GuardedCall, opts: G
     const net = await opts.hatch.provider.getNetworkId();
     if (net !== "testnet") throw new Error(`refused ${what}: auto-hatch is testnet-only and the provider is on ${net}`);
     if (!accountId.endsWith(".testnet")) throw new Error(`refused ${what}: auto-hatch is testnet-only and ${accountId} is not a .testnet account`);
+    // The key is added through the owner's own connection, so that must be testnet too.
+    const owner = opts.hatch.owner as { accountId: string; provider?: { getNetworkId?: () => Promise<string> } };
+    if (!owner.accountId.endsWith(".testnet")) throw new Error(`refused ${what}: auto-hatch is testnet-only and the owner ${owner.accountId} is not a .testnet account`);
+    const ownerNet = await owner.provider?.getNetworkId?.();
+    if (ownerNet !== undefined && ownerNet !== "testnet") throw new Error(`refused ${what}: auto-hatch is testnet-only and the owner's connection is on ${ownerNet}`);
   }
   const d = await decide(accountId, call, opts.policy, { inspect: opts.inspect, report: opts.report, pending: opts.pending });
   const glyph = d.verdict === "OK" ? "[OK]" : d.verdict === "CAUTION" ? "[!!]" : "[XX]";

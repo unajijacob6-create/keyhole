@@ -208,7 +208,9 @@ export async function checkPendingUpgrades(report: KeyholeReport, deps: PendingD
       if (upgradable) {
         try {
           const s = await stagedUpgrade(rpc, target);
-          if (s?.pending) {
+          // The exports say the staging views exist; no answer is "could not tell", not "nothing staged".
+          if (s === null) out.errors.push(`near-plugins staged code of ${target} could not be read (the staging view gave no answer)`);
+          else if (s.pending) {
             try {
               out.upgrades.push(pendingFromAssessment(await assessPending(assessDeps, { target, hash: s.staged_hash, staged: s }), null));
             } catch (e) {

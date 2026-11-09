@@ -51,6 +51,17 @@ describe("guardCall auto-hatch", () => {
     expect(execute).not.toHaveBeenCalled();
   });
 
+  it("refuses a non-testnet owner, and an owner whose own connection is not testnet, before anything is sent", async () => {
+    for (const tweak of [(o: any) => (o.accountId = "alice.near"), (o: any) => (o.provider = { getNetworkId: async () => "mainnet" })]) {
+      const { owner, hatch } = mocks();
+      tweak(owner);
+      const execute = vi.fn(async () => "TX");
+      await expect(guardCall("vault.testnet", { methodName: "deposit", deposit: 1n }, { execute, report: report("OK"), hatch, ...quiet })).rejects.toThrow(/testnet-only/);
+      expect(execute).not.toHaveBeenCalled();
+      expect(owner.addFullAccessKey).not.toHaveBeenCalled();
+    }
+  });
+
   it("a STOP refuses before execute and never adds a key", async () => {
     const { owner, hatch } = mocks();
     const execute = vi.fn();

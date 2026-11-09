@@ -18,8 +18,7 @@ import {
   type Verdict,
 } from "../../core/src/index.ts";
 import { assessPending, type AssessDeps, type Assessment } from "../../../guardian/src/assess.ts";
-import { resolveController } from "../../../guardian/src/radar.ts";
-import { decide, pendingFromAssessment, type PendingCheck, type PendingUpgrade } from "../../guard/src/index.ts";
+import { controllersOf, decide, pendingFromAssessment, type PendingCheck, type PendingUpgrade } from "../../guard/src/index.ts";
 import { decodeHatch, verifyHatch, type Hatch } from "../../hatch/src/index.ts";
 
 export interface McpDeps {
@@ -204,7 +203,10 @@ const pendingTool: ToolDef = {
     let daos: string[];
     let upgradable = false;
     if (a.contract) {
-      const c = await resolveController(a.contract, { network, rpc });
+      // Same controller rule as keyhole_check_call (inspect with source-declared roles), so the two
+      // tools cannot disagree about which DAOs to search.
+      const r = await inspect(a.contract, { network, rpc, history: false, registry: deps.registry ? undefined : false, sourceRoles: deps.sourceRoles ? undefined : false, nowMs });
+      const c = controllersOf(r);
       daos = c.daos;
       upgradable = c.upgradable;
     } else daos = [a.dao!];

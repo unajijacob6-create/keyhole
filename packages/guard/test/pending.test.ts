@@ -130,6 +130,13 @@ describe("guardCall pending-upgrade check", () => {
     expect(c.upgrades[0]).toMatchObject({ pending_hash: null, proposal_kind: "FunctionCall" });
   });
 
+  it("staging views exported but unanswerable (e.g. the view panics): CAUTION, not 'nothing staged'", async () => {
+    const { pending } = setup([], [], { views: { [DAO]: daoViews([]) } });
+    const c = await checkPendingUpgrades(report({ exports: ["deposit", "get_owner", "up_staged_code_hash", "up_deploy_code"] }), pending);
+    expect(c.verdict).toBe("CAUTION");
+    expect(c.errors.join(" ")).toMatch(/staged code of .* could not be read/);
+  });
+
   it("near-plugins staged code that differs from live is graded too", async () => {
     const h = await codeHash(SWEEP);
     const { pending } = setup([], [], { views: { [DAO]: daoViews([]), [VAULT]: { up_staged_code_hash: h } }, raw: { [VAULT]: { up_staged_code: borshSome(SWEEP) } } });
