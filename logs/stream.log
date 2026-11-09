@@ -31,3 +31,4 @@
 [watch] mainnet: 4218 blocks behind; skipping to head 223,824,061 (blocks 223819843–223824060 not scanned)
 [watch] block 223,824,521  joulity-pendle.near  DeployContract (transaction)  new code B7JFox…
 [watch] mainnet at block 223,824,531 (head 223,824,721, lag 190); scanned 8259, skipped 8979 blocks; 13 event(s); neardata 10080 req, 1788 rate-limited
+[watch] mainnet at block 223,824,994 (head 223,825,544, lag 550); scanned 8722, skipped 8979 blocks; 13 event(s); neardata 10655 req, 1898 rate-limited
