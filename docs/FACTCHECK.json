@@ -1,0 +1,1620 @@
+{
+ "startedAt": "2026-11-09T17:08:44.408Z",
+ "rpc": "https://rpc.mainnet.fastnear.com",
+ "atBlock": 223796044,
+ "rpcCalls": 316,
+ "findings": [
+  {
+   "id": "sourcescan.count",
+   "claim": "SourceScan holds 110 verified mainnet contracts",
+   "result": "get_contracts_count = 110 (listed 110)",
+   "status": "confirmed",
+   "evidence": "near view v2-verifier.sourcescan.near get_contracts_count"
+  },
+  {
+   "id": "sourcescan.stale",
+   "claim": "49/110 (45%) run code different from the verified hash; none of the new hashes is verified anywhere",
+   "result": "25/110 run different code (23%), of which 0 via a global contract; new hash verified elsewhere in SourceScan: 0; no longer running verified code at all (stale+no code+deleted): 37; states {\"MATCH\":73,\"STALE\":25,\"NO_CODE\":3,\"DELETED\":9}",
+   "status": "changed",
+   "evidence": "get_contracts + view_account per entry @ block 223796044"
+  },
+  {
+   "id": "sourcescan.named",
+   "claim": "Stale entries include intents.near, venear.dao, vote.dao, lst.rhealab.near, btc-connector.bridge.near, zcash-client.bridge.near",
+   "result": "intents.near=STALE, venear.dao=STALE, vote.dao=STALE, lst.rhealab.near=STALE, btc-connector.bridge.near=STALE, zcash-client.bridge.near=STALE",
+   "status": "confirmed",
+   "evidence": "same query"
+  },
+  {
+   "id": "sourcescan.method",
+   "claim": "SourceScan exposes get_contracts_by_code_hash",
+   "result": "works; 3 account(s) for 2TrD9zdW…",
+   "status": "confirmed",
+   "evidence": "near view v2-verifier.sourcescan.near get_contracts_by_code_hash"
+  },
+  {
+   "id": "sample.build_info",
+   "claim": "7/24 publish NEP-330 build_info",
+   "result": "7/24: v1.signer, token.sweat, sputnik-dao.near, omni.bridge.near, lst.rhealab.near, npro.nearmobile.near, intents.near",
+   "status": "confirmed",
+   "evidence": "contract_source_metadata per account"
+  },
+  {
+   "id": "sample.fak",
+   "claim": "7/24 hold full-access keys on the contract account; native USDC 1, game.hot.tg 66",
+   "result": "7/24: 17208628…(1), aurora(1), sputnik-dao.near(3), social.near(1), game.hot.tg(66), x.paras.near(1), tkn.near(1)",
+   "status": "confirmed",
+   "evidence": "view_access_key_list per account"
+  },
+  {
+   "id": "sample.missing",
+   "claim": "No build_info: v2.ref-finance, burrow, wrap, meta-pool, usdt, native USDC, priceoracle",
+   "result": "7/7 still without build_info",
+   "status": "confirmed",
+   "evidence": "contract_source_metadata"
+  },
+  {
+   "id": "top50",
+   "claim": "Of the top 50 NEP-141 tokens only 8 run SourceScan-verified code; 27 lack NEP-330",
+   "result": "8/50 run a code hash present in SourceScan; 27/50 lack contract_source_metadata",
+   "status": "confirmed",
+   "evidence": "token list from research notes (ranking not re-derived)"
+  },
+  {
+   "id": "wasm.defi",
+   "claim": "Major DeFi contracts import promise_batch_action_deploy_contract and export an upgrade-like method",
+   "result": "7/7: intents.near[imp|state_migrate,upgrade] v2.ref-finance.near[imp|upgrade,migrate] contract.main.burrow.near[imp|upgrade,update_contract_mode] meta-pool.near[imp|migrate,upgrade] linear-protocol.near[imp|upgrade,migrate] usdt.tether-token.near[imp|upgrade,upgrade_name_symbol] dclv2.ref-labs.near[imp|upgrade,migrate]",
+   "status": "confirmed",
+   "evidence": "view_code → WebAssembly.Module.imports/exports"
+  },
+  {
+   "id": "wasm.wrap",
+   "claim": "wrap.near imports deploy but exports no upgrade method",
+   "result": "deployImport=true upgradeExports=[]",
+   "status": "confirmed",
+   "evidence": "view_code wrap.near"
+  },
+  {
+   "id": "wasm.perf",
+   "claim": "Node can fetch and compile big NEAR wasm",
+   "result": "intents.near 1267 KiB: view_code 247 ms, WebAssembly.Module 3 ms (Node v22.23.4)",
+   "status": "confirmed",
+   "evidence": "timed in this run"
+  },
+  {
+   "id": "view_state",
+   "claim": "Public RPC rejects view_state on large contracts (TOO_LARGE_CONTRACT_STATE)",
+   "result": "intents.near: TOO_LARGE_CONTRACT_STATE; wrap.near: TOO_LARGE_CONTRACT_STATE; wrap.near with limit=5: 5 values, last_key=yes; node 2.14.0, protocol 88",
+   "status": "changed",
+   "evidence": "https://rpc.mainnet.fastnear.com view_state prefix \"\" with and without limit"
+  },
+  {
+   "id": "global.live",
+   "claim": "Global contracts are in use on mainnet",
+   "result": "12 SourceScan-listed accounts run a global contract: vault2.ft-lockup.near(global-hash), 0xe9b749e48da92db916b058f05fc953ce0a2ee363-eth.aa-dew.near(global-hash), subdued-snow-round-cliff.ft-lockup.near(global-hash), treasury-testing-round1-postcliff.ft-lockup.near(global-hash)",
+   "status": "confirmed",
+   "evidence": "view_account.global_contract_hash / global_contract_account_id"
+  },
+  {
+   "id": "global.fields",
+   "claim": "Global-contract fields in view_account and host functions",
+   "result": "AccountView has global_contract_hash / global_contract_account_id (omitted when unset; code_hash = 1111… for global users). Host fns: promise_batch_action_{deploy_global_contract,deploy_global_contract_by_account_id,use_global_contract,use_global_contract_by_account_id}",
+   "status": "confirmed",
+   "evidence": "nearcore master core/primitives/src/views.rs, runtime/near-vm-runner/src/imports.rs (fetched 2026-11-09)"
+  },
+  {
+   "id": "neardata",
+   "claim": "neardata.xyz serves final blocks for mainnet and testnet",
+   "result": "mainnet: HTTP 200 height 223796075 shards 10 (860 ms); testnet: HTTP 200 height 276948806 shards 10 (1363 ms)",
+   "status": "confirmed",
+   "evidence": "GET /v0/last_block/final"
+  },
+  {
+   "id": "rustle",
+   "claim": "Rustle (only NEAR static analyzer) last commit 2023-07-10",
+   "result": "last commit error 403",
+   "status": "unverified",
+   "evidence": "api.github.com/repos/blocksecteam/rustle/commits"
+  },
+  {
+   "id": "issues",
+   "claim": "NearBlocks #1610 closed Aug 2026 (locked banner); #1175 open (deploy code hash); btc-bridge #78 rebuild mismatch",
+   "result": "Nearblocks/nearblocks#1610: error 403 \"\" | Nearblocks/nearblocks#1175: error 403 \"\" | Near-One/btc-bridge#78: error 403 \"\"",
+   "status": "unverified",
+   "evidence": "api.github.com issues (state only; read the text by hand)"
+  }
+ ],
+ "raw": {
+  "sourcescan": {
+   "count": 110,
+   "listed": 110,
+   "byState": {
+    "MATCH": 73,
+    "STALE": 25,
+    "NO_CODE": 3,
+    "DELETED": 9
+   },
+   "rows": [
+    {
+     "id": "buidtest.agruzdev.near",
+     "verified": "2TrD9zdWAeXtcRJ4oyHph5c64h82gCKjoZnFt4Qi5jwk",
+     "current": "2TrD9zdWAeXtcRJ4oyHph5c64h82gCKjoZnFt4Qi5jwk",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "v2-verifier.sourcescan.near",
+     "verified": "CTAdcyjBE67ottnvLFGDp6DQ5hXXRir8WisLjn9s48GT",
+     "current": "CTAdcyjBE67ottnvLFGDp6DQ5hXXRir8WisLjn9s48GT",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "buildtest-2.agruzdev.near",
+     "verified": "8UF8daKa6R6aDzeZG5W5tmaiKJ6MQZrjB83cUZo4hwUV",
+     "current": "8UF8daKa6R6aDzeZG5W5tmaiKJ6MQZrjB83cUZo4hwUV",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "buildtest-3.agruzdev.near",
+     "verified": "5n3hPJfT191Bq6Qf15C8cm1gj5YimGGLZAKBJhF86HaN",
+     "current": "5n3hPJfT191Bq6Qf15C8cm1gj5YimGGLZAKBJhF86HaN",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "buildtest-5.agruzdev.near",
+     "verified": "2TrD9zdWAeXtcRJ4oyHph5c64h82gCKjoZnFt4Qi5jwk",
+     "current": "2TrD9zdWAeXtcRJ4oyHph5c64h82gCKjoZnFt4Qi5jwk",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "buildtest-4.agruzdev.near",
+     "verified": "2TrD9zdWAeXtcRJ4oyHph5c64h82gCKjoZnFt4Qi5jwk",
+     "current": "2TrD9zdWAeXtcRJ4oyHph5c64h82gCKjoZnFt4Qi5jwk",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "devhub.near",
+     "verified": "AUHmE71SPjnq8S3EW7m8ompfVBJxwCt4YfVvFLHtvVnr",
+     "current": "EauRt8UydofJitWuttov1zPpcxRKhBLCttYUzw62Diaq",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "birthday-quest.near",
+     "verified": "CG29FtpboZZ4aKroRq444hHwCBpZdXqTSBMXC7fGF2Xh",
+     "current": "CG29FtpboZZ4aKroRq444hHwCBpZdXqTSBMXC7fGF2Xh",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "dev-unaudited-v0.oracle.intear.near",
+     "verified": "8W4P3awK3jY7DqMSUVo6keBhqCmEDyNXZj2cbv4viAvo",
+     "current": "8W4P3awK3jY7DqMSUVo6keBhqCmEDyNXZj2cbv4viAvo",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "gpt-reclaim.oracle.intear.near",
+     "verified": "kPGbQ9Et95q4ndQuwEiqQNWrSwqW4yRwUSd8gd1KT63",
+     "current": "kPGbQ9Et95q4ndQuwEiqQNWrSwqW4yRwUSd8gd1KT63",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "shit.0xshitzu.near",
+     "verified": "4pfFmofW6LUjSqFTrqfcutgoroVFYBm8M7RMrEhQoCMN",
+     "current": "EMUPaTA6saAbf5S7ffLSQ7nD7a3gb6UVatVK7HWCW1TN",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "dev-unaudited-v1.oracle.intear.near",
+     "verified": "2DZT6e6JY3gJdbDuYfcHyGxr6k2w8B9dZqjenepKjMBB",
+     "current": "5c9JkujwezwzKygdb2p7fmPsknHbAi5SKS1NZ6hNGWuD",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "9873182a141cc2212b902f59ce26bf815eb63ebf6a7d1c02920f0cdb2572b2f6",
+     "verified": "4kb1EJyk4QTqa8Bd9DTGt7DDwvEbrdoPDUESiVKrXoHF",
+     "current": "4kb1EJyk4QTqa8Bd9DTGt7DDwvEbrdoPDUESiVKrXoHF",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "pyth-oracle.near",
+     "verified": "EPb64c8r61hbJBPsPdzsZ8Ui2JfBQ9Z2pXXcLDfN2Khm",
+     "current": "EPb64c8r61hbJBPsPdzsZ8Ui2JfBQ9Z2pXXcLDfN2Khm",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "omni.bridge.near",
+     "verified": "F2no3vqrFxm2c34mZqoMNawhRYYHbp22WuRqN6vEd3KP",
+     "current": "F2no3vqrFxm2c34mZqoMNawhRYYHbp22WuRqN6vEd3KP",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "linkoftrust.near",
+     "verified": "75YwynLeE2b7eZfFeXmt8P9Gp8uDCuhkLevKv4ZWN5zq",
+     "current": "75YwynLeE2b7eZfFeXmt8P9Gp8uDCuhkLevKv4ZWN5zq",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "rug-testing.near",
+     "verified": "CSgrNGhZnirFB3qD4c1KxspePkmfzoz6QDDWJrKm8NTn",
+     "current": "11111111111111111111111111111111",
+     "via": "local",
+     "state": "NO_CODE"
+    },
+    {
+     "id": "hello.sleet.near",
+     "verified": "F6GotjLMgrzagSGDxwkuayEkgjbbAgyRCRZF5DWJDxxk",
+     "current": "81HveEUFDnhpJS45nGDNJmsqSEY6b9vjHPMpr76D2awH",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "eth-prover.bridge.near",
+     "verified": "4F64Df8EEWU89KAYPaTnjuNoH2amyxFs69MSaV8yWiyE",
+     "current": "4F64Df8EEWU89KAYPaTnjuNoH2amyxFs69MSaV8yWiyE",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "eth.bridge.near",
+     "verified": "BAXeraU3Qrr35pYzABPk5ufdMMuLAuFj64sSvYAPajWT",
+     "current": "BAXeraU3Qrr35pYzABPk5ufdMMuLAuFj64sSvYAPajWT",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "steak-finance.near",
+     "verified": "2eERn6pAuQUyzeRc9PoVczjfVbqizekU54t8EuUp1evC",
+     "current": "BDKCrfPk247rnQBhH61CZygkbJUrt8qwKrzfrzWGLD7Q",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "web3stick.near",
+     "verified": "AdTsiipPP5ju1okSMF6tVymYv9G5ZbkXFeaHHdny2e1r",
+     "current": "AdTsiipPP5ju1okSMF6tVymYv9G5ZbkXFeaHHdny2e1r",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "vaa-prover-0_2_7.bridge.near",
+     "verified": "vNixSUhaUzMSDC9qdvzkHYGc3KNActmBDE3gQLvmJ1A",
+     "current": "vNixSUhaUzMSDC9qdvzkHYGc3KNActmBDE3gQLvmJ1A",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "eth-prover-0_2_7.bridge.near",
+     "verified": "D4PcyzsSn3XU4CzXJJycjLe3YyRfNphxYNmveeK6Y2Hf",
+     "current": "D4PcyzsSn3XU4CzXJJycjLe3YyRfNphxYNmveeK6Y2Hf",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "client-eth2.bridge.near",
+     "verified": "C34bk5hjnmVQRD8f5YTiwPzh8A64iKe3wkTNaaxPhUts",
+     "current": "C34bk5hjnmVQRD8f5YTiwPzh8A64iKe3wkTNaaxPhUts",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "reduce-inflation.near",
+     "verified": "9PDVk5efoLpqt62u2mRJKUVA1nmp24Cn1qpUcxZ53fMM",
+     "current": "9PDVk5efoLpqt62u2mRJKUVA1nmp24Cn1qpUcxZ53fMM",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "token.rhealab.near",
+     "verified": "3XbB1xkQTNFhtizVSCNW5xM9MyuF3AYhFKc8HAPc3pdx",
+     "current": "3XbB1xkQTNFhtizVSCNW5xM9MyuF3AYhFKc8HAPc3pdx",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "token.publicailab.near",
+     "verified": "DywPnhCLPp9ez4hi59UWS53DPZRYojEnbhrLC1rT7PH7",
+     "current": "DywPnhCLPp9ez4hi59UWS53DPZRYojEnbhrLC1rT7PH7",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "ibtc-usdt.templar-alpha.near",
+     "verified": "HY5AVfKmby6ftg5PkX3P26XnUn5LJHRcrXFsiKv2Tojd",
+     "current": "HY5AVfKmby6ftg5PkX3P26XnUn5LJHRcrXFsiKv2Tojd",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "ibtc-usdc.v1.tmplr.near",
+     "verified": "mnDdmVzCejRwe6J7v981vYixroptYJJuLAzLXYZB5YD",
+     "current": "mnDdmVzCejRwe6J7v981vYixroptYJJuLAzLXYZB5YD",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "stnear-usdc.v1.tmplr.near",
+     "verified": "mnDdmVzCejRwe6J7v981vYixroptYJJuLAzLXYZB5YD",
+     "current": "mnDdmVzCejRwe6J7v981vYixroptYJJuLAzLXYZB5YD",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "raredrop.near",
+     "verified": "9psjkYyY2zPx8M6Veh1saqkDreGeBTVccir1UdS59DH9",
+     "current": "9psjkYyY2zPx8M6Veh1saqkDreGeBTVccir1UdS59DH9",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "vaa-prover-0_2_12.bridge.near",
+     "verified": "FFhezN1Dgu91YuZz7PziXQCaECPpUb99L9Fef7ss4Coj",
+     "current": "FFhezN1Dgu91YuZz7PziXQCaECPpUb99L9Fef7ss4Coj",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "lst100.ref-dev-team.near",
+     "verified": "7hMoiiMNhA9DxmUf2zWXbAXusYvqrepkjaumxLyn6E7V",
+     "current": "9HT36YaCd6XaXh41Pqh7ZijrnZPnmia52oVXdgUpSJ5N",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "lst.rhealab.near",
+     "verified": "7hMoiiMNhA9DxmUf2zWXbAXusYvqrepkjaumxLyn6E7V",
+     "current": "EPLT4C61pkVYf5Km6dC4X9x5PMo6rfBwuEwo7vgKpmuv",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "zcash-client.bridge.near",
+     "verified": "Bvs2ceWFxv9i5T3a9MMf3qPBqzM3BU3g5No2e6mNXuhM",
+     "current": "6kwZQAJ2fHi23MCJN9CYrNu3YxgcRUqDZjNo1LN3U2av",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "near",
+     "verified": "HiyC5tB1gBDpgR4x1guEp1orBde5PXqUYGoWaZfX3JGX",
+     "current": "HiyC5tB1gBDpgR4x1guEp1orBde5PXqUYGoWaZfX3JGX",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "ft-lockup.near",
+     "verified": "CgPu9G7GWsUGusca8Go5onZCcCyHVB7jJEbrpd35xLg4",
+     "current": "CgPu9G7GWsUGusca8Go5onZCcCyHVB7jJEbrpd35xLg4",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "vault2.ft-lockup.near",
+     "verified": "GXiWVUxgNZvu94oFirzgthiLjiGiZzUMm1meEhNZjtMz",
+     "current": "GXiWVUxgNZvu94oFirzgthiLjiGiZzUMm1meEhNZjtMz",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "aa-dew.near",
+     "verified": "5sStkMrCpXyaqK3YicAtEqCKLjseWJS1TJHCYPq6gQDx",
+     "current": "C5wWKwqJQ6PssrzGzTe1JJ145dz1ePUzgczMGvDbhmvC",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "0xe9b749e48da92db916b058f05fc953ce0a2ee363-eth.aa-dew.near",
+     "verified": "3oVFufhS5oA4xoDmpahSiaHH8DMnw3snwTQkMSg5s7EH",
+     "current": "3oVFufhS5oA4xoDmpahSiaHH8DMnw3snwTQkMSg5s7EH",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "mpdao-token.near",
+     "verified": "5JBRxCY8oZfAhHPwrh81ZuBH2zWs4vUVA8WZwanzESH7",
+     "current": "5JBRxCY8oZfAhHPwrh81ZuBH2zWs4vUVA8WZwanzESH7",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "slimedrop.intearstaging.near",
+     "verified": "Dq3WEn352jmp4RovZDZ7mCmrjRvdDcD59Wm6XBGLJUcp",
+     "current": "Dq3WEn352jmp4RovZDZ7mCmrjRvdDcD59Wm6XBGLJUcp",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "slimedrop.intear.near",
+     "verified": "sG8VhW3u8Ma3B2WVUeHzQjDTsmVgL1hfX5jdCTuaZif",
+     "current": "HqD26JSmQfvMCamwEKQvvVqDpyMRE6HKcaktiFDB6Bb8",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "subdued-snow-round-cliff.ft-lockup.near",
+     "verified": "GXiWVUxgNZvu94oFirzgthiLjiGiZzUMm1meEhNZjtMz",
+     "current": "GXiWVUxgNZvu94oFirzgthiLjiGiZzUMm1meEhNZjtMz",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "treasury-testing-round1-postcliff.ft-lockup.near",
+     "verified": "GXiWVUxgNZvu94oFirzgthiLjiGiZzUMm1meEhNZjtMz",
+     "current": "GXiWVUxgNZvu94oFirzgthiLjiGiZzUMm1meEhNZjtMz",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "first.slimytest.near",
+     "verified": "8D1NEU2NC2hKhdtCkHyyAz2KVmVXRazm9ZQMC27D97jF",
+     "current": "8D1NEU2NC2hKhdtCkHyyAz2KVmVXRazm9ZQMC27D97jF",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "ibtc-usdc-1.v1.tmplr.near",
+     "verified": "3wnUgNWhm9S7ku3bLH5mruogiBWAdpJXJCzKNonYXZrW",
+     "current": "3wnUgNWhm9S7ku3bLH5mruogiBWAdpJXJCzKNonYXZrW",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "itlx.intellex_xyz.near",
+     "verified": "HMuE3LTMeEoNo4eJ7jfP92vJCUxQUHqsQBFCcLiQaR2f",
+     "current": "HMuE3LTMeEoNo4eJ7jfP92vJCUxQUHqsQBFCcLiQaR2f",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "venear.dao",
+     "verified": "DonQkN2bx4bqwrUM3fVuajYutVRj3CGJacYfUzcwk4gL",
+     "current": "3pGv1pvYnWBX3WZsxb53wu2Ws7NRLYnWiWdQk44yTpNk",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "vote.dao",
+     "verified": "H1Atga3E44asgLkWGmHwqiVkQKG7wHfe8NcZgChUwH5z",
+     "current": "6tquw22BwFDJKrdt3Bde7dgQysLmwEsybZjttCncbFGr",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "btc-connector.bridge.near",
+     "verified": "9MnRb57zRZoABLQBv9u3fYqc6mQVDMjAKutcr8iQFugK",
+     "current": "H5mH14wdLG6uRZsSCXJaDMnuatAztuWNSNbXxHnigZ29",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "93b787ac14f6.user0.tmplr.near",
+     "verified": "8zXRhwZSdGxtgxYDnyxFCGXTDBhZ2ovZUgaKhmi3LLce",
+     "current": "8zXRhwZSdGxtgxYDnyxFCGXTDBhZ2ovZUgaKhmi3LLce",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "staging-intents.near",
+     "verified": "BkbeAqwqV8Y9x9v8WtbXCnV3KZkppQ953DkovtgQKCcG",
+     "current": "BtA1BEFNS619KkvXFsgcpQ21Tb5yMm32aaUkn7xNothk",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "intents.near",
+     "verified": "EHTzkKyabhTGuKpvET5hBi7xPdKacuesMc91dDGkWvqb",
+     "current": "BtA1BEFNS619KkvXFsgcpQ21Tb5yMm32aaUkn7xNothk",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "v1.tmplr.near",
+     "verified": "DaudmUa3nAym9dfQkn8mpNPZxkphSRGwEaTMgtymVhFE",
+     "current": "DdnT8AYjU3rEjwZUjm4MRJP1x5TW4ypTnDjBXqYyht4N",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "sova-vault-zec.near",
+     "verified": "578Tw7j8CmPgd6xoEZv4a3SdNiRtTLy5XquA6CxoCbzZ",
+     "current": "578Tw7j8CmPgd6xoEZv4a3SdNiRtTLy5XquA6CxoCbzZ",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "sova-vault-usdc.near",
+     "verified": "578Tw7j8CmPgd6xoEZv4a3SdNiRtTLy5XquA6CxoCbzZ",
+     "current": "578Tw7j8CmPgd6xoEZv4a3SdNiRtTLy5XquA6CxoCbzZ",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "v1.signer",
+     "verified": "DAE5ng4ZFR2ctMx9SizQBqmGkVbKUutgZ4ZECD4R8Sm9",
+     "current": "DAE5ng4ZFR2ctMx9SizQBqmGkVbKUutgZ4ZECD4R8Sm9",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "nbtc.bridge.near",
+     "verified": "4ELM6EPYWg9NXHGkYHPqeGFBrGCs4vQMZf7pMFQAnP4H",
+     "current": "4ELM6EPYWg9NXHGkYHPqeGFBrGCs4vQMZf7pMFQAnP4H",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "nzec.bridge.near",
+     "verified": "GtmZ6FMxRCN7KcANFDaNmR5JK2rusKAeyGaDSFTNoWvx",
+     "current": "GtmZ6FMxRCN7KcANFDaNmR5JK2rusKAeyGaDSFTNoWvx",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "zcash-connector.bridge.near",
+     "verified": "7fMkmCL8UW9EQxappkKYNB8ubarQZBUJeMRBFd6PcwAR",
+     "current": "7fMkmCL8UW9EQxappkKYNB8ubarQZBUJeMRBFd6PcwAR",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "izec-isolusdc.v1.tmplr.near",
+     "verified": "EZQai5P4VUWuyF1VCCoSCdR6nBLtNkS5UQMAJaFhHRyh",
+     "current": "EZQai5P4VUWuyF1VCCoSCdR6nBLtNkS5UQMAJaFhHRyh",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "ibtc-iethusdc.v1.tmplr.near",
+     "verified": "3wnUgNWhm9S7ku3bLH5mruogiBWAdpJXJCzKNonYXZrW",
+     "current": "3wnUgNWhm9S7ku3bLH5mruogiBWAdpJXJCzKNonYXZrW",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "rewards-claims-staging.near",
+     "verified": "FMgQ6iPcerbU6whoDpYrj9LbMRBEnPV3brvgmHWCMqMA",
+     "current": "FMgQ6iPcerbU6whoDpYrj9LbMRBEnPV3brvgmHWCMqMA",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "dex.intear.near",
+     "verified": "5Yvcfm3cH7V83bcHdxyx4U1cGP7LUJCRoGxyL7JH8rio",
+     "current": "CLBEw7mNh3vZTiqfscoFTbPfJbQkMtJxyApRJC7yVver",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "vaa-prover-0_4_3.bridge.near",
+     "verified": "5DZaUReBi1dmU7QnF7LGyt4gUz3GqWoYNGyZivVQPaDc",
+     "current": "5DZaUReBi1dmU7QnF7LGyt4gUz3GqWoYNGyZivVQPaDc",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "vaa-prover-0_4_1.bridge.near",
+     "verified": "HG7ytDfF68cok6z72qn9un8C5C7HoTZcfdpVyC6Vs7DA",
+     "current": "HG7ytDfF68cok6z72qn9un8C5C7HoTZcfdpVyC6Vs7DA",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "kernel-usdt.meteor-vaults.near",
+     "verified": "36E2TZP6jKjhxWPzXqo4vq9cAazHAHjYHmFEKbcxtQ3Z",
+     "current": "36E2TZP6jKjhxWPzXqo4vq9cAazHAHjYHmFEKbcxtQ3Z",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "penmt.mettal.near",
+     "verified": "CW6MtbnqzvDRPMgm6PLMJopj1DdqEA5MNZKFLm5ZdLVN",
+     "current": "CW6MtbnqzvDRPMgm6PLMJopj1DdqEA5MNZKFLm5ZdLVN",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "0s384bfa53f1718c7f53eaaa1b43c55e2aea3ef309",
+     "verified": "8JK2g3kr7qCbRDBmoLx7c9Zrz9TxPdANP7ocbQGE2fqP",
+     "current": "8JK2g3kr7qCbRDBmoLx7c9Zrz9TxPdANP7ocbQGE2fqP",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "0sa8247564c6774a33b975a053fc4fbebbd869772d",
+     "verified": "8JK2g3kr7qCbRDBmoLx7c9Zrz9TxPdANP7ocbQGE2fqP",
+     "current": "8JK2g3kr7qCbRDBmoLx7c9Zrz9TxPdANP7ocbQGE2fqP",
+     "via": "global-account:0s384bfa53f1718c7f53eaaa1b43c55e2aea3ef309",
+     "state": "MATCH"
+    },
+    {
+     "id": "jau.sputnik-dao.near",
+     "verified": "DtHZA1mUmGYeScEaUoUZYQGGFHSMpnjMCvkr5U9hJXuF",
+     "current": "DtHZA1mUmGYeScEaUoUZYQGGFHSMpnjMCvkr5U9hJXuF",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "v2.jars.sweat",
+     "verified": "BUGvDtNuM2i4gQWTR66QnTTN3vxy8HDuq4LHPPQjLZtJ",
+     "current": "3SLT218pCZKMG2ThLAgndWWSLNccmnK2BuaSrJTan3tc",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "btc-client.bridge.near",
+     "verified": "81zF3U2T1FAXF4P5exJGpW4RB5GDZdALWTu7Ucdnst7k",
+     "current": "D33CUc5cPxYyfNbv1yXyEcKhDsvwCusqAjADvGJ9tPUg",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "ibtc-iethusdc-1.v1.tmplr.near",
+     "verified": "5NKzRJBdN8dwVScdwrjP8C2FHwVvXA3msts7jVk4WNza",
+     "current": "7WUFT7JR2mbKhQkPNedLL3ZZ28arqbwAFFubaMQpRpPW",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "vote.degenhostest.near",
+     "verified": "3EQVh473RLhdFa2LAAij3Ge5Hiy9ZpMRMX7co7TdruEG",
+     "current": "3x5egxWjVzi1QTgdr88fwm7ypeywvPMBc8D7GxCtt3mX",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "happy-birthday-vlad.near",
+     "verified": "BqVgKAwheXQwXtNnz4wH2u5HbprF4x4hmiu6vw83nhwg",
+     "current": "11111111111111111111111111111111",
+     "via": "local",
+     "state": "NO_CODE"
+    },
+    {
+     "id": "usdcc-token.gemsrock-nft.near",
+     "verified": "4s6WGJWCK5SmP7KyUiD8wRxSGKCheJowF67EUccontoN",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "e85f23b81ab3edbdf4c0e5fd889eed50cc2bd465c57c67b71105741ac1b8ceda",
+     "verified": "AV74oDUUSmPm8WiW6SSn1GjZxsGmgKjcBEBfpVi5wVxx",
+     "current": "AwLEfgaHQguPVVLGUV9Sf5QKGrMMMr2N6MVSjBj9dJAh",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "monad-bridge.gemsrock-nft.near",
+     "verified": "3f616v7ZcDt4KD15X6Wu9ky57QStwYZjahJG5WSFaDd6",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "flame-token.gemsrock-nft.near",
+     "verified": "82zhtNat7h1zBYj9MsN9ED1ZBzBBSV945BcV8gESVXDM",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "vaa-prover-0_4_10.bridge.near",
+     "verified": "EVt53GHNbyyB8ws2DaQuiBihGKNW2TLJ1MVVTzvhmJZ1",
+     "current": "EVt53GHNbyyB8ws2DaQuiBihGKNW2TLJ1MVVTzvhmJZ1",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "sputnik-dao.near",
+     "verified": "BXd5idTXSnC7WRfxHmi7z4crw2F5WXQJ6MZUEv8DfnnY",
+     "current": "BXd5idTXSnC7WRfxHmi7z4crw2F5WXQJ6MZUEv8DfnnY",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "token.sweat",
+     "verified": "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi",
+     "current": "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "bulkpayment.near",
+     "verified": "8M2TGZX7H6tj9cYdboHFhg6xPjRTwuWqx5o5K3Tga1Tg",
+     "current": "AT3UuqjRY16eNb4Stn79LytKSFDDramtGZKcBxr8wQmN",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "mpc-prover-0_4_12.bridge.near",
+     "verified": "5xRLWfHuXY8QUZxoqXGEpjK6XkX3Uzbj9KMmVghVN8xp",
+     "current": "5xRLWfHuXY8QUZxoqXGEpjK6XkX3Uzbj9KMmVghVN8xp",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "0se5eba21e8f191e1880e453794bc551dfa50a3419",
+     "verified": "HMzKfo8p8McQvrC8rk6y4c7n1QcrfQNjS9hV5Un355gK",
+     "current": "HMzKfo8p8McQvrC8rk6y4c7n1QcrfQNjS9hV5Un355gK",
+     "via": "global-account:0s32a5a14fe27b132f13eeacb99ba12fb77f6c4cda",
+     "state": "MATCH"
+    },
+    {
+     "id": "sol.omft.near",
+     "verified": "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+     "current": "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "proxy-gov-stnear-usdt.v1.tmplr.near",
+     "verified": "5MY2SVPLaVLnu5cz6SKPAt4Z7EUVbhVAms3wrs8xrGzD",
+     "current": "5MY2SVPLaVLnu5cz6SKPAt4Z7EUVbhVAms3wrs8xrGzD",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "pull-verifier.atlas-oracle.near",
+     "verified": "GFn74LomybZJuEYSTvjVuc3PiEsKYHtDBLnFWDsiHaJC",
+     "current": "GFn74LomybZJuEYSTvjVuc3PiEsKYHtDBLnFWDsiHaJC",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "multi-feed-qa-1.atlas-oracle.near",
+     "verified": "FB2NiDDH1Eb6j58Vbo6RSmvahU2WRrRMiUdMLjVSLzpy",
+     "current": "FB2NiDDH1Eb6j58Vbo6RSmvahU2WRrRMiUdMLjVSLzpy",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "test-multisig.atlas-oracle.near",
+     "verified": "ArZRWghUVfauPdoRJzXrzmYMiZjx6cUREBZdHHsfCU4K",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "cnear.assetize.near",
+     "verified": "ELVaZkMaESFsRDPoPuR2L68Kvpm4xhwGSpcTSDBpSjAy",
+     "current": "MvMsH1Uhos675XuPEepcFgqk7ETHvykWXUqTKsnnf9U",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "registrar",
+     "verified": "6LjaMFkmxabCcjnopbJueCJkT2q4oypsfhrMH1VkpGmm",
+     "current": "DGpi3vGXeiJJ6gps8t5CDcDr5DbuzWXTMc6CVWcdWCXt",
+     "via": "local",
+     "state": "STALE"
+    },
+    {
+     "id": "nearmissboard.near",
+     "verified": "7c2bWbPj2RzXaeYUb1MAcKoccHsQQLRiWEPkDM4Ja36x",
+     "current": "11111111111111111111111111111111",
+     "via": "local",
+     "state": "NO_CODE"
+    },
+    {
+     "id": "registry.orvyn.near",
+     "verified": "3eNPaiQ53Kt7JsGzftTQwZDKWWNSNb49U71ydLrEJvpg",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "id.orvyn.near",
+     "verified": "57MG1waRDrmLtDCxJuizNFngU3rzK9HveAh9dZtPz32Y",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "market.nearmissboard.near",
+     "verified": "HJkcEPPsBmo11ciTS9SFJaBd5hBN58Q4bprr3bnhqREK",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "launchpad.nearmissboard.near",
+     "verified": "Bq73AfAbyWx813ixBNgxXdaUiQsrDM29gVBzQuUh23p8",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "swap.orvyn.near",
+     "verified": "9BbCeyzUX4bF2qaJirkkDZ62cjUGXSZtqybtPcaQEg1J",
+     "current": null,
+     "state": "DELETED"
+    },
+    {
+     "id": "stake.dao",
+     "verified": "FKrsKgaS3BgCPdPXsYwMdx6hHdQ9SDmudpjj1pyETJbr",
+     "current": "FKrsKgaS3BgCPdPXsYwMdx6hHdQ9SDmudpjj1pyETJbr",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "proxy-oracle-iethfxrp-ixlmusdc.v1.tmplr.near",
+     "verified": "HwAcwh6jEMmzi5NJ5fzt5ThdcNT3jZYqpW14YRxv8wuC",
+     "current": "HwAcwh6jEMmzi5NJ5fzt5ThdcNT3jZYqpW14YRxv8wuC",
+     "via": "global-hash",
+     "state": "MATCH"
+    },
+    {
+     "id": "mpc-prover-0_4_18.bridge.near",
+     "verified": "rXBc2Gi8bsCffSf44MCfsNe3yTGkGM3ATkHyhxhkNDK",
+     "current": "rXBc2Gi8bsCffSf44MCfsNe3yTGkGM3ATkHyhxhkNDK",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "claim.sweat",
+     "verified": "5hDejYDfcK7b3kHMvhiSvi4BSfJDU2vw48ZCxf8DWZAZ",
+     "current": "5hDejYDfcK7b3kHMvhiSvi4BSfJDU2vw48ZCxf8DWZAZ",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "gpub.hos",
+     "verified": "H3FbgvRfAMYJiBYtEfjETUvS1uUp3X9EkDrzTKN6skF6",
+     "current": "H3FbgvRfAMYJiBYtEfjETUvS1uUp3X9EkDrzTKN6skF6",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "warrant-options.near",
+     "verified": "DADQfyxqwetsaZBh5n7JEQ8MnwZKQiqzCxaS465svgYz",
+     "current": "DADQfyxqwetsaZBh5n7JEQ8MnwZKQiqzCxaS465svgYz",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "setllend.near",
+     "verified": "GsN51wYVvYPrjF9kinyJcssjxaWgdu6nEb5AZMA8oWkz",
+     "current": "GsN51wYVvYPrjF9kinyJcssjxaWgdu6nEb5AZMA8oWkz",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "mpdao-vote.near",
+     "verified": "8ZYPZfzPTi57AyUqZkzybS8iHFsj4RStG4nXbBqP2DKZ",
+     "current": "8ZYPZfzPTi57AyUqZkzybS8iHFsj4RStG4nXbBqP2DKZ",
+     "via": "local",
+     "state": "MATCH"
+    },
+    {
+     "id": "byline.near",
+     "verified": "45vaJt8P6cLCqw7SeEBshxuhz7qLwZaLsCQ6LSJN7Eha",
+     "current": "45vaJt8P6cLCqw7SeEBshxuhz7qLwZaLsCQ6LSJN7Eha",
+     "via": "local",
+     "state": "MATCH"
+    }
+   ]
+  },
+  "verifiedHashes": [
+   "2TrD9zdWAeXtcRJ4oyHph5c64h82gCKjoZnFt4Qi5jwk",
+   "CTAdcyjBE67ottnvLFGDp6DQ5hXXRir8WisLjn9s48GT",
+   "8UF8daKa6R6aDzeZG5W5tmaiKJ6MQZrjB83cUZo4hwUV",
+   "5n3hPJfT191Bq6Qf15C8cm1gj5YimGGLZAKBJhF86HaN",
+   "AUHmE71SPjnq8S3EW7m8ompfVBJxwCt4YfVvFLHtvVnr",
+   "CG29FtpboZZ4aKroRq444hHwCBpZdXqTSBMXC7fGF2Xh",
+   "8W4P3awK3jY7DqMSUVo6keBhqCmEDyNXZj2cbv4viAvo",
+   "kPGbQ9Et95q4ndQuwEiqQNWrSwqW4yRwUSd8gd1KT63",
+   "4pfFmofW6LUjSqFTrqfcutgoroVFYBm8M7RMrEhQoCMN",
+   "2DZT6e6JY3gJdbDuYfcHyGxr6k2w8B9dZqjenepKjMBB",
+   "4kb1EJyk4QTqa8Bd9DTGt7DDwvEbrdoPDUESiVKrXoHF",
+   "EPb64c8r61hbJBPsPdzsZ8Ui2JfBQ9Z2pXXcLDfN2Khm",
+   "F2no3vqrFxm2c34mZqoMNawhRYYHbp22WuRqN6vEd3KP",
+   "75YwynLeE2b7eZfFeXmt8P9Gp8uDCuhkLevKv4ZWN5zq",
+   "CSgrNGhZnirFB3qD4c1KxspePkmfzoz6QDDWJrKm8NTn",
+   "F6GotjLMgrzagSGDxwkuayEkgjbbAgyRCRZF5DWJDxxk",
+   "4F64Df8EEWU89KAYPaTnjuNoH2amyxFs69MSaV8yWiyE",
+   "BAXeraU3Qrr35pYzABPk5ufdMMuLAuFj64sSvYAPajWT",
+   "2eERn6pAuQUyzeRc9PoVczjfVbqizekU54t8EuUp1evC",
+   "AdTsiipPP5ju1okSMF6tVymYv9G5ZbkXFeaHHdny2e1r",
+   "vNixSUhaUzMSDC9qdvzkHYGc3KNActmBDE3gQLvmJ1A",
+   "D4PcyzsSn3XU4CzXJJycjLe3YyRfNphxYNmveeK6Y2Hf",
+   "C34bk5hjnmVQRD8f5YTiwPzh8A64iKe3wkTNaaxPhUts",
+   "9PDVk5efoLpqt62u2mRJKUVA1nmp24Cn1qpUcxZ53fMM",
+   "3XbB1xkQTNFhtizVSCNW5xM9MyuF3AYhFKc8HAPc3pdx",
+   "DywPnhCLPp9ez4hi59UWS53DPZRYojEnbhrLC1rT7PH7",
+   "HY5AVfKmby6ftg5PkX3P26XnUn5LJHRcrXFsiKv2Tojd",
+   "mnDdmVzCejRwe6J7v981vYixroptYJJuLAzLXYZB5YD",
+   "9psjkYyY2zPx8M6Veh1saqkDreGeBTVccir1UdS59DH9",
+   "FFhezN1Dgu91YuZz7PziXQCaECPpUb99L9Fef7ss4Coj",
+   "7hMoiiMNhA9DxmUf2zWXbAXusYvqrepkjaumxLyn6E7V",
+   "Bvs2ceWFxv9i5T3a9MMf3qPBqzM3BU3g5No2e6mNXuhM",
+   "HiyC5tB1gBDpgR4x1guEp1orBde5PXqUYGoWaZfX3JGX",
+   "CgPu9G7GWsUGusca8Go5onZCcCyHVB7jJEbrpd35xLg4",
+   "GXiWVUxgNZvu94oFirzgthiLjiGiZzUMm1meEhNZjtMz",
+   "5sStkMrCpXyaqK3YicAtEqCKLjseWJS1TJHCYPq6gQDx",
+   "3oVFufhS5oA4xoDmpahSiaHH8DMnw3snwTQkMSg5s7EH",
+   "5JBRxCY8oZfAhHPwrh81ZuBH2zWs4vUVA8WZwanzESH7",
+   "Dq3WEn352jmp4RovZDZ7mCmrjRvdDcD59Wm6XBGLJUcp",
+   "sG8VhW3u8Ma3B2WVUeHzQjDTsmVgL1hfX5jdCTuaZif",
+   "8D1NEU2NC2hKhdtCkHyyAz2KVmVXRazm9ZQMC27D97jF",
+   "3wnUgNWhm9S7ku3bLH5mruogiBWAdpJXJCzKNonYXZrW",
+   "HMuE3LTMeEoNo4eJ7jfP92vJCUxQUHqsQBFCcLiQaR2f",
+   "DonQkN2bx4bqwrUM3fVuajYutVRj3CGJacYfUzcwk4gL",
+   "H1Atga3E44asgLkWGmHwqiVkQKG7wHfe8NcZgChUwH5z",
+   "9MnRb57zRZoABLQBv9u3fYqc6mQVDMjAKutcr8iQFugK",
+   "8zXRhwZSdGxtgxYDnyxFCGXTDBhZ2ovZUgaKhmi3LLce",
+   "BkbeAqwqV8Y9x9v8WtbXCnV3KZkppQ953DkovtgQKCcG",
+   "EHTzkKyabhTGuKpvET5hBi7xPdKacuesMc91dDGkWvqb",
+   "DaudmUa3nAym9dfQkn8mpNPZxkphSRGwEaTMgtymVhFE",
+   "578Tw7j8CmPgd6xoEZv4a3SdNiRtTLy5XquA6CxoCbzZ",
+   "DAE5ng4ZFR2ctMx9SizQBqmGkVbKUutgZ4ZECD4R8Sm9",
+   "4ELM6EPYWg9NXHGkYHPqeGFBrGCs4vQMZf7pMFQAnP4H",
+   "GtmZ6FMxRCN7KcANFDaNmR5JK2rusKAeyGaDSFTNoWvx",
+   "7fMkmCL8UW9EQxappkKYNB8ubarQZBUJeMRBFd6PcwAR",
+   "EZQai5P4VUWuyF1VCCoSCdR6nBLtNkS5UQMAJaFhHRyh",
+   "FMgQ6iPcerbU6whoDpYrj9LbMRBEnPV3brvgmHWCMqMA",
+   "5Yvcfm3cH7V83bcHdxyx4U1cGP7LUJCRoGxyL7JH8rio",
+   "5DZaUReBi1dmU7QnF7LGyt4gUz3GqWoYNGyZivVQPaDc",
+   "HG7ytDfF68cok6z72qn9un8C5C7HoTZcfdpVyC6Vs7DA",
+   "36E2TZP6jKjhxWPzXqo4vq9cAazHAHjYHmFEKbcxtQ3Z",
+   "CW6MtbnqzvDRPMgm6PLMJopj1DdqEA5MNZKFLm5ZdLVN",
+   "8JK2g3kr7qCbRDBmoLx7c9Zrz9TxPdANP7ocbQGE2fqP",
+   "DtHZA1mUmGYeScEaUoUZYQGGFHSMpnjMCvkr5U9hJXuF",
+   "BUGvDtNuM2i4gQWTR66QnTTN3vxy8HDuq4LHPPQjLZtJ",
+   "81zF3U2T1FAXF4P5exJGpW4RB5GDZdALWTu7Ucdnst7k",
+   "5NKzRJBdN8dwVScdwrjP8C2FHwVvXA3msts7jVk4WNza",
+   "3EQVh473RLhdFa2LAAij3Ge5Hiy9ZpMRMX7co7TdruEG",
+   "BqVgKAwheXQwXtNnz4wH2u5HbprF4x4hmiu6vw83nhwg",
+   "4s6WGJWCK5SmP7KyUiD8wRxSGKCheJowF67EUccontoN",
+   "AV74oDUUSmPm8WiW6SSn1GjZxsGmgKjcBEBfpVi5wVxx",
+   "3f616v7ZcDt4KD15X6Wu9ky57QStwYZjahJG5WSFaDd6",
+   "82zhtNat7h1zBYj9MsN9ED1ZBzBBSV945BcV8gESVXDM",
+   "EVt53GHNbyyB8ws2DaQuiBihGKNW2TLJ1MVVTzvhmJZ1",
+   "BXd5idTXSnC7WRfxHmi7z4crw2F5WXQJ6MZUEv8DfnnY",
+   "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi",
+   "8M2TGZX7H6tj9cYdboHFhg6xPjRTwuWqx5o5K3Tga1Tg",
+   "5xRLWfHuXY8QUZxoqXGEpjK6XkX3Uzbj9KMmVghVN8xp",
+   "HMzKfo8p8McQvrC8rk6y4c7n1QcrfQNjS9hV5Un355gK",
+   "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+   "5MY2SVPLaVLnu5cz6SKPAt4Z7EUVbhVAms3wrs8xrGzD",
+   "GFn74LomybZJuEYSTvjVuc3PiEsKYHtDBLnFWDsiHaJC",
+   "FB2NiDDH1Eb6j58Vbo6RSmvahU2WRrRMiUdMLjVSLzpy",
+   "ArZRWghUVfauPdoRJzXrzmYMiZjx6cUREBZdHHsfCU4K",
+   "ELVaZkMaESFsRDPoPuR2L68Kvpm4xhwGSpcTSDBpSjAy",
+   "6LjaMFkmxabCcjnopbJueCJkT2q4oypsfhrMH1VkpGmm",
+   "7c2bWbPj2RzXaeYUb1MAcKoccHsQQLRiWEPkDM4Ja36x",
+   "3eNPaiQ53Kt7JsGzftTQwZDKWWNSNb49U71ydLrEJvpg",
+   "57MG1waRDrmLtDCxJuizNFngU3rzK9HveAh9dZtPz32Y",
+   "HJkcEPPsBmo11ciTS9SFJaBd5hBN58Q4bprr3bnhqREK",
+   "Bq73AfAbyWx813ixBNgxXdaUiQsrDM29gVBzQuUh23p8",
+   "9BbCeyzUX4bF2qaJirkkDZ62cjUGXSZtqybtPcaQEg1J",
+   "FKrsKgaS3BgCPdPXsYwMdx6hHdQ9SDmudpjj1pyETJbr",
+   "HwAcwh6jEMmzi5NJ5fzt5ThdcNT3jZYqpW14YRxv8wuC",
+   "rXBc2Gi8bsCffSf44MCfsNe3yTGkGM3ATkHyhxhkNDK",
+   "5hDejYDfcK7b3kHMvhiSvi4BSfJDU2vw48ZCxf8DWZAZ",
+   "H3FbgvRfAMYJiBYtEfjETUvS1uUp3X9EkDrzTKN6skF6",
+   "DADQfyxqwetsaZBh5n7JEQ8MnwZKQiqzCxaS465svgYz",
+   "GsN51wYVvYPrjF9kinyJcssjxaWgdu6nEb5AZMA8oWkz",
+   "8ZYPZfzPTi57AyUqZkzybS8iHFsj4RStG4nXbBqP2DKZ",
+   "45vaJt8P6cLCqw7SeEBshxuhz7qLwZaLsCQ6LSJN7Eha"
+  ],
+  "sample24": [
+   {
+    "id": "linear-protocol.near",
+    "code_hash": "5LiDVDd1gh7ofVNbiA9VXrWwkv2m8tw46jZqYeuoC3SG",
+    "fak": 0,
+    "nep330": "1.6.2",
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "usdt.tether-token.near",
+    "code_hash": "51tHbmQkA8qAi8c6MoUor5mCx6CnL6tZyC2sqQifKPZC",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+    "code_hash": "DVJx7F3dHEHJYwpYPwXHu8K9Uo7h4kXFcALucY5oNX8q",
+    "fak": 1,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "aurora",
+    "code_hash": "HrtBWvCMmVXRLG9vsYAFT7LfJ6mZtCSNTvYnXMF6fwzT",
+    "fak": 1,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "v1.signer",
+    "code_hash": "DAE5ng4ZFR2ctMx9SizQBqmGkVbKUutgZ4ZECD4R8Sm9",
+    "fak": 0,
+    "nep330": "3.17.0",
+    "build_info": true,
+    "snapshot": "git+https://github.com/near/mpc?rev=d0fc87b19e2643299e7becdd7d9611afcd5d5a78"
+   },
+   {
+    "id": "token.sweat",
+    "code_hash": "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi",
+    "fak": 0,
+    "nep330": "1.4.0",
+    "build_info": true,
+    "snapshot": "git+https://github.com/Sweat-Foundation/sweat-token?rev=75dc5b48dcc8b3f5303ab9f1d3dbf046901f6314"
+   },
+   {
+    "id": "sputnik-dao.near",
+    "code_hash": "BXd5idTXSnC7WRfxHmi7z4crw2F5WXQJ6MZUEv8DfnnY",
+    "fak": 3,
+    "nep330": "0.2.1",
+    "build_info": true,
+    "snapshot": "git+https://github.com/near-daos/sputnik-dao-contract?rev=2b0f34a3860460f285307ec2ccf36345acbe05a2"
+   },
+   {
+    "id": "social.near",
+    "code_hash": "B5Yf5EquM36fGu3JNAD2K83fT6L4dpzcx8mYLnkjJJbS",
+    "fak": 1,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "v2.nearx.stader-labs.near",
+    "code_hash": null,
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "priceoracle.near",
+    "code_hash": "4sUttxKK4gJpWr1mhfNddBt497ZiXsRMbTYvCeQQbjR2",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "dclv2.ref-labs.near",
+    "code_hash": "3G34Nhjmir5JPYPtijaA9iCNnHDPR7h3wfC9H77woEGo",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "omni.bridge.near",
+    "code_hash": "F2no3vqrFxm2c34mZqoMNawhRYYHbp22WuRqN6vEd3KP",
+    "fak": 0,
+    "nep330": "0.4.18",
+    "build_info": true,
+    "snapshot": "git+https://github.com/Near-One/omni-bridge?rev=83e3ac1eeef6b1330744f53d68dd037fa53aab0f"
+   },
+   {
+    "id": "factory.bridge.near",
+    "code_hash": "CC9dZfmmnYtYCtPzwEdgBmT1wpWYTAL5nNvK4RHEUgAg",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "lst.rhealab.near",
+    "code_hash": "EPLT4C61pkVYf5Km6dC4X9x5PMo6rfBwuEwo7vgKpmuv",
+    "fak": 0,
+    "nep330": "1.0.2",
+    "build_info": true,
+    "snapshot": "git+https://github.com/rhea-finance/rnear-contract.git?rev=c04e9008bfbf7a44d99c8f66179deb715a7357f9"
+   },
+   {
+    "id": "token.v2.ref-finance.near",
+    "code_hash": "HagtKcVnSk6eJrg9e4X4Rpvw4ACCrpJjkrdWavLNtggZ",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "game.hot.tg",
+    "code_hash": "GH7Zs8zab1YHiTkdveDj18Uu2je6fpiXcHmXkqYNCuew",
+    "fak": 66,
+    "nep330": "1.2.0",
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "x.paras.near",
+    "code_hash": "J34Q5DybRqaTbzSnCtEtm6oSP2cCvDvAHBA831TLUZ4E",
+    "fak": 1,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "tkn.near",
+    "code_hash": "GqJ8R7fWXGvPQYTUcVBNbbTiMs3fZTdZAJVbQGvJCq9N",
+    "fak": 1,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "npro.nearmobile.near",
+    "code_hash": "9tpkUuPKwzFwFqX2drUMPQXKNEqsLBBytEtT2CKzTV4W",
+    "fak": 0,
+    "nep330": "0.1.0",
+    "build_info": true,
+    "snapshot": "git+https://github.com/Peersyst/near-mobile?rev=0cba9aa5044fb44735911312098b0b1563b5534a"
+   },
+   {
+    "id": "intents.near",
+    "code_hash": "BtA1BEFNS619KkvXFsgcpQ21Tb5yMm32aaUkn7xNothk",
+    "fak": 0,
+    "nep330": "0.4.5",
+    "build_info": true,
+    "snapshot": "git+https://github.com/near/intents?rev=16d04f6ec4401263f8914638710260da50bb46b0"
+   },
+   {
+    "id": "wrap.near",
+    "code_hash": "DL2f5xmZ44cQRP6vBMt94rvseH5d5KKnAGis2WkTAsh1",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "v2.ref-finance.near",
+    "code_hash": "GZmkbfVLcN7ErxU9RDxP24YTaKmoVixhM6XyycP15Qvi",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "contract.main.burrow.near",
+    "code_hash": "6Nek1MZ8cwJJ2xMQAUWup9V5AToYS9rkTxJfwo6BCpFa",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   },
+   {
+    "id": "meta-pool.near",
+    "code_hash": "J6pS9R23vzbwxGB8eMq4qrn8UhciEYHsVbR9UJPyLNxh",
+    "fak": 0,
+    "nep330": null,
+    "build_info": false,
+    "snapshot": null
+   }
+  ],
+  "top50": [
+   {
+    "id": "usdt.tether-token.near",
+    "code_hash": "51tHbmQkA8qAi8c6MoUor5mCx6CnL6tZyC2sqQifKPZC",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "zec.omft.near",
+    "code_hash": "2akS4vNtbGMSoAPYf4FXbgyZypb4HYJDMcbVq95KYz6g",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "wrap.near",
+    "code_hash": "DL2f5xmZ44cQRP6vBMt94rvseH5d5KKnAGis2WkTAsh1",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "meta-pool.near",
+    "code_hash": "J6pS9R23vzbwxGB8eMq4qrn8UhciEYHsVbR9UJPyLNxh",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+    "code_hash": "DVJx7F3dHEHJYwpYPwXHu8K9Uo7h4kXFcALucY5oNX8q",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "linear-protocol.near",
+    "code_hash": "5LiDVDd1gh7ofVNbiA9VXrWwkv2m8tw46jZqYeuoC3SG",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "token.rhealab.near",
+    "code_hash": "3XbB1xkQTNFhtizVSCNW5xM9MyuF3AYhFKc8HAPc3pdx",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "aaaaaa20d9e0e2461697782ef11675f668207961.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.omft.near",
+    "code_hash": "2VUeqHTx9sk2AjDrs88HazLqS6LUgVQorjWcacotNCDP",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "walc.near",
+    "code_hash": "6PCTcRWLkCry7Z7YJofiG2qgjxpHPcKHZ7y9YHWthBnD",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "eth-0xdac17f958d2ee523a2206206994597c13d831ec7.omft.near",
+    "code_hash": "2VUeqHTx9sk2AjDrs88HazLqS6LUgVQorjWcacotNCDP",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "nbtc.bridge.near",
+    "code_hash": "4ELM6EPYWg9NXHGkYHPqeGFBrGCs4vQMZf7pMFQAnP4H",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "near20.margaritafinance.near",
+    "code_hash": "GB8tF1XXeaxJ5bYbmLdREnv7pk8c3b9D8vDyvVfaYr7P",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "mpdao-token.near",
+    "code_hash": "5JBRxCY8oZfAhHPwrh81ZuBH2zWs4vUVA8WZwanzESH7",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "token.v2.ref-finance.near",
+    "code_hash": "HagtKcVnSk6eJrg9e4X4Rpvw4ACCrpJjkrdWavLNtggZ",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "btc.omft.near",
+    "code_hash": "CFCLCkzfTKVF8pcck5rBQdmzWc4GBZipu5xBwAx54euu",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "eth.omft.near",
+    "code_hash": "CFCLCkzfTKVF8pcck5rBQdmzWc4GBZipu5xBwAx54euu",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "eth.bridge.near",
+    "code_hash": "BAXeraU3Qrr35pYzABPk5ufdMMuLAuFj64sSvYAPajWT",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "far-token.fewandfar-protocol.near",
+    "code_hash": "AtF5Rvcm9DNCJWztKahtcZgvpDG56x8aJZakEaPju2Ub",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "meta-token.near",
+    "code_hash": "FAwQjv4expf9L2r5EngGqJRFYAvkc4A4NkWQbWLj185k",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "dac17f958d2ee523a2206206994597c13d831ec7.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "token.publicailab.near",
+    "code_hash": "DywPnhCLPp9ez4hi59UWS53DPZRYojEnbhrLC1rT7PH7",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "usn",
+    "code_hash": "2RdhZqpVaNC4SRFi6GVbDHDDbYj8kyEUxHtXQaGRQXmF",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "npro.nearmobile.near",
+    "code_hash": "9tpkUuPKwzFwFqX2drUMPQXKNEqsLBBytEtT2CKzTV4W",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "sol.omft.near",
+    "code_hash": "Ba6uZKxsuRPW5X7XVQrSnYEYScEjFLJLMqMWvZ1aS3tC",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "token.burrow.near",
+    "code_hash": "2dLsFG6E2feEcpk9HJxMQH6PMNqC5DvgCUkVDtP1XmZC",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "2260fac5e5542a773aa44fbcfedf7c193bc2c599.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "token.sweat",
+    "code_hash": "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "blackdragon.tkn.near",
+    "code_hash": "4AVV1KUVgi17XoXkqxUPzyMhERXu15mGawriPQvWmBKD",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "52a047ee205701895ee06a375492490ec9c597ce.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "6b175474e89094c44da98b954eedeac495271d0f.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "purge-558.meme-cooking.near",
+    "code_hash": "FKMtu667hhvfUMCCcoUxPEwTgLhXLEL7jWZXf3scRZps",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "438e48ed4ce6beecf503d43b9dbd3c30d516e7fd.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "itlx.intellex_xyz.near",
+    "code_hash": "HMuE3LTMeEoNo4eJ7jfP92vJCUxQUHqsQBFCcLiQaR2f",
+    "verified": true,
+    "nep330": true
+   },
+   {
+    "id": "cfi.consumer-fi.near",
+    "code_hash": "FNgXYkCtSuUNCQBxgxFrQiY88uFG5fRHLndLKQMcwXot",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "token.0xshitzu.near",
+    "code_hash": "4yrp1LPH6q5vUkvAHMw72Bsc8WPk2isqev3dQDYsbZQJ",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "e99de844ef3ef72806cf006224ef3b813e82662f.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "1117ac6ad6cdf1a3bc543bad3b133724620522d5.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "dash.omft.near",
+    "code_hash": "2VUeqHTx9sk2AjDrs88HazLqS6LUgVQorjWcacotNCDP",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "1ab43204a195a0fd37edec621482afd3792ef90b.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "staker1.msig1.trufin.near",
+    "code_hash": "FkFAhS8xERN5p2dgS44H4X82q6iv7efS3bJgdYYgo5zW",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "853d955acef822db058eb8505911ed77f175b99e.factory.bridge.near",
+    "code_hash": "C5YXdd31N6a2pCqAtY3dBarMuBaQsee4UER1AuGeryeo",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "jambo-1679.meme-cooking.near",
+    "code_hash": "7cs332A22JGVpG9urbTyd7A23kDDGB3juEAuLPxuKfRo",
+    "verified": false,
+    "nep330": true
+   },
+   {
+    "id": "token.v1.realisnetwork.near",
+    "code_hash": "Cy711UKWusRPKkaNV68ersa2TjZVs1rocrR5QGB4sSqi",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "gear.enleap.near",
+    "code_hash": "s3zchLgckT6Pvdz2uKzWUABosKQQPeTvoqDrX3jt2Hf",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "ftv2.nekotoken.near",
+    "code_hash": "7HNYHZyfUPbCAoKDpjV8zBJyZLcKkE5FBzYo3J98cUo9",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "token.skyward.near",
+    "code_hash": "66ojqJFVKGacHP6pBhwD5PqU3oMbevwuKmta6Xh3KcCC",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "token.sendertge.near",
+    "code_hash": "i5ZkmdyriyF9TSJxkC51ydcpxBRN81HwpXiWMHb6saX",
+    "verified": false,
+    "nep330": false
+   },
+   {
+    "id": "kat.token0.near",
+    "code_hash": "Ax1KbDyZrKrorMtJJav65aZwVP6WrS3ZLG5KixQUzfUC",
+    "verified": false,
+    "nep330": true
+   }
+  ],
+  "wasm": [
+   {
+    "id": "intents.near",
+    "size": 1297551,
+    "fetchMs": 247,
+    "compileMs": 3,
+    "deployImports": [
+     "promise_batch_action_deploy_contract",
+     "promise_batch_action_deploy_global_contract",
+     "promise_batch_action_deploy_global_contract_by_account_id",
+     "promise_batch_action_use_global_contract",
+     "promise_batch_action_use_global_contract_by_account_id"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": [
+     "state_migrate",
+     "upgrade"
+    ]
+   },
+   {
+    "id": "wrap.near",
+    "size": 185625,
+    "fetchMs": 133,
+    "compileMs": 1,
+    "deployImports": [
+     "promise_batch_action_deploy_contract"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": []
+   },
+   {
+    "id": "v2.ref-finance.near",
+    "size": 897024,
+    "fetchMs": 206,
+    "compileMs": 2,
+    "deployImports": [
+     "promise_batch_action_deploy_contract"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": [
+     "upgrade",
+     "migrate"
+    ]
+   },
+   {
+    "id": "contract.main.burrow.near",
+    "size": 1059499,
+    "fetchMs": 210,
+    "compileMs": 3,
+    "deployImports": [
+     "promise_batch_action_deploy_contract"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": [
+     "upgrade",
+     "update_contract_mode",
+     "migrate_state"
+    ]
+   },
+   {
+    "id": "meta-pool.near",
+    "size": 468687,
+    "fetchMs": 129,
+    "compileMs": 1,
+    "deployImports": [
+     "promise_batch_action_deploy_contract"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": [
+     "migrate",
+     "upgrade"
+    ]
+   },
+   {
+    "id": "linear-protocol.near",
+    "size": 471951,
+    "fetchMs": 147,
+    "compileMs": 1,
+    "deployImports": [
+     "promise_batch_action_deploy_contract"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": [
+     "upgrade",
+     "migrate"
+    ]
+   },
+   {
+    "id": "usdt.tether-token.near",
+    "size": 277714,
+    "fetchMs": 129,
+    "compileMs": 1,
+    "deployImports": [
+     "promise_batch_action_deploy_contract"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": [
+     "upgrade",
+     "upgrade_name_symbol",
+     "upgrade_icon",
+     "migrate"
+    ]
+   },
+   {
+    "id": "dclv2.ref-labs.near",
+    "size": 1166649,
+    "fetchMs": 193,
+    "compileMs": 3,
+    "deployImports": [
+     "promise_batch_action_deploy_contract"
+    ],
+    "addFullAccessKeyImport": true,
+    "upgradeExports": [
+     "upgrade",
+     "migrate",
+     "migrate_old_client_echo_whitelist"
+    ]
+   }
+  ]
+ }
+}

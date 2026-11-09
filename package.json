@@ -1,0 +1,29 @@
+{
+  "name": "keyhole",
+  "version": "0.1.0",
+  "private": true,
+  "description": "See who can change the contract you're about to trust (NEAR).",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "factcheck": "tsx scripts/factcheck.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "bs58": "^6.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "near-api-js": "^7.4.0"
+  }
+}
