@@ -428,7 +428,7 @@ export function mountHatch(el: HTMLElement) {
         </ul></div>
       </div>
     </div>
-    <p class="small muted">Also proven on a real token: a hatch for <code>wrap.testnet</code>'s <code>near_withdraw</code> (1 yoctoNEAR) was relayed by a different account and returned 0.1 wNEAR as NEAR; a second submission was refused (<a href="https://testnet.nearblocks.io/txns/HaukXFREyvU9FKaVQckGTeDEyuKsrekeD7isgT9Rxrpt">tx</a>). Details: <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/HATCH.md">HATCH.md</a>.</p>`;
+    <p class="small muted">Also proven on a real token: a hatch for <code>wrap.testnet</code>'s <code>near_withdraw</code> (1 yoctoNEAR) was relayed by a different account and returned 0.1 wNEAR as NEAR; a second submission was refused (<a href="https://testnet.nearblocks.io/txns/HK9VR5NtNUXLUZJXpwva9qxG88e1cw82kfJkyeojyrBP">exit tx</a>, <a href="https://testnet.nearblocks.io/txns/2R7oWFRS8pvDsfzXdePEdpS5t2EWz3xwGfGX8ZtxgbNv">refused replay</a>; outcomes recorded in <code>packages/hatch/test/fixtures/live-run.json</code>). Details: <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/HATCH.md">HATCH.md</a>.</p>`;
 }
 
 export const guardianStats = () => ({ run, radar, lead: ((run.heights as any).vote_2 ?? 0) - ((run.heights as any).hatch_fired ?? 0), vaultNear: yocto });

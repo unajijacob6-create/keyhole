@@ -1,0 +1,56 @@
+{
+ "recorded_at": "2026-11-09T22:00:38.921Z",
+ "rpc": "https://rpc.mainnet.fastnear.com",
+ "fixtures": {
+  "query {\"request_type\":\"call_function\",\"account_id\":\"wrap.near\",\"method_name\":\"near_withdraw\",\"args_base64\":\"eyJhbW91bnQiOiIxIn0=\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"panicked at 'assertion failed: `(left == right)`\\n  left: `0`,\\n right: `1`: Requires attached deposit of exactly 1 yoctoNEAR', /usr/local/cargo/registry/src/github.com-1ecc6299db9ec823/near-sdk-3.1.0/src/utils/mod.rs:22:5\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"wrap.near\",\"method_name\":\"ft_transfer\",\"args_base64\":\"eyJyZWNlaXZlcl9pZCI6IndyYXAubmVhciIsImFtb3VudCI6IjEifQ==\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"panicked at 'assertion failed: `(left == right)`\\n  left: `0`,\\n right: `1`: Requires attached deposit of exactly 1 yoctoNEAR', /usr/local/cargo/registry/src/github.com-1ecc6299db9ec823/near-sdk-3.1.0/src/utils/mod.rs:22:5\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"v2.ref-finance.near\",\"method_name\":\"withdraw\",\"args_base64\":\"eyJ0b2tlbl9pZCI6IndyYXAubmVhciIsImFtb3VudCI6IjEifQ==\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"panicked at 'assertion failed: `(left == right)`\\n  left: `0`,\\n right: `1`: Requires attached deposit of exactly 1 yoctoNEAR', /usr/local/cargo/registry/src/github.com-1ecc6299db9ec823/near-sdk-3.1.0/src/utils/mod.rs:22:5\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"intents.near\",\"method_name\":\"ft_withdraw\",\"args_base64\":\"eyJ0b2tlbiI6IndyYXAubmVhciIsInJlY2VpdmVyX2lkIjoid3JhcC5uZWFyIiwiYW1vdW50IjoiMSJ9\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"Requires attached deposit of exactly 1 yoctoNEAR\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"linear-protocol.near\",\"method_name\":\"unstake_all\",\"args_base64\":\"e30=\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(ProhibitedInView { method_name: \"predecessor_account_id\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"wrap.near\",\"method_name\":\"near_withdraw\",\"args_base64\":\"eyJhbW91bnQiOiJub3QtYS1udW1iZXIifQ==\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"panicked at 'Failed to deserialize input from JSON.: Error(\\\"invalid digit found in string\\\", line: 1, column: 25)', src/w_near.rs:5:1\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"wrap.near\",\"method_name\":\"no_such_method\",\"args_base64\":\"e30=\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: MethodResolveError(MethodNotFound)"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"asac.near\",\"method_name\":\"nft_approve\",\"args_base64\":\"eyJ0b2tlbl9pZCI6IjEiLCJhY2NvdW50X2lkIjoid3JhcC5uZWFyIn0=\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"Requires attached deposit of at least 1 yoctoNEAR\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"near-punks.near\",\"method_name\":\"nft_approve\",\"args_base64\":\"eyJ0b2tlbl9pZCI6IjEiLCJhY2NvdW50X2lkIjoid3JhcC5uZWFyIn0=\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"panicked at 'Requires attached deposit of at least 1 yoctoNEAR', /Users/harry/.cargo/registry/src/github.com-1ecc6299db9ec823/near-contract-standards-3.2.0/src/non_fungible_token/utils.rs:53:5\" })"
+   }
+  },
+  "query {\"request_type\":\"call_function\",\"account_id\":\"wrap.near\",\"method_name\":\"near_deposit\",\"args_base64\":\"e30=\",\"finality\":\"final\"}": {
+   "error": {
+    "result_error": "wasm execution failed with error: HostError(GuestPanic { panic_msg: \"panicked at 'Requires positive attached deposit', src/w_near.rs:15:9\" })"
+   }
+  }
+ }
+}
