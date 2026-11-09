@@ -27,6 +27,8 @@ import {
   Rpc,
   sourcescan,
   txApi,
+  fetchTransport,
+  type Transport,
   type UpgradeProposal,
   type WasmAnalysis,
 } from "../packages/core/src/index.ts";
@@ -35,7 +37,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "eval/upgrades.json");
 const argv = process.argv.slice(2);
 const offline = argv.includes("--offline");
-const LAST = Number(argv.includes("--last") ? argv[argv.indexOf("--last") + 1] : 200);
+const LAST = Number(argv.includes("--last") ? argv[argv.indexOf("--last") + 1] : 30);
 import { DAOS } from "./lib/daos.ts";
 
 interface Row {
@@ -64,9 +66,6 @@ interface Row {
   note?: string;
 }
 
-function compact(a: WasmAnalysis): WasmAnalysis {
-  return { ...a, imports: a.imports, exports: a.exports }; // analyses are already small (names only)
-}
 const summarize = (g: ReturnType<typeof gradeUpgrade>) => {
   const d = g.diff;
   if (!d) return [];
@@ -78,88 +77,122 @@ const summarize = (g: ReturnType<typeof gradeUpgrade>) => {
   ];
 };
 
+/** At most `perSec` requests per second through this transport (free RPC tiers rate-limit). */
+function throttled(perSec: number): Transport {
+  let next = 0;
+  return async (url, body) => {
+    const now = Date.now();
+    const at = Math.max(now, next);
+    next = at + 1000 / perSec;
+    if (at > now) await new Promise((r) => setTimeout(r, at - now));
+    return fetchTransport(url, body);
+  };
+}
+
 async function realRows(): Promise<Row[]> {
-  const rpc = new Rpc({ network: "mainnet" });
-  const arch = new Rpc({ network: "mainnet", url: ARCHIVAL_RPC.mainnet });
+  const rpc = new Rpc({ network: "mainnet", transport: throttled(6), retries: 8 });
+  const arch = new Rpc({ network: "mainnet", url: ARCHIVAL_RPC.mainnet, transport: throttled(6), retries: 8 });
   const api = txApi("mainnet");
   const head = (await rpc.block()).header;
-  const rows: Row[] = [];
-  const blockTime = async (h: number) => Number(BigInt((await arch.block({ block_id: h })).header.timestamp) / 1_000_000n);
-  for (const dao of DAOS) {
-    const props: UpgradeProposal[] = await listUpgradeProposals(rpc, dao, { last: LAST, nowMs: Number(BigInt(head.timestamp) / 1_000_000n) });
-    console.log(`${dao}: ${props.length} upgrade-related proposals in the last ${LAST}`);
-    for (const p of props) {
-      if (!p.code_hash) continue;
-      const row: Row = {
-        dao, id: p.id, kind: p.kind, target: p.target, method: p.method, hash: p.code_hash, state: p.state,
-        submitted_at: new Date(p.submitted_at_ms).toISOString(), votes: `${p.votes.approve}/${p.required ?? "?"}`,
-        bytes: null, blob_tx: null, changed_at_height: null, changed_at: null, window_s: null, prev_hash: null, sourcescan: null,
-        live: null, pending: null, verdict: "", flags: [], summary: [],
-      };
+  const headMs = Number(BigInt(head.timestamp) / 1_000_000n);
+  const blockTime = async (h: number): Promise<number> => {
+    // Heights can be skipped; walk forward a few blocks until one exists.
+    for (let i = 0; i < 20; i++) {
       try {
-        const blob = await fetchPendingCode({ api, dao, hash: p.code_hash, maxPages: 40 });
-        let pendingBytes = blob?.code ?? null;
-        if (blob) {
-          row.bytes = blob.code.length;
-          row.blob_tx = blob.tx;
-        }
-        // Where did the code change? Bisect from the blob's block (or the submission) to head on
-        // "code differs from what was there at lo". Verified afterwards against the proposal hash.
-        if (p.state === "executed") {
-          let lo = blob?.height ?? null;
-          if (lo === null) {
-            // find a height at/after submission by timestamp bisection
-            let a = 9820210, b = head.height;
-            while (b - a > 1) {
-              const m = Math.floor((a + b) / 2);
-              if ((await blockTime(m)) < p.submitted_at_ms) a = m;
-              else b = m;
-            }
-            lo = a;
-          }
-          const before = effectiveHash(await arch.viewAccount(p.target, lo));
-          row.prev_hash = before;
-          if (before !== p.code_hash) {
-            let a = lo, b = head.height;
-            while (b - a > 1) {
-              const m = Math.floor((a + b) / 2);
-              let h: string;
-              try {
-                h = effectiveHash(await arch.viewAccount(p.target, m));
-              } catch {
-                a = m;
-                continue;
-              }
-              if (h !== before) b = m;
-              else a = m;
-            }
-            const after = effectiveHash(await arch.viewAccount(p.target, b));
-            if (after === p.code_hash) {
-              row.changed_at_height = b;
-              const t = await blockTime(b);
-              row.changed_at = new Date(t).toISOString();
-              row.window_s = Math.round((t - p.submitted_at_ms) / 1000);
-              if (!pendingBytes) pendingBytes = (await arch.viewCode(p.target, b)).code;
-              row.live = compact(analyzeWasm((await arch.viewCode(p.target, b - 1)).code));
-            } else row.note = `code after first change is ${after}, not the proposal hash`;
-          } else row.note = "target already had this code when the blob was stored";
-        } else {
-          row.live = compact(analyzeWasm((await rpc.viewCode(p.target)).code));
-        }
-        if (pendingBytes) {
-          if ((await codeHash(pendingBytes)) !== p.code_hash) throw new Error("pending bytes do not hash to the proposal hash");
-          row.pending = compact(analyzeWasm(pendingBytes));
-        }
-        const ss = await sourcescan(rpc, p.target, p.code_hash);
-        row.sourcescan = ss.status === "verified" ? true : ss.status === "unknown" ? null : false;
+        return Number(BigInt((await arch.block({ block_id: h + i })).header.timestamp) / 1_000_000n);
       } catch (e) {
-        row.note = `error: ${String((e as Error).message).slice(0, 160)}`;
+        if (!/UNKNOWN_BLOCK/.test(String((e as Error).message))) throw e;
       }
-      rows.push(row);
-      console.log(`  #${p.id} ${p.kind} ${p.target} ${p.state} window=${row.window_s ?? "-"}s bytes=${row.bytes ?? "-"} ${row.note ?? ""}`);
     }
-  }
-  return rows;
+    throw new Error(`no block near ${h}`);
+  };
+  /** Last height whose block time is before `ms` (bisection on archival block headers). */
+  const heightBefore = async (ms: number): Promise<number> => {
+    let a = head.height - Math.ceil(((headMs - ms) / 1000) * 2.5) - 10_000; // generous lower bound (blocks are never faster than ~0.4 s)
+    let b = head.height;
+    if (a < 9_820_210) a = 9_820_210;
+    while (b - a > 1) {
+      const m = Math.floor((a + b) / 2);
+      if ((await blockTime(m)) < ms) a = m;
+      else b = m;
+    }
+    return a;
+  };
+  const codeAt = async (target: string, h: number): Promise<string | null> => {
+    try {
+      return effectiveHash(await arch.viewAccount(target, h));
+    } catch (e) {
+      if (/UNKNOWN_BLOCK/.test(String((e as Error).message))) return codeAt(target, h + 1);
+      if (/UNKNOWN_ACCOUNT|does not exist/.test(String((e as Error).message))) return null;
+      throw e;
+    }
+  };
+  const perDao: Row[][] = [];
+  for (const dao of DAOS) perDao.push(await (async () => {
+      const rows: Row[] = [];
+      const props: UpgradeProposal[] = await listUpgradeProposals(rpc, dao, { last: LAST, nowMs: headMs });
+      console.log(`${dao}: ${props.length} upgrade-related proposals taken (latest ${LAST})`);
+      for (const p of props) {
+        if (!p.code_hash) continue;
+        const row: Row = {
+          dao, id: p.id, kind: p.kind, target: p.target, method: p.method, hash: p.code_hash, state: p.state,
+          submitted_at: new Date(p.submitted_at_ms).toISOString(), votes: `${p.votes.approve}/${p.required ?? "?"}`,
+          bytes: null, blob_tx: null, changed_at_height: null, changed_at: null, window_s: null, prev_hash: null, sourcescan: null,
+          live: null, pending: null, verdict: "", flags: [], summary: [],
+        };
+        try {
+          let pendingBytes: Uint8Array | null = null;
+          // For recent proposals, also show that the bytes were public before execution: find the
+          // store_blob transaction in the DAO's history (older ones would need a deep scan).
+          if (headMs - p.submitted_at_ms < 45 * 86400_000) {
+            const blob = await fetchPendingCode({ api, dao, hash: p.code_hash, maxPages: 6 }).catch(() => null);
+            if (blob) {
+              pendingBytes = blob.code;
+              row.blob_tx = blob.tx;
+            }
+          }
+          if (p.state === "executed") {
+            const lo = await heightBefore(p.submitted_at_ms);
+            const before = await codeAt(p.target, lo);
+            row.prev_hash = before;
+            if (before === p.code_hash) row.note = "target already ran this code when the proposal was submitted";
+            else {
+              // First height after submission where the code differs from what was there.
+              let a = lo, b = head.height;
+              while (b - a > 1) {
+                const m = Math.floor((a + b) / 2);
+                if ((await codeAt(p.target, m)) !== before) b = m;
+                else a = m;
+              }
+              const after = await codeAt(p.target, b);
+              if (after === p.code_hash) {
+                row.changed_at_height = b;
+                const t = await blockTime(b);
+                row.changed_at = new Date(t).toISOString();
+                row.window_s = Math.round((t - p.submitted_at_ms) / 1000);
+                if (!pendingBytes) pendingBytes = (await arch.viewCode(p.target, b)).code;
+                if (before && before !== "11111111111111111111111111111111") row.live = analyzeWasm((await arch.viewCode(p.target, b - 1)).code);
+              } else row.note = `the first code change after submission was to ${after}, not the proposal hash (another upgrade landed first, or this one was never applied)`;
+            }
+          } else if (p.state === "pending") {
+            row.live = analyzeWasm((await rpc.viewCode(p.target)).code);
+          }
+          if (pendingBytes) {
+            if ((await codeHash(pendingBytes)) !== p.code_hash) throw new Error("bytes do not hash to the proposal hash");
+            row.bytes = pendingBytes.length;
+            row.pending = analyzeWasm(pendingBytes);
+          }
+          const ss = await sourcescan(rpc, p.target, p.code_hash);
+          row.sourcescan = ss.status === "verified" ? true : ss.status === "unknown" ? null : false;
+        } catch (e) {
+          row.note = `error: ${String((e as Error).message).slice(0, 160)}`;
+        }
+        rows.push(row);
+        console.log(`  ${dao.split(".")[0]} #${p.id} ${p.kind} ${p.target} ${p.state} window=${row.window_s ?? "-"}s bytes=${row.bytes ?? "-"}${row.blob_tx ? " (store_blob found)" : ""} ${row.note ?? ""}`);
+      }
+      return rows;
+    })());
+  return perDao.flat();
 }
 
 async function seededRows(): Promise<(Row & { expect: "STOP" | "not-STOP"; label: string })[]> {
@@ -228,12 +261,12 @@ const report = {
   real: R,
   seeded: S,
 };
-if (!offline) fs.writeFileSync(OUT, JSON.stringify(report, null, 1));
+if (!offline) fs.writeFileSync(OUT, JSON.stringify(report));
 
 const md = [
   "# Upgrade eval: real mainnet proposals and seeded attacks",
   "",
-  `Generated by \`npm run eval:upgrades\` on ${report.generatedAt.slice(0, 10)} (last ${LAST} proposals of ${DAOS.length} DAOs). Re-score offline: \`npm run eval:upgrades -- --offline\`.`,
+  `Generated by \`npm run eval:upgrades\` on ${report.generatedAt.slice(0, 10)} (the latest ${LAST} upgrade proposals of each of ${DAOS.length} DAOs). Re-score offline: \`npm run eval:upgrades -- --offline\`.`,
   "",
   "## How fast real upgrades execute",
   "",
@@ -243,7 +276,7 @@ const md = [
   "",
   "| DAO | proposal | target | window | bytes from | verdict | flags |",
   "|---|---|---|---|---|---|---|",
-  ...R.map((r: Row) => `| ${r.dao.replace(".sputnik-dao.near", "")} | #${r.id} ${r.kind} | ${r.target} | ${fmt(r.window_s)} | ${r.blob_tx ? "store_blob" : r.pending ? "deployed code" : "-"} | ${r.verdict} | ${r.flags.join(" ")} |`),
+  ...R.map((r: Row) => `| ${r.dao.replace(".sputnik-dao.near", "")} | #${r.id} ${r.kind} | ${r.target} | ${fmt(r.window_s)} | ${r.blob_tx ? "store_blob tx (public before the vote)" : r.pending ? "code at the change block" : "-"} | ${r.pending && r.live ? r.verdict : "-"} | ${r.pending && r.live ? r.flags.join(" ") : (r.note ?? "")} |`),
   "",
   "## The grader on real upgrades (false alarms)",
   "",

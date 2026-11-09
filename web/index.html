@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Keyhole — who can change this NEAR contract?</title>
-    <meta name="description" content="Keyhole shows who can change a NEAR contract's code, whether the running code is the verified code, and when it last changed. From public RPC, in your browser." />
+    <title>Keyhole Guardian</title>
+    <meta name="description" content="Keyhole reads the exact code a NEAR DAO is voting on, grades it before the deciding vote, and can fire the withdrawal you signed in advance." />
     <meta name="color-scheme" content="light dark" />
     <link rel="preload" as="image" href="img/hero-1600.webp" imagesrcset="img/hero-960.webp 960w, img/hero-1600.webp 1600w" imagesizes="100vw" fetchpriority="high" />
     <script>
@@ -20,13 +20,14 @@
           keyhole
         </a>
         <nav aria-label="Primary">
+          <a href="#watch">Watch it happen</a>
+          <a href="#radar">Upgrade radar</a>
+          <a href="#hatch">Escape hatch</a>
           <a href="#table">Trust table</a>
-          <a href="#attack">Attack replay</a>
-          <a href="#sign">Before you sign</a>
           <a href="#api">Developers</a>
           <a href="https://github.com/unajijacob6-create/keyhole">GitHub</a>
           <button id="theme" class="icon-btn" type="button" aria-label="Theme: switch light or dark"><span aria-hidden="true">◐</span></button>
-          <a class="pill dark nav-cta" href="#inspect-form">Inspect a contract</a>
+          <a class="pill dark nav-cta" href="#radar">See upgrades</a>
         </nav>
       </div>
     </header>
@@ -47,15 +48,15 @@
             <img src="img/hero-1600.webp" srcset="img/hero-960.webp 960w, img/hero-1600.webp 1600w" sizes="(max-width: 1200px) 100vw, 1200px" alt="" width="1600" height="1067" />
           </picture>
           <div class="hero-copy">
-            <span class="tag rise" style="--d: 0ms"><span class="dot" aria-hidden="true"></span>Contract trust for NEAR</span>
-            <h1 id="h1" class="rise" style="--d: 80ms">Who can change the contract you're about to <em>trust?</em></h1>
-            <p class="lede rise" id="lede" style="--d: 160ms">On NEAR, a contract with no keys can still replace its own code. Keyhole shows who holds that power, and whether the code is verified.</p>
+            <span class="tag rise" style="--d: 0ms"><span class="dot" aria-hidden="true"></span>Keyhole Guardian for NEAR</span>
+            <h1 id="h1" class="rise" style="--d: 80ms">See the upgrade coming. Get out <em>before it lands.</em></h1>
+            <p class="lede rise" id="lede" style="--d: 160ms">A DAO upgrade runs the moment its last vote lands. Keyhole reads the exact code being voted on, grades it first, and can fire the withdrawal you signed in advance.</p>
             <form id="inspect-form" class="search rise" style="--d: 240ms" role="search" autocomplete="off">
-              <label for="q" class="sr-only">Paste a NEAR account or transaction</label>
-              <input id="q" name="q" type="text" inputmode="text" spellcheck="false" placeholder="Paste a NEAR account or transaction" />
+              <label for="q" class="sr-only">Paste a NEAR contract, DAO or transaction</label>
+              <input id="q" name="q" type="text" inputmode="text" spellcheck="false" placeholder="Paste a contract, DAO or transaction" />
               <button type="submit" class="pill dark go">Inspect <span class="arrow" aria-hidden="true">→</span></button>
             </form>
-            <p class="quiet-links rise" style="--d: 320ms"><a href="#attack">Watch the upgrade attack</a><a href="#table">Trust table</a></p>
+            <p class="quiet-links rise" style="--d: 320ms"><a href="#watch">Watch it happen</a><a href="#radar">Upgrade radar</a><a href="#hatch">Escape hatch</a></p>
           </div>
         </div>
       </section>
@@ -66,41 +67,33 @@
       <section class="wrap intro reveal" aria-labelledby="intro-h">
         <div class="intro-left">
           <h2 id="intro-h" class="display">What is Keyhole?</h2>
-          <a class="pill dark" href="#table">Explore the trust table <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="pill dark" href="#watch">Watch it happen <span class="arrow" aria-hidden="true">→</span></a>
         </div>
-        <p class="intro-right">Keyhole is a public lens on NEAR contracts. It reads the chain directly, from your browser, and tells you who can replace a contract's code, whether the code running now is the code that was verified and reviewed, and when it last changed. Every answer comes with the request that proves it.</p>
+        <p class="intro-right">On NEAR, most of the money sits in contracts a DAO can upgrade, and a Sputnik DAO executes an upgrade in the same call as its deciding vote. There is no timelock to wait out. Keyhole watches those proposals, reads the code they would install, and grades it while there is still time. If you armed an escape hatch, it gets you out before the vote lands. Every answer comes with the request that proves it.</p>
       </section>
 
       <!-- Three cards: the three questions -->
       <section class="wrap cards" aria-label="The three questions Keyhole answers">
         <article class="card light reveal">
           <div class="card-text">
-            <h3>Who can change it?</h3>
-            <p>Full-access keys, upgrade methods found in the wasm call graph, and owners resolved to DAO thresholds, multisigs or ACL roles.</p>
+            <h3>See it coming</h3>
+            <p>An upgrade proposal names the exact code hash, and the DAO's <code>store_blob</code> transaction holds the bytes. Keyhole reads them before the vote, for every DAO that controls a contract you use.</p>
           </div>
           <img class="card-img" src="img/key-960.webp" srcset="img/key-640.webp 640w, img/key-960.webp 960w" sizes="(max-width: 900px) 100vw, 50vw" alt="" loading="lazy" width="960" height="640" />
         </article>
         <article class="card dark reveal" style="--d: 90ms">
           <img class="card-glow" src="img/glow-480.webp" alt="" loading="lazy" width="480" height="480" />
-          <h3>Is it the verified code?</h3>
-          <p>NEP-330 build info, SourceScan at this exact hash, a public rebuild of the declared source, and a private AI review inside a NEAR AI Cloud TEE.</p>
+          <h3>Grade it before the vote</h3>
+          <p>New methods and privileged host calls, diffed against the live code. The source the bytes declare, SourceScan and reproducible builds. A private review in a NEAR AI Cloud TEE, with a receipt.</p>
         </article>
         <article class="card dark reveal" style="--d: 180ms">
-          <h3>What changed?</h3>
-          <p>A watcher follows every block. When code is replaced or a full-access key appears, it is on the record within seconds, and agents refuse to sign.</p>
+          <h3>Get out first</h3>
+          <p>A withdraw-to-yourself you signed in advance, relayed the moment Keyhole says STOP. The guardian pays the gas and the 1 yoctoNEAR. It cannot change where the money goes.</p>
         </article>
       </section>
 
       <!-- Stats: real numbers only, each linked to its source -->
-      <section class="wrap stats-wrap reveal" aria-label="Measured on NEAR, 2026-11-09">
-        <div class="stats">
-          <div class="stat"><span class="stat-icon" aria-hidden="true">⌘</span><div><strong><span class="count" data-to="37">37</span>/110</strong><span>SourceScan entries no longer run the verified code</span></div></div>
-          <div class="stat"><span class="stat-icon" aria-hidden="true">⚿</span><div><strong><span class="count" data-to="7">7</span> of 24</strong><span>major contracts keep a full-access key on the contract</span></div></div>
-          <div class="stat"><span class="stat-icon" aria-hidden="true">◷</span><div><strong>≈<span class="count" data-to="5">5</span> s</strong><span>to catch a silent redeploy in the testnet demo</span></div></div>
-          <div class="stat"><span class="stat-icon" aria-hidden="true">✓</span><div><strong><span class="count" data-to="0">0</span></strong><span>dangerous misses in the labelled eval (19/21 exact)</span></div></div>
-        </div>
-        <p class="stats-note">Measured on 2026-11-09 from public RPC. Sources: <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/FACTCHECK.md">fact-check</a>, <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/STATE_OF_NEAR.md">survey</a>, <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/EVAL.md">eval</a>.</p>
-      </section>
+      <section class="wrap stats-wrap reveal" aria-label="Measured on NEAR" id="stats"></section>
 
       <!-- Live from mainnet: the ASCII keyhole made of a live code hash, with the feed inside -->
       <section class="wrap live reveal" aria-labelledby="live-h">
@@ -116,6 +109,21 @@
         </div>
       </section>
 
+      <section id="watch" class="wrap section reveal" aria-labelledby="watch-h"></section>
+      <section id="radar" class="wrap section reveal" aria-labelledby="radar-h"></section>
+      <section id="hatch" class="wrap section reveal" aria-labelledby="hatch-h"></section>
+      <section id="limits" class="wrap section reveal" aria-labelledby="limits-h">
+        <h2 id="limits-h">What it does not do</h2>
+        <p>Keyhole describes and acts on public facts. It is not an audit, and it does not accuse anyone: most upgrades are routine.</p>
+        <ul class="limits">
+          <li><strong>No window, no head start.</strong> A change staged and deployed in one transaction, a direct redeploy by a key, or an unrestricted upgrade path leaves nothing to beat. Keyhole then alerts after the fact, within seconds.</li>
+          <li><strong>Bytes, not intent.</strong> The diff sees new methods and privileged host calls. A logic change inside an existing method (a withdraw that keeps half) is invisible to it; that is what the private review and verified builds are for.</li>
+          <li><strong>Your own keys.</strong> A hatch cannot help if a key on your account is compromised: any full-access key can delete it first.</li>
+          <li><strong>Off-chain trigger.</strong> The guardian decides when to submit. The worst it can do is the exit you signed, to your own account, early.</li>
+          <li><strong>A TEE receipt is provenance.</strong> It proves which model answered inside an attested enclave, over exactly which request. It does not prove the answer is right.</li>
+          <li><strong>Testnet for the action.</strong> The radar reads mainnet. Hatches are demonstrated on testnet; nothing here signs on mainnet.</li>
+        </ul>
+      </section>
       <section id="table" class="wrap section reveal" aria-labelledby="table-h"></section>
       <section id="how" class="wrap section reveal" aria-labelledby="how-h"></section>
       <section id="attack" class="wrap section reveal" aria-labelledby="attack-h"></section>
@@ -125,14 +133,14 @@
       <section class="wrap sources reveal" aria-label="Public data Keyhole reads">
         <p class="sources-label">Reads public data from</p>
         <div class="marquee"><div class="marquee-track">
-          <span>NEAR RPC</span><span>Archival RPC</span><span>neardata</span><span>SourceScan</span><span>NEAR AI Cloud</span><span>Sputnik DAO</span><span>GitHub Actions</span>
-          <span aria-hidden="true">NEAR RPC</span><span aria-hidden="true">Archival RPC</span><span aria-hidden="true">neardata</span><span aria-hidden="true">SourceScan</span><span aria-hidden="true">NEAR AI Cloud</span><span aria-hidden="true">Sputnik DAO</span><span aria-hidden="true">GitHub Actions</span>
+          <span>NEAR RPC</span><span>Archival RPC</span><span>FastNEAR tx index</span><span>Sputnik DAO</span><span>near-plugins</span><span>SourceScan</span><span>NEAR AI Cloud</span><span>NEP-366 meta-transactions</span>
+          <span aria-hidden="true">NEAR RPC</span><span aria-hidden="true">Archival RPC</span><span aria-hidden="true">FastNEAR tx index</span><span aria-hidden="true">Sputnik DAO</span><span aria-hidden="true">near-plugins</span><span aria-hidden="true">SourceScan</span><span aria-hidden="true">NEAR AI Cloud</span><span aria-hidden="true">NEP-366 meta-transactions</span>
         </div></div>
       </section>
     </main>
 
     <footer class="wrap foot">
-      <p>Keyhole describes trust assumptions from public on-chain data. It is not a security audit; owner resolution is heuristic and marked as inferred. Illustrations generated with FLUX.2 on NEAR AI Cloud. <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/GRADING.md">How grades work</a> · <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/SECURITY.md">Trust model</a> · Built at NEAR HACKATHON.</p>
+      <p>Keyhole describes trust assumptions from public on-chain data. It is not a security audit; owner resolution is heuristic and marked as inferred. Guardian actions are demonstrated on testnet only. Illustrations generated with FLUX.2 on NEAR AI Cloud. <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/GRADING.md">How grades work</a> · <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/SECURITY.md">Trust model</a> · Built at NEAR HACKATHON.</p>
     </footer>
 
     <!-- The coin: a lavender metal disc with a keyhole cut through it. -->

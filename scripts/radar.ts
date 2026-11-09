@@ -37,6 +37,12 @@ const head = (await rpc.block()).header;
 const nowMs = Number(BigInt(head.timestamp) / 1_000_000n);
 const evalRows: any[] = fs.existsSync(path.join(ROOT, "eval/upgrades.json")) ? JSON.parse(fs.readFileSync(path.join(ROOT, "eval/upgrades.json"), "utf8")).real : [];
 const windowOf = (dao: string, id: number) => evalRows.find((r) => r.dao === dao && r.id === id) ?? null;
+/** Grade an eval row (both analyses present) with the current rules. */
+const gradeEvalRow = (r: any) => {
+  if (!r?.live || !r?.pending) return null;
+  const g = gradeUpgrade({ target: r.target, live_hash: r.prev_hash ?? "", pending_hash: r.hash, live: r.live, pending: r.pending, verified: { reproducible: null, sourcescan: r.sourcescan }, review: null });
+  return { verdict: g.verdict, flags: g.flags, headline: g.headline };
+};
 
 const daos = [];
 for (const dao of DAOS) {
@@ -45,7 +51,8 @@ for (const dao of DAOS) {
   const props = await listUpgradeProposals(rpc, dao, { last: 60, nowMs });
   const rows = [];
   for (const p of props.slice(0, 12)) {
-    const row: any = { ...p, window_s: windowOf(dao, p.id)?.window_s ?? null, changed_at_height: windowOf(dao, p.id)?.changed_at_height ?? null };
+    const ev = windowOf(dao, p.id);
+    const row: any = { ...p, window_s: ev?.window_s ?? null, changed_at_height: ev?.changed_at_height ?? null, bytes: ev?.bytes ?? null, blob_tx: ev?.blob_tx ?? null, grade: gradeEvalRow(ev) };
     if (p.state === "pending" && p.code_hash) {
       try {
         const blob = await fetchPendingCode({ api, dao, hash: p.code_hash, maxPages: 20 });
@@ -104,6 +111,7 @@ const out = {
   network: "mainnet",
   daos,
   staged,
+  windows: evalRows.filter((r) => typeof r.window_s === "number").map((r) => ({ dao: r.dao, id: r.id, target: r.target, window_s: r.window_s })),
   stats: {
     upgradable_surveyed: upgradable.length,
     upgradable_zero_delay: zeroDelay.length,

@@ -7,6 +7,7 @@ import "./styles.css";
 import { inspect, decodeTransactions, Rpc, type KeyholeReport } from "@keyhole/core";
 import { mountHero } from "./hero.ts";
 import { renderReport, verdictBadge, esc, wireCopy } from "./render.ts";
+import { mountReplay, mountRadar, mountHatch, guardianStats, fmtWindow } from "./guardian.ts";
 import survey from "../../data/survey.json";
 import demoRun from "../../data/demo-run.json";
 
@@ -329,6 +330,25 @@ async function liveRecheck() {
   }, { rootMargin: "200px" }).observe(tableEl);
 }
 
+// ── Guardian: stats band, replay, radar, hatch ──
+{
+  const { radar, lead } = guardianStats();
+  const st = radar.stats as Record<string, number | null>;
+  const gh = "https://github.com/unajijacob6-create/keyhole/blob/main";
+  const stat = (icon: string, big: string, label: string) => `<div class="stat"><span class="stat-icon" aria-hidden="true">${icon}</span><div><strong>${big}</strong><span>${label}</span></div></div>`;
+  $("#stats").innerHTML = `
+    <div class="stats">
+      ${stat("◷", fmtWindow(st.window_min_s), "fastest real upgrade on these DAOs, from proposal to live code")}
+      ${stat("≈", fmtWindow(st.window_median_s), `median, over ${st.measured_windows ?? 0} executed mainnet upgrades`)}
+      ${stat("⚿", `${st.upgradable_zero_delay ?? "—"} of ${st.upgradable_surveyed ?? "—"}`, "near-plugins contracts with no staging delay set")}
+      ${stat("✓", `<span class="count" data-to="${lead}">${lead}</span> blocks`, "the hatch landed before the deciding vote, in the recorded testnet run")}
+    </div>
+    <p class="stats-note">Mainnet figures measured ${esc(radar.generatedAt.slice(0, 10))} from public RPC (<a href="${gh}/docs/EVAL_UPGRADES.md">upgrade eval</a>); the testnet run is re-checkable with <code>npm run demo:guardian -- --replay</code>.</p>`;
+  mountReplay($("#watch"));
+  mountRadar($("#radar"));
+  mountHatch($("#hatch"));
+}
+
 // ── how it works ──
 $("#how").innerHTML = `
   <h2 id="how-h">How it works</h2>
@@ -345,7 +365,7 @@ const run = demoRun as unknown as { recordedAt: string; vault: string; steps: De
 let replayIdx = 0;
 let playing: ReturnType<typeof setInterval> | null = null;
 function renderReplay() {
-  const banner = `<figure class="banner"><img src="${BASE}img/vault-1200.webp" srcset="${BASE}img/vault-720.webp 720w, ${BASE}img/vault-1200.webp 1200w" sizes="(max-width: 1240px) 100vw, 1200px" alt="" loading="lazy" width="1200" height="800" /><figcaption class="banner-text"><h2 id="attack-h" class="display">The upgrade attack, replayed</h2><p>An honest vault keeps one full-access key. That key silently redeploys it with a <code>sweep</code> method. Keyhole catches it.</p></figcaption></figure>`;
+  const banner = `<figure class="banner"><img src="${BASE}img/vault-1200.webp" srcset="${BASE}img/vault-720.webp 720w, ${BASE}img/vault-1200.webp 1200w" sizes="(max-width: 1240px) 100vw, 1200px" alt="" loading="lazy" width="1200" height="800" /><figcaption class="banner-text"><h2 id="attack-h" class="display">And when there is no vote</h2><p>The other path: a vault that keeps one full-access key is silently redeployed with a <code>sweep</code> method. No proposal, no window. Keyhole catches it within seconds and agents refuse to sign.</p></figcaption></figure>`;
   if (!run.steps?.length) {
     attackEl.innerHTML = `${banner}<p class="muted">No recorded run yet. Run <code>npm run demo:attack</code>.</p>`;
     return;

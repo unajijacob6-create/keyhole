@@ -106,6 +106,8 @@ export class Rpc {
       const j = res.json;
       if (!j || res.status === 429 || res.status >= 500) {
         lastErr = new Error(`RPC HTTP ${res.status}`);
+        // Rate limited: back off longer than for a transient error (free endpoints count per minute).
+        if (res.status === 429) await sleep(Math.min(2000 * 2 ** attempt, 30_000));
         continue;
       }
       if (j.error) {
