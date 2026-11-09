@@ -2,7 +2,7 @@
 import { Rpc, RpcAnswerError, type Network, type Transport, type AccessKeyInfo } from "./rpc.ts";
 import { EMPTY_CODE_HASH, codeHash as computeCodeHash } from "./hash.ts";
 import { analyzeWasm, type WasmAnalysis } from "./wasm.ts";
-import { discoverOwners, resolveActor, deployerRolesFromSource, type ActorInfo, type OwnerCandidate, type DeployerRoles } from "./controller.ts";
+import { discoverOwners, resolveActor, deployerRolesFromSource, analyzeSputnikPolicy, DAO_SELF_KINDS, type ActorInfo, type OwnerCandidate, type DeployerRoles } from "./controller.ts";
 import { nep330, sourcescan, type Nep330Signal, type SourceScanSignal, type SourceOptions } from "./sources.ts";
 import { registryLookup, registryRpc, KEYHOLE_REGISTRY, type RegistrySignal } from "./registry.ts";
 import { lastCodeChange, type CodeChange } from "./history.ts";
@@ -163,7 +163,20 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
     const external = owners.filter((o) => o.actor);
     const methodText = methods.length ? `method${methods.length === 1 ? "" : "s"} ${methods.map((m) => `\`${m}\``).join(", ")}` : "no recognised upgrade method";
     const codeEv = ev.code(network, accountId);
-    if (!external.length) {
+    const selfDao = wasm.exports.includes("get_policy") ? await rpc.tryView<any>(accountId, "get_policy") : null;
+    if (selfDao && Array.isArray(selfDao.roles)) {
+      // A Sputnik DAO upgrades itself through its own proposals (upgrade_self / call), so its policy
+      // is the controller of this path.
+      const dao = analyzeSputnikPolicy(selfDao, DAO_SELF_KINDS);
+      const req = dao.requiredApprovals;
+      paths.push({
+        via: "contract-method",
+        control: req === null ? (dao.tokenWeighted ? "unresolved" : "governed") : req <= 1 ? "single-key" : "governed",
+        methods,
+        text: req === null ? `This is a Sputnik DAO; it can replace its own code only through proposals, and no role can approve them${dao.tokenWeighted ? " except by token-weighted vote" : ""}.` : `This is a Sputnik DAO; it can replace its own code through a "${dao.proposalKind}" proposal that ${req} of ${dao.roleSize} "${dao.roleName}" members can pass.`,
+        evidence: [codeEv, ev.view(network, accountId, "get_policy")],
+      });
+    } else if (!external.length) {
       paths.push({
         via: "contract-method",
         control: "unresolved",

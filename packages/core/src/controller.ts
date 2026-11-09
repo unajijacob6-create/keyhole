@@ -36,7 +36,11 @@ export interface ActorInfo {
 
 // Sputnik proposal kinds through which a DAO can change a contract it owns: a function call
 // (e.g. `upgrade`), a remote upgrade, or first rewriting its own policy.
-const DAO_KINDS = ["call", "upgrade_remote", "upgrade_self", "policy", "policy_update_default_vote_policy", "policy_add_or_update_role"];
+const POLICY_KINDS = ["policy", "policy_update_default_vote_policy", "policy_add_or_update_role"];
+/** A DAO acting on a contract it owns: a function call (e.g. `upgrade`), a remote upgrade, or first rewriting its policy. */
+export const DAO_OWNER_KINDS = ["call", "upgrade_remote", ...POLICY_KINDS];
+/** A DAO replacing its own code: an upgrade_self proposal, or first rewriting its policy. */
+export const DAO_SELF_KINDS = ["upgrade_self", ...POLICY_KINDS];
 
 function permits(perms: string[], kind: string): boolean {
   return perms.some((p) => {
@@ -53,11 +57,11 @@ export function sputnikRequired(threshold: unknown, quorum: unknown, total: numb
   return Math.max(t, Number(quorum ?? 0));
 }
 
-export function analyzeSputnikPolicy(policy: any): DaoInfo {
+export function analyzeSputnikPolicy(policy: any, kinds: string[] = DAO_OWNER_KINDS): DaoInfo {
   const info: DaoInfo = { kind: "sputnik", requiredApprovals: null, roleSize: null, roleName: null, proposalKind: null, tokenWeighted: false, everyoneCanApprove: false, roles: [] };
   for (const role of policy?.roles ?? []) {
     const perms: string[] = role.permissions ?? [];
-    const canApprove = DAO_KINDS.filter((k) => permits(perms, k));
+    const canApprove = kinds.filter((k) => permits(perms, k));
     const k = role.kind;
     const members = k === "Everyone" ? "everyone" : k?.Group ? k.Group.length : k?.Member !== undefined ? "token-holders" : 0;
     info.roles.push({ name: role.name, members, canApprove });
