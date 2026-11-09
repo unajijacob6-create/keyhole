@@ -1,12 +1,17 @@
 # Keyhole contracts
 
-Three NEAR contracts (Rust, near-sdk 5.30), in one cargo workspace:
+Four NEAR crates (Rust, near-sdk 5.30), in one cargo workspace:
 
 | Crate | Wasm (`out/`) | What it is |
 |---|---|---|
 | `registry` (`keyhole-registry`) | `registry.wasm` | The Keyhole registry: attestations about contract code, keyed by code hash |
 | `demo-vault-v1` | `demo_vault_v1.wasm` | An honest, minimal NEAR vault for the testnet "silent upgrade" demo |
 | `demo-vault-v2` | `demo_vault_v2.wasm` | **Deliberately malicious.** The v1 redeploy that lets the owner drain the vault. Testnet demos only |
+| `guarded-vault` | `guarded_vault.wasm` + 5 variants | A DAO-owned vault with an `upgrade` path, built as an honest default plus seeded honest/evil variants for Keyhole Guardian. Testnet only |
+
+The guarded vault builds one wasm per cargo feature (see [Guarded vault](#guarded-vault-guarded-vault) below):
+`guarded_vault.wasm` (honest), `guarded_vault_benign_v2.wasm`, `guarded_vault_evil_sweep.wasm`,
+`guarded_vault_evil_addkey.wasm`, `guarded_vault_evil_owner.wasm`, `guarded_vault_evil_fee.wasm`.
 
 `out/` holds the wasm that `test.sh` built and tested. It is kept in git so the demo scripts can deploy it without a Rust toolchain.
 
@@ -18,10 +23,10 @@ bash contracts/test.sh
 
 The script:
 
-1. builds each crate with `cargo near build non-reproducible-wasm --locked` (cargo-near 0.23.0; it runs `wasm-opt`, embeds the ABI and the NEP-330 metadata) and copies the result to `out/`;
-2. lists each wasm's exports with `WebAssembly.Module.exports` in node, and fails if `contract_source_metadata` is missing or if any contract imports a host function that deploys or switches code (`promise_batch_action_deploy_contract`, `*_deploy_global_contract*`, `*_use_global_contract*`);
-3. runs the unit tests (`cargo test --workspace --lib`);
-4. runs the near-workspaces sandbox tests (`registry/tests/sandbox.rs`, `demo-vault-v2/tests/silent_upgrade.rs`).
+1. builds each crate with `cargo near build non-reproducible-wasm --locked` (cargo-near 0.23.0; it runs `wasm-opt`, embeds the ABI and the NEP-330 metadata) and copies the result to `out/`. The guarded vault is built once per variant (`--no-default-features [--features <f>]`) into its six named wasm;
+2. inspects each wasm in node, and fails if `contract_source_metadata` is missing. For the registry and demo vaults it also fails on any import of a host function that deploys or switches code (`promise_batch_action_deploy_contract`, `*_deploy_global_contract*`, `*_use_global_contract*`). The guarded-vault wasm legitimately import the deploy host call (their `upgrade` deploys), so for those the check instead decodes the code section, builds the call graph, and asserts that `upgrade` is the **only** export that can reach the deploy host call (and that `upgrade` is exported and deploy is imported). The decoder fails closed on any opcode it does not understand, so it cannot silently miss a path;
+3. runs the unit tests (`cargo test --workspace --lib`), then the guarded-vault variant unit tests (one `--features` build each);
+4. runs the near-workspaces sandbox tests (`registry/tests/sandbox.rs`, `demo-vault-v2/tests/silent_upgrade.rs`, `guarded-vault/tests/upgrade.rs`).
 
 It exits non-zero on any failure. Requirements: Rust 1.97 with `wasm32-unknown-unknown` (pinned in `rust-toolchain.toml`), cargo-near, node, and a C compiler for the shim below.
 
@@ -146,6 +151,74 @@ It has exactly the v1 state layout, so a redeploy over v1 reads v1's state with 
 - `version() -> "2.0.0"`.
 
 `demo-vault-v2/tests/silent_upgrade.rs` plays the demo end to end in the sandbox. It deploys v1, takes deposits from two users and runs a v1 withdraw. It then redeploys v2 with the vault account's own full-access key, checks that the code hash changed and the state carried over, and has the owner sweep about 7 NEAR. Keyhole should catch this: a `ChangeObserved` attestation with v1's hash as `old_hash` and v2's as `new_hash`.
+
+## Guarded vault (`guarded-vault/`)
+
+**The evil variants are intentionally malicious, for testnet demos only. Never deploy them where real funds live.**
+
+A DAO-owned vault that mirrors how a real DeFi venue (Ref, Burrow) looks to a depositor, and that
+Keyhole Guardian watches for upgrades. State is the v1 layout: `owner_id` (the DAO), `balances:
+LookupMap<AccountId, u128>` (prefix `b"b"`), `total: u128`.
+
+Methods:
+
+- `new(owner_id)`: init.
+- `deposit()` (payable): credits the attached deposit to the caller; returns the new balance.
+- `withdraw_all()` (payable): requires exactly 1 yoctoNEAR (`near_sdk::assert_one_yocto`), sends the
+  caller's whole balance back to `predecessor_account_id`, clears the record, and returns the amount.
+  A private `on_withdraw` callback restores the full recorded balance if the transfer fails. The
+  1-yoctoNEAR gate is the standard full-access-key check: a function-call access key cannot attach a
+  deposit, so only a full-access signature — or a relayed NEP-366 delegate action the user signed with
+  a full-access key — can call it. Under a relayed delegate action `predecessor_account_id` is the
+  user (the delegate's sender), so funds return to the user, not the relayer.
+- `get_balance(account_id) -> U128`, `get_total() -> U128`, `get_owner() -> AccountId`, `version() -> String`.
+- `upgrade()`: owner only (`predecessor == owner_id`). Reads the new wasm from the call's **raw**
+  `env::input()` bytes (not JSON) and deploys it to the current account with `env::promise_batch_create`
+  + `env::promise_batch_action_deploy_contract`. No migration (the state layout is fixed). This is the
+  one method that imports the deploy host call. It takes no parameters, so the near-sdk `#[near]`
+  wrapper does not deserialize input and leaves the raw wasm in `env::input()` for us. This is exactly
+  what a Sputnik `UpgradeRemote` function call delivers: the stored blob as raw input.
+
+### Seeded variants (cargo features)
+
+Each feature produces a separate wasm with the **same state layout**, so it can be deployed over the
+honest v1 by `upgrade` and read v1 state with no migration. The features are **mutually exclusive**:
+enabling two makes the build fail with a `compile_error!`. The honest default is v1.
+
+| Build (`--features`) | Wasm | `version` | Added surface | What it models |
+|---|---|---|---|---|
+| default | `guarded_vault.wasm` | `1.0.0` | — | the honest vault |
+| `benign-v2` | `guarded_vault_benign_v2.wasm` | `1.1.0` | view `get_stats() -> (U128, u32)` | a benign upgrade Keyhole should pass |
+| `evil-sweep` | `guarded_vault_evil_sweep.wasm` | `1.1.0` | `sweep()`, callable by anyone, sends `total` to a compiled-in beneficiary | a new money path |
+| `evil-addkey` | `guarded_vault_evil_addkey.wasm` | `1.1.0` | `add_owner_key(public_key)`, no access check, adds a full-access key | a new key path |
+| `evil-owner` | `guarded_vault_evil_owner.wasm` | `1.1.0` | `set_owner(owner_id)`, no access check | a new code path one hop away (seize owner, then `upgrade`) |
+| `evil-fee` | `guarded_vault_evil_fee.wasm` | `1.1.0` | none | `withdraw_all` skims half; a pure logic change a wasm export/host-call diff cannot see |
+
+`evil-sweep`'s beneficiary is fixed at compile time with `option_env!("SWEEP_TO")`, defaulting to
+`keyhole-attacker.testnet`. `evil-fee` exists to measure, honestly, what a static wasm diff misses:
+its exports and host imports are identical to the honest build (the import/reachability check reports
+the same surface), yet it steals half of every withdrawal.
+
+### Why `upgrade` is the only export that reaches deploy
+
+Like the demo vaults, the guarded vault moves value with the low-level `env::promise_batch_*` host
+calls, not near-sdk's high-level `Promise` (which would link every action host function and blur which
+capabilities the code uses). The one deploy capability it imports is reached only by `upgrade`. The
+build (step 2 above) proves this by call-graph reachability rather than a bare export list, so a hidden
+deploy from any other method would fail the build.
+
+### Sandbox tests (`guarded-vault/tests/upgrade.rs`)
+
+1. **deposit + `withdraw_all`**: a user deposits, `withdraw_all` without the 1 yoctoNEAR is rejected,
+   then with 1 yoctoNEAR it clears the record, returns the amount, and the NEAR lands back in the user's
+   account.
+2. **Sputnik-style upgrade**: the owner calls `upgrade` with the raw bytes of `guarded_vault_evil_sweep.wasm`
+   as the call args (no JSON). The code is replaced in place, state carries over with no migration, the
+   new `sweep` export appears, and `sweep` moves the whole `total` to the compiled-in beneficiary
+   (the test creates `keyhole-attacker.testnet` in the sandbox so the transfer lands).
+3. **NEP-366 delegate action** (relayer submits the user's signed `withdraw_all`): skipped. near-workspaces
+   0.24 has no `SignedDelegate` / meta-transaction builder, so it cannot be exercised in the sandbox. The
+   `@keyhole/hatch` package verifies the relayed-delegate path live on testnet instead.
 
 ## Eval fixtures (`fixtures/`): testnet only
 

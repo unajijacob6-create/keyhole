@@ -1086,6 +1086,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "guarded-vault"
+version = "1.0.0"
+dependencies = [
+ "anyhow",
+ "near-sdk",
+ "near-workspaces",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

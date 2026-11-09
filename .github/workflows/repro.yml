@@ -33,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p repro
-          for pair in registry:keyhole_registry demo-vault-v1:demo_vault_v1 demo-vault-v2:demo_vault_v2; do
+          for pair in registry:keyhole_registry demo-vault-v1:demo_vault_v1 demo-vault-v2:demo_vault_v2 guarded-vault:guarded_vault; do
             dir=${pair%%:*}; name=${pair##*:}
             (cd contracts/$dir && cargo near build reproducible-wasm)
             cp contracts/target/near/$name/$name.wasm repro/$name.wasm
