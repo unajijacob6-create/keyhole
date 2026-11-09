@@ -9,3 +9,5 @@ export * from "./history.ts";
 export * from "./grade.ts";
 export * from "./inspect.ts";
 export * from "./decode.ts";
+export * from "./pending.ts";
+export * from "./upgrade.ts";
