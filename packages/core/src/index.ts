@@ -8,3 +8,4 @@ export * from "./registry.ts";
 export * from "./history.ts";
 export * from "./grade.ts";
 export * from "./inspect.ts";
+export * from "./decode.ts";
