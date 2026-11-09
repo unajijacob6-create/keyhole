@@ -50,4 +50,5 @@ Behind an HTTP proxy, prefix Node commands with `NODE_USE_ENV_PROXY=1`.
 Keyhole is not an audit (see `docs/SECURITY.md`):
 - Owner inference is heuristic and labelled "inferred".
 - Builds are verified on a public CI runner, not in a TEE.
-- The AI review is evidence, not a guarantee, and never sets the grade.
+- The AI review is evidence, not a guarantee. It still counts by fixed rules: for a pending upgrade a
+  high-risk review alone is enough for STOP, and it never lowers an upgrade verdict (`docs/GRADING.md`).

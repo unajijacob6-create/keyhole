@@ -55,7 +55,7 @@ function stages(): Stage[] {
   const summary: string[] = firedAlert?.assessment?.summary ?? [];
   const bytes = firedAlert?.assessment?.pending_size;
   return [
-    { key: "deposits", title: "Two depositors", detail: "Alice deposits 1 NEAR, Bob 0.5 NEAR into a vault governed by a 2-of-2 Sputnik DAO. Withdrawing needs exactly 1 yoctoNEAR, like Ref and Burrow.", block: H.bob_deposit, tx: T.bob_deposit,
+    { key: "deposits", title: "Two depositors", detail: "Alice deposits 1 NEAR, Bob 0.5 NEAR into a vault governed by a 2-of-2 Sputnik DAO. Withdrawing needs exactly 1 yoctoNEAR, as Ref and Burrow withdraws do. Unlike them it holds native NEAR: the diff catches a native-NEAR sweep, not a token one.", block: H.bob_deposit, tx: T.bob_deposit,
       alice: { state: "deposited", near: "1.00 NEAR in vault", tone: "idle" }, bob: { state: "deposited", near: "0.50 NEAR in vault", tone: "idle" }, vault: 1.5, guardian: ["watching gv-… · controller resolved: kh-guardian.sputnikv2.testnet (2 of 2)"] },
     { key: "armed", title: "Alice arms a hatch", detail: "She signs one withdraw_all to herself with a dedicated key, then drops the key's secret. The guardian keeps only the signed bytes; it cannot change them.", block: run.hatch?.created_height ?? null,
       alice: { state: "hatch ARMED", near: "1.00 NEAR in vault", tone: "ok" }, bob: { state: "no hatch", near: "0.50 NEAR in vault", tone: "idle" }, vault: 1.5, guardian: [`hatch ${run.hatch?.id ?? ""} · ARMED · ${run.hatch?.method}() · 1 yocto · until block ${run.hatch?.max_block_height}`] },
@@ -218,7 +218,7 @@ function propCard(p: RadarProp) {
       <div><dt>new code</dt><dd class="mono" title="${esc(p.code_hash ?? "")}">${esc(short(p.code_hash, 10))}</dd></div>
       ${p.registers_release ? `<div><dt>effect</dt><dd>registers a release; deployed to managed contracts by a later call</dd></div>` : `<div><dt>${p.state === "executed" ? "proposal → live" : "submitted"}</dt><dd>${p.state === "executed" ? (p.window_s != null ? `<strong>${fmtWindow(p.window_s)}</strong>` : "—") : `${fmtWindow(Math.round(age / 1000))} ago`}</dd></div>`}
       ${exp ? `<div><dt>window</dt><dd>${esc(exp)}</dd></div>` : ""}
-      ${p.blob_tx ? `<div><dt>bytes</dt><dd><a href="${nearTx("mainnet", p.blob_tx)}">${p.bytes ? `${(p.bytes / 1024).toFixed(0)} KB` : "store_blob"} public before the vote ↗</a></dd></div>` : ""}
+      ${p.blob_tx ? `<div><dt>bytes</dt><dd><a href="${nearTx("mainnet", p.blob_tx)}">${p.bytes ? `${(p.bytes / 1024).toFixed(0)} KB` : "store_blob"} on chain before the deciding vote ↗</a></dd></div>` : ""}
     </dl>
     ${g ? `<div class="prop-grade">${verdictBadge(g.verdict)} <span class="small">${esc(g.flags.slice(0, 3).join(" · "))}</span></div>` : ""}
     <div class="prop-live" hidden></div>
@@ -230,6 +230,10 @@ function propCard(p: RadarProp) {
  *  the snapshot knows the block where it went live (compare with the code just before). A release
  *  registration does not change the receiver's code, so there is nothing to diff. */
 const canGrade = (p: RadarProp) => Boolean(p.code_hash) && !p.registers_release && (p.state === "pending" || (p.state === "executed" && Boolean(p.changed_at_height)));
+
+/** What the in-browser grade diffs the proposal's code against (shown with every result). */
+export const comparedWith = (p: Pick<RadarProp, "state" | "changed_at_height" | "target">) =>
+  p.state === "executed" && p.changed_at_height ? `the code it replaced (${p.target} at block ${p.changed_at_height - 1}, archival RPC)` : `the code ${p.target} runs now`;
 
 /** Code at height h; heights with no block step backwards. */
 async function codeBefore(arch: Rpc, account: string, h: number): Promise<Uint8Array> {
@@ -266,6 +270,7 @@ async function gradeInBrowser(p: RadarProp, out: HTMLElement) {
         from = `the code at block ${p.changed_at_height}`;
       }
     } else live = (await rpc.viewCode(p.target)).code;
+    const against = comparedWith(p);
     if (!pending) {
       out.innerHTML = `<p class="small">Could not find the pending bytes in the recent transaction index. ${p.state === "executed" ? "" : "Keyhole would grade it CAUTION: the code being voted on is not visible."}</p>`;
       return;
@@ -282,6 +287,7 @@ async function gradeInBrowser(p: RadarProp, out: HTMLElement) {
       <p class="small">${esc(g.headline)}</p>
       <ul class="small diff-list">
         <li>${(pending.length / 1024).toFixed(0)} KB from ${from}; sha256 = proposal hash ✓</li>
+        <li>compared with ${esc(against)}</li>
         ${d.addedMethods.length ? `<li>+ ${esc(d.addedMethods.slice(0, 8).join(", "))}${d.addedMethods.length > 8 ? ` (+${d.addedMethods.length - 8})` : ""}</li>` : ""}
         ${d.removedMethods.length ? `<li>− ${esc(d.removedMethods.slice(0, 8).join(", "))}</li>` : ""}
         ${d.newlyReachable.map((n) => `<li>${esc(n.capability)} newly reachable from ${esc(n.methods.slice(0, 5).join(", "))}</li>`).join("")}
@@ -318,7 +324,7 @@ export function mountRadar(el: HTMLElement) {
     <div class="g-head">
       <span class="tag"><span class="dot live-dot" aria-hidden="true"></span>NEAR mainnet · snapshot ${esc(radar.generatedAt.slice(0, 16).replace("T", " "))} UTC, refreshed live</span>
       <h2 id="radar-h" class="display">Upgrade radar.</h2>
-      <p>Every upgrade proposal of the DAOs behind Ref, Burrow, NEAR Intents, the Omni bridge and SWEAT. Each one names the exact code hash, and the bytes are public before the vote. Pick any proposal and Keyhole grades it here, in your browser.</p>
+      <p>Recent upgrade proposals (the latest 12 per DAO in the snapshot) of the DAOs behind Ref, Burrow, NEAR Intents, the Omni bridge and SWEAT. Each one names the exact code hash. For <code>UpgradeRemote</code> and <code>UpgradeSelf</code> the code is in a <code>store_blob</code> transaction to the DAO, which must be on chain before the deciding vote; near-plugins deploys use code staged on the target, and a release registration carries only a hash. Pick a proposal that is still open, or an executed one whose replaced code is known, and Keyhole grades it here, in your browser.</p>
     </div>
     <div class="radar-stats">
       <div class="rstat"><strong>${fmtWindow(st.window_min_s as number)}</strong><span>fastest proposal → live code</span></div>
@@ -332,7 +338,7 @@ export function mountRadar(el: HTMLElement) {
       ${radar.daos.map((d) => `<button class="chip" data-f="${esc(d.dao)}" role="tab" aria-selected="false">${esc(daoName(d.dao))} <span class="muted">${d.required ?? "?"} of ${d.council ?? "?"}</span></button>`).join("")}
     </div>
     <div class="props" id="props"></div>
-    <p class="small muted">Sputnik executes a proposal in the call that reaches its threshold; the proposal period (7 days on these DAOs) is an expiry, not a delay. "Proposal → live" is the time between submission and the first block running the new code. A grade here is the deterministic rule set in <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/GRADING.md">GRADING.md</a>; it describes what the new code can do, not intent.</p>`;
+    <p class="small muted">Sputnik executes a proposal in the call that reaches its threshold; the proposal period (7 days on these DAOs) is an expiry, not a delay. "Proposal → live" is the time between submission and the first block running the new code. A grade here is the deterministic rule set in <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/GRADING.md">GRADING.md</a>; it describes what the new code can do, not intent. A STOP on a past upgrade means its code had no verified build and its diff adds a new path (or removes an exit); a reproducible build or SourceScan verification of the new hash would make it CAUTION. No known incident is attached to these upgrades, so the upgrade eval counts every such STOP as a false alarm.</p>`;
   const propsEl = el.querySelector("#props") as HTMLElement;
   const paint = () => {
     const rows = all.filter((p) => filter === "all" || p.dao === filter).sort((a, b) => b.submitted_at_ms - a.submitted_at_ms).slice(0, 12);
@@ -397,7 +403,7 @@ export function mountHatch(el: HTMLElement) {
   el.innerHTML = `
     <div class="g-head">
       <h2 id="hatch-h" class="display">The escape hatch.</h2>
-      <p>A withdraw-to-yourself, signed in advance. The guardian holds the signed bytes and submits them only when Keyhole grades a pending change STOP. It pays the gas and the 1 yoctoNEAR. It cannot change a single field.</p>
+      <p>A withdraw-to-yourself, signed in advance. The guardian holds the signed bytes and submits them when Keyhole grades a code change of that venue STOP: a pending proposal or staged code, and in this build also code that already landed. It pays the gas and the 1 yoctoNEAR. It cannot change a single field. The signature fixes the call, not the outcome: the venue's code at the moment the call runs decides where the funds go, so a hatch fired after an upgrade landed runs the new code.</p>
     </div>
     <div class="hatch-grid">
       <div class="panel hatch-card" data-testid="hatch-card">
@@ -415,7 +421,7 @@ export function mountHatch(el: HTMLElement) {
       </div>
       <div class="hatch-cols">
         <div class="panel can"><h3>It can</h3><ul>
-          <li>Move your deposit to <strong>your own account</strong>, and nowhere else</li>
+          <li>Call <strong>one fixed withdraw</strong>, as you, with the arguments you signed; on the venue's current code that pays <strong>your own account</strong></li>
           <li>Carry the 1 yoctoNEAR that Ref, Burrow, wNEAR and NEP-141 transfers demand (a function-call key cannot: nearcore rejects any deposit from one)</li>
           <li>Be relayed by anyone, and checked by anyone, offline</li>
           <li>Be revoked by you at any time: delete the key</li>
@@ -425,6 +431,8 @@ export function mountHatch(el: HTMLElement) {
           <li>Protect you if a key on <em>your</em> account is compromised</li>
           <li>Exit a venue that checks <code>signer_account_id</code> (the relayer signs)</li>
           <li>Prove its key's secret was erased: you trust the process that armed it, once</li>
+          <li>Choose what the venue's code does with the call: fired after an upgrade landed, it runs the new code</li>
+          <li>Fire on a token drain the diff does not flag (Ref- and Burrow-style token deposits move with <code>ft_transfer</code>, not native transfers), unless an AI review reports high risk</li>
         </ul></div>
       </div>
     </div>

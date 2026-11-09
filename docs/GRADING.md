@@ -2,9 +2,12 @@
 
 The grade is a pure function, `grade()` in `packages/core/src/grade.ts`, unit-tested in
 `packages/core/test/grade.test.ts`. It runs on signals collected from public RPC by `inspect()`.
-**AI never sets the grade.** An attested AI review is one input among others, and it is applied
-after the deterministic facts. Every reason carries the request that re-checks it (`--evidence` in
-the CLI, "Re-check" in the UI).
+An attested AI review is one input among others, applied after the deterministic facts, and the
+rules below say exactly where it counts. For a contract (section 4) it can make a fresh change STOP
+(high risk) or keep a fresh unverified change at CAUTION instead of STOP (low risk). For a pending
+upgrade (section 7) a high-risk review alone is enough for STOP, which fires `stop` hatches, and no
+review lowers the verdict. Every reason carries the request that re-checks it (`--evidence` in the
+CLI, "Re-check" in the UI).
 
 Keyhole describes trust assumptions. It does not accuse anyone, and it is not a security audit.
 
@@ -123,7 +126,8 @@ These are also listed in `docs/SECURITY.md`:
 - An imported deploy host function is not proof that the contract can upgrade.
 - Wasm analysis cannot see business logic.
 - The archival search can miss an A → B → A change.
-- The AI review is evidence, not a guarantee.
+- The AI review is evidence, not a guarantee, yet the rules above let a high-risk review raise a
+  verdict (alone, for a pending upgrade) and a low-risk review keep a fresh contract change at CAUTION.
 
 ## 7. Upgrade grading (pending upgrades)
 
@@ -202,8 +206,10 @@ Notes:
   an existing method (for example a `withdraw` that sends half) is invisible to it.
 - Verified code that adds a money or code-change path is CAUTION, not OK: a reviewed source can
   still add a power the depositor did not sign up for.
-- A medium-risk AI review is shown as a caution reason but sets no flag and does not change the
-  verdict. AI never lowers a verdict.
+- A high-risk AI review alone makes the verdict STOP, even when the diff shows nothing new and even
+  for `NO_CHANGE` (the code already running), and `fire` follows the verdict. A medium-risk review is
+  shown as a caution reason but sets no flag and does not change the verdict. In upgrade grading an AI
+  review never lowers a verdict.
 - For an *executed* proposal whose code is already live, `keyhole pending --fetch-code` grades it
   retrospectively against the code it replaced (found by the archival search of section 3). A
   *pending* proposal for the code already live is `NO_CHANGE`. An executed proposal whose code is no

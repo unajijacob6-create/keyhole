@@ -1,7 +1,9 @@
 # Keyhole hatch: get out before the upgrade lands
 
 A hatch is a withdraw-to-self that a depositor arms in advance and someone else (the Keyhole guardian)
-submits later, when the Upgrade Radar sees a dangerous code change of the venue coming. Code:
+submits later, when Keyhole grades a code change of the venue STOP. In this build the guardian fires a
+`stop` hatch for a pending proposal, staged code, and also for code that already landed (an executed
+proposal or a changed live code hash), in which case the call runs the new code. Code:
 [`packages/hatch`](../packages/hatch). Interface contract:
 [GUARDIAN_DESIGN.md](GUARDIAN_DESIGN.md#packageshatch-keyholehatch). Live proof:
 [`scripts/hatch-live.ts`](../scripts/hatch-live.ts), run on testnet on 2026-11-09 (below).
@@ -49,13 +51,17 @@ the public key, so:
 
 - **Can:** be submitted by anyone who holds the record (Keyhole's guardian, or the user, or any other
   relayer). The call executes as the user (`predecessor_account_id` = the user), so a withdraw-to-self
-  pays the user.
+  pays the user as long as the venue's code does what it did when the hatch was armed.
 - **Cannot:** be redirected to another receiver, method, amount or account, or be submitted twice.
   `verifyHatch` checks this offline; the tests alter each field (receiver, sender, method, args,
   deposit, gas, nonce, max_block_height, public key) in the record and, separately, inside the signed
   payload, and every alteration is rejected (`packages/hatch/test/hatch.test.ts`).
 - **Cannot:** move funds the call itself does not move. The worst a holder can do is submit exactly the
-  signed withdraw, early or never.
+  signed withdraw, early, late or never.
+- **Does not fix the outcome.** The signature fixes the receiver, method, args and deposit, not what
+  the venue's code does with them. Where the funds go is decided by the venue's code at the moment
+  the call runs. A hatch fired after an upgrade landed runs the new code: the repo's own seeded
+  `evil-fee` vault keeps half of every `withdraw_all`, with the same method and arguments.
 
 An fc-key hatch is a key that can call only the listed methods on one venue, with 0 deposit.
 
@@ -135,13 +141,21 @@ hatch fires before the upgrade executes. Does not protect against:
 - **Positions whose withdraw needs arguments that change.** Args are fixed at signing. A hatch for
   `near_withdraw {"amount": X}` leaves anything above X behind, and (inference, not tested here) fails
   once the balance drops below X. Prefer withdraw-all forms, and re-arm after deposits.
+- **Token drains the diff cannot see.** The upgrade grade's money flags cover native NEAR
+  (`transfer`) only. Fungible-token balances, such as Ref and Burrow deposits, move with cross-contract
+  calls like `ft_transfer`, which no flag covers: a new method that sends everyone's tokens out with
+  `ft_transfer` is not `NEW_MONEY_PATH`, and removing an FT withdraw is not `EXIT_METHOD_REMOVED`
+  ([GRADING.md](GRADING.md#upgrade-grading)). Such an upgrade grades CAUTION if its code is
+  unverified (OK if verified) unless an AI review reports high risk, so a `stop` hatch does not fire
+  on it. The 1-yoctoNEAR exit requirement is the same as for native-NEAR vaults; the detection is not.
 - **A failing exit.** `fireHatch` reports `ok: false` whenever any receipt fails (the live run shows
   a venue panic and a spent nonce). It cannot make a broken or already-upgraded venue pay. It is also
   conservative: a venue whose successful withdraw includes a deliberately failing sub-call would be
   reported as `ok: false`.
 
 Residual trust: the guardian decides *when* to submit. It can fire early (the user is withdrawn
-needlessly; funds still go to the user) or not at all. It cannot redirect funds.
+needlessly; on unchanged code the funds go to the user), late (after new code landed, which then
+decides where the funds go) or not at all. It cannot change a field of the signed call.
 
 `probeDeposit` is a view call: it sees only what the method does before its first state write or
 forbidden host call. `one-yocto` is reliable (the panic names it, as "exactly" or "at least" 1
