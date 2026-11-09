@@ -70,7 +70,7 @@ describe("decodeUpgradeProposal: every kind", () => {
   it("FunctionCall add_release_info (intents #103): hex hash → base58, equal to intents.near's live code hash", async () => {
     const { policy, proposals } = await page("intents.sputnik-dao.near", 99, 5);
     const p = decodeUpgradeProposal("intents.sputnik-dao.near", proposals.find((x) => x.id === 103), policy, NOW)!;
-    expect(p).toMatchObject({ kind: "FunctionCall", target: "ctl-intents.near", method: "add_release_info", hash_from: "args-hash" });
+    expect(p).toMatchObject({ kind: "FunctionCall", target: "ctl-intents.near", method: "add_release_info", hash_from: "args-hash", registers_release: true, via: null });
     const live = await rpc().viewAccount("intents.near");
     expect(p.code_hash).toBe(live.code_hash);
     // council: threshold Weight(3) for call.
@@ -121,6 +121,18 @@ describe("decodeUpgradeProposal: every kind", () => {
       expect(decodeUpgradeProposal("d", mkRaw("InProgress", m), policy, 0)).toBeNull();
     }
     for (const m of ["upgrade", "up_deploy_code", "up_stage_code", "add_release_info", "unrestricted_upgrade", "set_code"]) expect(UPGRADE_METHODS.test(m)).toBe(true);
+  });
+
+  it("controller calls (aurora-controller-factory): upgrade/unrestricted_upgrade with contract_id target that contract via the controller", () => {
+    const policy = { roles: [{ name: "c", kind: { Group: ["a"] }, permissions: ["*:*"], vote_policy: {} }], default_vote_policy: { weight_kind: "RoleWeight", quorum: "0", threshold: [1, 2] }, proposal_period: "1000000000" };
+    const H = base58.encode(new Uint8Array(32).fill(9));
+    const mk = (method: string, args: unknown) => ({ id: 1, proposer: "a", description: "", kind: { FunctionCall: { receiver_id: "ctl.near", actions: [{ method_name: method, args: b64json(args), deposit: "1", gas: "1" }] } }, status: "InProgress", vote_counts: { c: [0, 0, 0] }, votes: {}, submission_time: "0" });
+    for (const m of ["upgrade", "unrestricted_upgrade"]) {
+      expect(decodeUpgradeProposal("d", mk(m, { contract_id: "app.near", hash: H }), policy, 0)).toMatchObject({ target: "app.near", via: "ctl.near", code_hash: H, registers_release: false });
+    }
+    // No contract_id (or the controller itself): the receiver is the target, as before.
+    expect(decodeUpgradeProposal("d", mk("upgrade", { code_hash: H }), policy, 0)).toMatchObject({ target: "ctl.near", via: null });
+    expect(decodeUpgradeProposal("d", mk("add_release_info", { hash: H, version: "1.0.0", is_latest: true }), policy, 0)).toMatchObject({ target: "ctl.near", via: null, registers_release: true });
   });
 });
 

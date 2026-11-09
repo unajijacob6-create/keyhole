@@ -47,7 +47,7 @@ const proposalEv = (state: string, approve = 0, required = 2): RadarEvent => ({
   target: "vault.testnet",
   dao: "dao.testnet",
   first: true,
-  proposal: { dao: "dao.testnet", id: 7, proposer: "a", description: "", kind: "UpgradeRemote", target: "vault.testnet", method: "upgrade", code_hash: "P", hash_from: "proposal", status: "InProgress", state: state as any, submitted_at_ms: 0, expires_at_ms: 1, votes: { approve, reject: 0, remove: 0 }, required },
+  proposal: { dao: "dao.testnet", id: 7, proposer: "a", description: "", kind: "UpgradeRemote", target: "vault.testnet", method: "upgrade", via: null, registers_release: false, code_hash: "P", hash_from: "proposal", status: "InProgress", state: state as any, submitted_at_ms: 0, expires_at_ms: 1, votes: { approve, reject: 0, remove: 0 }, required },
 });
 
 describe("shouldFire", () => {

@@ -43,6 +43,11 @@ const opt = (f: string) => (argv.includes(f) ? argv[argv.indexOf(f) + 1] : undef
 const ONLY = opt("--daos")?.split(",").filter(Boolean);
 const OUT_FILE = opt("--out") ? path.resolve(opt("--out")!) : OUT;
 const MERGE = opt("--merge")?.split(",").filter(Boolean).map((f) => path.resolve(f));
+// --ids ref-finance#1018,intents#64: re-measure only these proposals (merge them after the full runs;
+// for a proposal in several files the last file wins).
+const IDS = opt("--ids")?.split(",").filter(Boolean);
+const RELEASE_NOTE =
+  "add_release_info registers code in a controller for later deployment to the accounts it manages (aurora-controller-factory); the controller's own code does not change, so there is no window to time";
 const LAST = Number(argv.includes("--last") ? argv[argv.indexOf("--last") + 1] : 30);
 import { DAOS } from "./lib/daos.ts";
 
@@ -52,6 +57,9 @@ interface Row {
   kind: string;
   target: string;
   method: string | null;
+  /** Controller the DAO called to deploy to `target` (see UpgradeProposal.via). */
+  via?: string | null;
+  registers_release?: boolean;
   hash: string;
   state: string;
   submitted_at: string;
@@ -141,12 +149,20 @@ async function realRows(): Promise<Row[]> {
       console.log(`${dao}: ${props.length} upgrade-related proposals taken (latest ${LAST})`);
       for (const p of props) {
         if (!p.code_hash) continue;
+        if (IDS && !IDS.includes(`${dao.split(".")[0]}#${p.id}`)) continue;
         const row: Row = {
-          dao, id: p.id, kind: p.kind, target: p.target, method: p.method, hash: p.code_hash, state: p.state,
+          dao, id: p.id, kind: p.kind, target: p.target, method: p.method, via: p.via, registers_release: p.registers_release, hash: p.code_hash, state: p.state,
           submitted_at: new Date(p.submitted_at_ms).toISOString(), votes: `${p.votes.approve}/${p.required ?? "?"}`,
           bytes: null, blob_tx: null, changed_at_height: null, changed_at: null, window_s: null, prev_hash: null, sourcescan: null,
           live: null, pending: null, verdict: "", flags: [], summary: [],
         };
+        if (p.registers_release) {
+          row.note = RELEASE_NOTE;
+          rows.push(row);
+          fs.appendFileSync(`${OUT_FILE}.partial.jsonl`, JSON.stringify(row) + "\n");
+          console.log(`  ${dao.split(".")[0]} #${p.id} ${p.method} on ${p.target}: release registration, not timed`);
+          continue;
+        }
         try {
           let pendingBytes: Uint8Array | null = null;
           // For recent proposals, also show that the bytes were public before execution: find the
@@ -235,8 +251,19 @@ function grade<R extends Row>(r: R): R {
   return { ...r, verdict: g.verdict, flags: g.flags, summary: summarize(g) };
 }
 
+/** Rows from several runs, one per dao#id (the last file wins). Rows measured before release
+ *  registrations were recognised get the same treatment as new ones. */
+function mergeRows(files: string[]): Row[] {
+  const by = new Map<string, Row>();
+  for (const f of files) for (const r of JSON.parse(fs.readFileSync(f, "utf8")).real as Row[]) by.set(`${r.dao}#${r.id}`, r);
+  return [...by.values()].map((r) =>
+    r.method === "add_release_info"
+      ? { ...r, registers_release: true, via: r.via ?? null, window_s: null, changed_at_height: null, changed_at: null, live: null, pending: null, note: RELEASE_NOTE }
+      : r,
+  ).sort((a, b) => (a.dao === b.dao ? b.id - a.id : DAOS.indexOf(a.dao) - DAOS.indexOf(b.dao)));
+}
 const cached = MERGE
-  ? { real: MERGE.flatMap((f) => JSON.parse(fs.readFileSync(f, "utf8")).real), seeded: JSON.parse(fs.readFileSync(MERGE[0], "utf8")).seeded }
+  ? { real: mergeRows(MERGE), seeded: [] }
   : fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf8")) : null;
 const fromCache = offline || Boolean(MERGE);
 const real = fromCache ? (cached?.real ?? []) : await realRows();
@@ -259,6 +286,7 @@ const report = {
   last: LAST,
   summary: {
     upgrade_proposals_with_hash: R.length,
+    release_registrations: R.filter((r: Row) => r.registers_release).length,
     executed_with_measured_window: executed.length,
     window_min_s: windows[0] ?? null,
     window_median_s: median,
@@ -284,10 +312,11 @@ const md = [
   `${executed.length} executed upgrade proposals had a measurable window (submission → the block where the target's code changed, by archival bisection).`,
   `Shortest ${fmt(windows[0] ?? null)}, median ${fmt(median)}, longest ${fmt(windows.at(-1) ?? null)}; ${report.summary.under_10_min} executed in under 10 minutes.`,
   "Sputnik executes a proposal in the same call as the vote that reaches the threshold, so this window is all the time a depositor has.",
+  ...(report.summary.release_registrations ? ["", `${report.summary.release_registrations} proposals register a release in a controller (\`add_release_info\`) instead of changing code; they are listed but not timed.`] : []),
   "",
   "| DAO | proposal | target | window | bytes from | verdict | flags |",
   "|---|---|---|---|---|---|---|",
-  ...R.map((r: Row) => `| ${r.dao.replace(".sputnik-dao.near", "")} | #${r.id} ${r.kind} | ${r.target} | ${fmt(r.window_s)} | ${r.blob_tx ? "store_blob tx (public before the vote)" : r.pending ? "code at the change block" : "-"} | ${r.pending && r.live ? r.verdict : "-"} | ${r.pending && r.live ? r.flags.join(" ") : (r.note ?? "")} |`),
+  ...R.map((r: Row) => `| ${r.dao.replace(".sputnik-dao.near", "")} | #${r.id} ${r.kind}${r.method ? ` \`${r.method}\`` : ""} | ${r.target}${r.via ? ` (via ${r.via})` : ""} | ${fmt(r.window_s)} | ${r.blob_tx ? "store_blob tx (public before the vote)" : r.pending ? "code at the change block" : "-"} | ${r.pending && r.live ? r.verdict : "-"} | ${r.pending && r.live ? r.flags.join(" ") : (r.note ?? "")} |`),
   "",
   "## The grader on real upgrades (false alarms)",
   "",
@@ -303,5 +332,6 @@ const md = [
   `${seededOk.length} of ${S.length} seeded cases graded as expected.`,
   "",
 ].join("\n");
-fs.writeFileSync(path.join(ROOT, "docs/EVAL_UPGRADES.md"), md);
+// A partial run (--out without --merge) writes only its rows; the report comes from the merge.
+if (!(opt("--out") && !MERGE)) fs.writeFileSync(path.join(ROOT, "docs/EVAL_UPGRADES.md"), md);
 console.log(`\n${md}`);

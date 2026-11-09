@@ -27,6 +27,12 @@ export interface UpgradeProposal {
   target: string;
   /** Method the DAO will call (UpgradeRemote / FunctionCall). */
   method: string | null;
+  /** A controller the DAO calls to deploy code to `target` (an `upgrade`/`unrestricted_upgrade`
+   *  FunctionCall whose args name `contract_id`, as in aurora-controller-factory). Null otherwise. */
+  via: string | null;
+  /** `add_release_info`: registers code in a controller for later deployment to the accounts it
+   *  manages; `target` (the controller) does not run it, so there is nothing to time. */
+  registers_release: boolean;
   /** base58 sha256 of the new code, if determinable. */
   code_hash: string | null;
   hash_from: "proposal" | "args-hash" | "args-code" | null;
@@ -89,15 +95,20 @@ export function normaliseHash(v: unknown): string | null {
   }
 }
 
-/** The hash a JSON args object names (top-level hash-like field), synchronously. */
-function hashFromJsonArgs(bytes: Uint8Array): string | null {
-  let obj: unknown;
+/** JSON object args, or null (binary/borsh args, arrays, invalid UTF-8). */
+function jsonArgs(bytes: Uint8Array): Record<string, unknown> | null {
   try {
-    obj = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+    const obj = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+    return obj && typeof obj === "object" && !Array.isArray(obj) ? obj : null;
   } catch {
     return null;
   }
-  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return null;
+}
+
+/** The hash a JSON args object names (top-level hash-like field), synchronously. */
+function hashFromJsonArgs(bytes: Uint8Array): string | null {
+  const obj = jsonArgs(bytes);
+  if (!obj) return null;
   for (const f of HASH_FIELDS) {
     const h = normaliseHash((obj as Record<string, unknown>)[f]);
     if (h) return h;
@@ -139,6 +150,8 @@ export function decodeUpgradeProposal(dao: string, raw: any, policy: any, nowMs:
   let kind: UpgradeProposal["kind"];
   let target: string;
   let method: string | null = null;
+  let via: string | null = null;
+  let registers_release = false;
   let code_hash: string | null = null;
   let hash_from: UpgradeProposal["hash_from"] = null;
   if (kindObj.UpgradeRemote) {
@@ -162,8 +175,15 @@ export function decodeUpgradeProposal(dao: string, raw: any, policy: any, nowMs:
     // Several upgrade actions in one proposal (e.g. stage then deploy): report the first one that
     // names a hash, else the first one.
     const withHash = actions.map((a) => ({ a, h: a.args ? hashFromJsonArgs(safeB64(a.args)) : null })).find((x) => x.h);
-    method = (withHash?.a ?? actions[0]).method_name;
+    const chosen = withHash?.a ?? actions[0];
+    method = chosen.method_name;
     if (withHash) (code_hash = withHash.h), (hash_from = "args-hash");
+    const args = chosen.args ? jsonArgs(safeB64(chosen.args)) : null;
+    if (/^(?:upgrade|unrestricted_upgrade)$/.test(method!) && typeof args?.contract_id === "string" && args.contract_id !== k.receiver_id) {
+      via = k.receiver_id;
+      target = args.contract_id;
+    }
+    registers_release = method === "add_release_info";
   } else return null;
 
   const label = POLICY_LABEL[kind];
@@ -198,6 +218,8 @@ export function decodeUpgradeProposal(dao: string, raw: any, policy: any, nowMs:
     kind,
     target,
     method,
+    via,
+    registers_release,
     code_hash,
     hash_from,
     status,
