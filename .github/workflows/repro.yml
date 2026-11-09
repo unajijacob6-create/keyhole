@@ -1,0 +1,58 @@
+name: reproducible build
+
+# Builds each contract with `cargo near build reproducible-wasm` (pinned sourcescan/cargo-near image,
+# NEP-330 build_info embedded), publishes a GitHub artifact attestation (Sigstore) for each wasm, and
+# pushes the wasm + a manifest of code hashes to the `repro-builds` branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["contracts/**", ".github/workflows/repro.yml"]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@1.97.0
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Install cargo-near 0.23.0
+        run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/near/cargo-near/releases/download/cargo-near-v0.23.0/cargo-near-installer.sh | sh
+      - name: Pull the pinned build image
+        run: docker pull sourcescan/cargo-near:0.23.0-rust-1.99.1@sha256:8013f039e8005627f10ae66b5519d1a6eeeed7d7aef4b5067d5e9a86c4302fcc
+      - name: Reproducible builds
+        run: |
+          set -euo pipefail
+          mkdir -p repro
+          for pair in registry:keyhole_registry demo-vault-v1:demo_vault_v1 demo-vault-v2:demo_vault_v2; do
+            dir=${pair%%:*}; name=${pair##*:}
+            (cd contracts/$dir && cargo near build reproducible-wasm)
+            cp contracts/target/near/$name/$name.wasm repro/$name.wasm
+          done
+          node -e '
+            const fs=require("fs"),c=require("crypto");
+            const A="123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+            const b58=(b)=>{let n=BigInt("0x"+b.toString("hex")),s="";while(n>0n){s=A[Number(n%58n)]+s;n/=58n}for(const x of b){if(x)break;s="1"+s}return s};
+            const out={rev:process.env.GITHUB_SHA,run:`${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`,image:"sourcescan/cargo-near:0.23.0-rust-1.99.1@sha256:8013f039e8005627f10ae66b5519d1a6eeeed7d7aef4b5067d5e9a86c4302fcc",builtAt:new Date().toISOString(),wasm:{}};
+            for(const f of fs.readdirSync("repro").filter(f=>f.endsWith(".wasm"))){const b=fs.readFileSync("repro/"+f);out.wasm[f]={size:b.length,sha256:c.createHash("sha256").update(b).digest("hex"),code_hash:b58(c.createHash("sha256").update(b).digest())}}
+            fs.writeFileSync("repro/manifest.json",JSON.stringify(out,null,2));console.log(JSON.stringify(out,null,2));'
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: "repro/*.wasm"
+      - name: Push to the repro-builds branch
+        run: |
+          set -euo pipefail
+          git config user.name "keyhole-ci"; git config user.email "keyhole-ci@users.noreply.github.com"
+          git fetch origin repro-builds || true
+          git worktree add -B repro-builds /tmp/rb origin/repro-builds 2>/dev/null || git worktree add --orphan -b repro-builds /tmp/rb
+          mkdir -p /tmp/rb/$GITHUB_SHA && cp repro/* /tmp/rb/$GITHUB_SHA/ && rm -rf /tmp/rb/latest && cp -r repro /tmp/rb/latest
+          cd /tmp/rb && git add -A && git commit -m "reproducible build of $GITHUB_SHA" && git push origin repro-builds
