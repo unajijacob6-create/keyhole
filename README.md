@@ -34,7 +34,7 @@ npm ci && npm run judge
        ok  guardian tx rRASc9f6YheRZiEZiW22XS1HBHXxBTnuq1aAZEmZp36 carries that signed delegate (…)
        ok  hatch at block 276976501 < deciding vote at block 276976524 (23 blocks earlier)
  9. [ok] Guardian: the hatch's signed bytes decode to exactly one withdraw-to-self, and tampering is rejected (offline)
-10. [ok] Guardian: a real mainnet upgrade's bytes were public before its vote (Ref proposal 1018)
+10. [ok] Guardian: a real mainnet upgrade's bytes were public before it executed (Ref proposal 1018)
        store_blob HhJpLfgiaMGrF6etg2XnhcxBNJRendZwV8K9U43fAw5S by refchef.near at block 222301033: 897024 bytes, sha256 = proposal hash
 all checks ok (10 checks)
 ```

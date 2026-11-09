@@ -46,7 +46,7 @@ Every claim below names the command that re-checks it.
 
 | claim | how to re-check | result |
 |---|---|---|
-| A testnet DAO upgrade was graded STOP and Alice's hatch landed before the deciding vote | `npm run demo:guardian -- --replay` (no keys) | all checks pass (31 on 2026-11-09); hatch 23 blocks before the executing vote (run of 2026-11-09) |
+| A testnet DAO upgrade was graded STOP and Alice's hatch landed before the deciding vote | `npm run demo:guardian -- --replay` (no keys) | all checks pass (36 on 2026-11-09); hatch 23 blocks before the executing vote (run of 2026-11-09) |
 | The hatch is exactly what Alice signed | `npm run judge` (check 9, offline) | signature valid; changing receiver, method, deposit or nonce fails |
 | A real mainnet upgrade's bytes were public before it executed | `npm run judge` (check 10) | Ref proposal 1018: `store_blob` by refchef.near, 897,024 bytes, sha256 = proposal hash |
 | A hatch works on a real NEP-141 venue | `npm run hatch:live` (testnet keys) | wrap.testnet `near_withdraw` (1 yoctoNEAR) relayed by another account; replay refused |

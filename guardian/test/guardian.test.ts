@@ -252,8 +252,8 @@ describe("Guardian", () => {
       },
     });
     const alerts = [];
-    for (let i = 0; i < 200; i++) {
-      alerts.push(...(await g.tick())); // every 3 s for 10 minutes
+    for (let i = 0; i < 100; i++) {
+      alerts.push(...(await g.tick())); // every 3 s for 5 minutes
       clock.t += 3_000;
     }
     // DEFAULT_FAILURE_RETRY: 3 s doubling to 60 s within 5 minutes: attempts at 0, 3, 9, 21, 45, 93,
@@ -274,6 +274,30 @@ describe("Guardian", () => {
     expect(later[0]).toMatchObject({ votes_to_execute: 1, error: "unexpected end" });
     expect(later[0].assessment?.grade.flags).toEqual(["ASSESSMENT_FAILED"]);
     expect(assessorCalls).toHaveLength(9);
+  });
+
+  it("giving up is a cool-down, not forever: once the assessor recovers, a STOP proposal still fires before execution", async () => {
+    const batches: RadarEvent[][] = [[proposalEv("pending", 0, 2)]];
+    const clock = { t: NOW };
+    const { g, fires, assessorCalls } = guardianWith(batches, "STOP", {
+      clock,
+      assessor: async () => {
+        if (clock.t - NOW < 6 * 60_000) throw new Error("tx index down");
+        return assessment("STOP");
+      },
+    });
+    for (let i = 0; i < 100; i++) {
+      await g.tick(); // gives up after ~273 s
+      clock.t += 3_000;
+    }
+    expect(fires).toEqual([]);
+    const calls = assessorCalls.length;
+    clock.t = NOW + 11 * 60_000; // past the cool-down (5 min after giving up), assessor healthy again
+    batches.push([proposalEv("pending", 1, 2)]); // a new vote, still before execution
+    const [a] = await g.tick();
+    expect(assessorCalls.length).toBe(calls + 1);
+    expect(a.assessment?.grade.verdict).toBe("STOP");
+    expect(fires).toEqual([HATCH.id]);
   });
 
   it("a Failed proposal that can still be re-executed is assessed and fires a stop hatch (#6)", async () => {
@@ -461,6 +485,23 @@ describe("Guardian on a mock chain, real radar and assessor", () => {
     expect(g.cache.get(`vault.testnet:${h2}`)?.live_hash).toBe(h1);
     expect(g.cache.get(`vault.testnet:${h2}`)?.grade.verdict).toBe("STOP");
     expect(fires).toEqual([HATCH.id]);
+  });
+
+  it("a change seen before a proposal was submitted is not that proposal's: a later redeploy of the live code is compared with itself", async () => {
+    const dep: RadarEvent = { kind: "deployed", target: "vault.testnet", old_hash: "OLD", new_hash: "P", old_height: 900 } as any;
+    const own = proposalEv("executed", 2, 2, { id: 7, prev: "P" }); // submitted NOW-1000, before the change was seen at NOW
+    const later = proposalEv("executed", 2, 2, { id: 8, prev: "P" });
+    (later as any).proposal = { ...(later as any).proposal, submitted_at_ms: NOW + 60_000 };
+    const clock = { t: NOW };
+    const { g, assessorCalls } = guardianWith([[dep], [own], [later]], "STOP", { clock, assessor: async (_n, o) => ({ ...assessment("STOP"), live_hash: o.replaced?.hash ?? null }) });
+    await g.tick();
+    clock.t += 3_000;
+    await g.tick();
+    clock.t = NOW + 120_000;
+    await g.tick();
+    const bases = assessorCalls.map((c) => c.replaced?.hash ?? null);
+    expect(bases[0]).toBe("OLD"); // deployed: against the replaced code
+    expect(bases.at(-1)).toBe("P"); // the later proposal: against the code already live (NO_CHANGE in the real assessor)
   });
 
   it("an executed proposal whose handling threw once, while its deployed event succeeded, is graded against the replaced code on the retry (L2b)", async () => {

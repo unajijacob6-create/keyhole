@@ -4,7 +4,7 @@
 // Real set (read-only, mainnet): the last N proposals of DAOs that govern large NEAR contracts.
 // For every executed upgrade we fetch the exact bytes the DAO stored (store_blob args), the code it
 // replaced (archival view_code just before the change), find the block where the code changed
-// (archival bisection), and grade the change as Keyhole would have graded it before the vote.
+// (archival bisection), and grade the change as Keyhole would have graded it before it executed.
 // No known incident is attached to any of these upgrades, so every STOP on them is counted as a
 // false alarm for the auto-fire policy (an assumption, stated in the report).
 //

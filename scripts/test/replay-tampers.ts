@@ -168,9 +168,17 @@ export const TAMPERS: Tamper[] = [
   },
   {
     name: "hatch.created_height moved between the proposal and the fire (the recording says it was armed first)",
-    expect: [/^hatch armed at block 276976490: .*the recording says the hatch was armed before the proposal, but created_height 276976490 is not before add_proposal \(block 276976482\)/],
+    expect: [/^hatch armed at block 276976490: .*created_height 276976490 is not before add_proposal \(block 276976482\)/],
     apply: (r) => {
       r.hatch.created_height = 276976490;
+    },
+  },
+  {
+    name: "step titles renamed and hatch.created_height moved between the proposal and the fire",
+    expect: [/^hatch armed at block 276976490: .*created_height 276976490 is not before add_proposal \(block 276976482\)/],
+    apply: (r) => {
+      r.hatch.created_height = 276976490;
+      for (const st of r.steps ?? []) st.title = "step";
     },
   },
   {
@@ -204,9 +212,20 @@ export const TAMPERS: Tamper[] = [
   },
   {
     name: "an alert's review removed while its STOP grade is kept",
-    expect: [/^guardian grade re-derived .* · alert 0: recorded grade STOP \[UNVERIFIED_PENDING_CODE NEW_MONEY_PATH AI_REVIEW_HIGH\] != re-derived STOP \[UNVERIFIED_PENDING_CODE NEW_MONEY_PATH\]/],
+    expect: [/^guardian grade re-derived .* · alert 0 \(proposal\) carries no review, but the run posted one on chain/],
     apply: (r) => {
       r.alerts[0].assessment.review = null;
+    },
+  },
+  {
+    name: "review stripped from every alert and every grade re-derived without it",
+    expect: [/^guardian grade re-derived .* · alert 0 \(proposal\) carries no review, but the run posted one on chain/],
+    apply: (r) => {
+      for (const a of r.alerts) {
+        a.assessment.review = null;
+        a.assessment.grade.flags = a.assessment.grade.flags.filter((f: string) => f !== "AI_REVIEW_HIGH");
+      }
+      r.verdicts.pending.flags = r.verdicts.pending.flags.filter((f: string) => f !== "AI_REVIEW_HIGH");
     },
   },
   {

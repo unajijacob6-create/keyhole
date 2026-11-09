@@ -6,7 +6,7 @@
 //    carry it in their args.
 // 2. near-plugins `Upgradable` staging (`up_staged_code_hash`): code that one call can deploy.
 // 3. The bytes themselves. Sputnik stores the code with `store_blob`, whose transaction args ARE
-//    the wasm, before any vote. Found through the FastNEAR transactions API and accepted only if
+//    the wasm, before the proposal can execute. Found through the FastNEAR transactions API and accepted only if
 //    sha256(args) equals the proposed hash, so the API is not trusted for content.
 //
 // Browser-safe: WebCrypto, fetch and the shared Rpc client only. Rules: docs/GUARDIAN_DESIGN.md.

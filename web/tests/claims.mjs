@@ -82,9 +82,10 @@ export function checkRound2(ok) {
   const guardianMd = flatRead("docs/GUARDIAN.md");
   const banned = [
     // C1: the hatch is not guaranteed to land before execution.
+    [/runs the moment its last vote lands|bytes were public before its vote/i, ["web/index.html", "README.md", "docs/GUARDIAN.md"], "upgrade timing stated as 'the moment its last vote lands' / 'before its vote'"],
     [/gets you out before the vote lands/i, ["web/index.html", "README.md", "docs/GUARDIAN.md"], "C1 'gets you out before the vote lands'"],
     // C2: the blob precedes execution, not necessarily the deciding vote (sputnikdao2 v3 Finalize can re-execute).
-    [/on chain before the deciding vote|reads them before the vote|reads those bytes before the deciding vote/i, ["web/index.html", "web/src/guardian.ts", "README.md", "docs/GUARDIAN.md"], "C2 blob 'before the deciding vote'"],
+    [/on chain before the deciding vote|reads them before the vote|reads those bytes before the deciding vote/i, ["web/index.html", "web/src/guardian.ts", "README.md", "docs/GUARDIAN.md", "docs/GUARDIAN_DESIGN.md"], "C2 blob 'before the deciding vote'"],
     // C3: the eval table label.
     [/public before the vote/i, ["scripts/eval-upgrades.ts", "docs/EVAL_UPGRADES.md"], "C3 'store_blob tx (public before the vote)'"],
     // C4: stale AI-grade and hatch statements outside the copy checked above.

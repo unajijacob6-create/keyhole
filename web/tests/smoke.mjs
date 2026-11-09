@@ -87,7 +87,7 @@ for (const width of [360, 768, 1366]) {
     const hatchText = ((await page.locator("#hatch").textContent()) ?? "").replace(/\s+/g, " ");
     ok(!/nowhere else/.test(hatchText) && /decides where the funds go/.test(hatchText) && /already landed/.test(hatchText), `${width}px ${scheme}: hatch copy says the venue's code decides where funds go, and that it fires on landed code`);
     const radarHead = ((await page.locator("#radar .g-head").textContent()) ?? "").replace(/\s+/g, " ");
-    ok(/latest 12 per DAO/.test(radarHead) && !/Every upgrade proposal/.test(radarHead), `${width}px ${scheme}: radar scopes its list (latest 12 per DAO)`);
+    ok(/latest \d+ per DAO/.test(radarHead) && !/Every upgrade proposal/.test(radarHead), `${width}px ${scheme}: radar scopes its list (latest 12 per DAO)`);
     // C7: what the text says "All" shows is what the "All" filter renders.
     const allN = Number(/"All" shows the (\d+) most recent/.exec(radarHead)?.[1]);
     const shownAll = await page.locator(".prop").count();

@@ -171,6 +171,14 @@ describe("guardian replay: balances come from archival state, not from the singl
     expect(r.bad.some((l) => /^alice\.keyhole\.testnet's vault balance: 1200000000000000000000000 at block 276976502 → 0 at 276976503; paid out 1000000000000000000000000/.test(l)), r.bad.join("\n")).toBe(true);
   });
 
+  it("a sweep that paid out less than the vault held, while the total still ends at 0, fails", async () => {
+    const a = clone(fx.answers);
+    setView(a, "get_total", {}, S - 1, "700000000000000000000000"); // 0.7 NEAR held, only Bob's 0.5 swept
+    const r = await replay(clone(run), a);
+    expect(r.ok).toBe(false);
+    expect(r.bad.some((l) => /sweep/i.test(l)), r.bad.join("\n")).toBe(true);
+  });
+
   it("a deposit the vault did not credit fails", async () => {
     const a = clone(fx.answers);
     setView(a, "get_balance", { account_id: run.accounts.bob }, 276976444, "400000000000000000000000");

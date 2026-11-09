@@ -184,9 +184,11 @@ export class Guardian {
   /** failureKey -> retry schedule of an event whose handling threw. */
   private readonly failures = new Map<string, { attempts: number; firstAt: number; nextAt: number }>();
   /** failureKey -> the ASSESSMENT_FAILED assessment kept once the failure budget ran out. */
-  private readonly gaveUp = new Map<string, { a: Assessment | null; error: string }>();
+  /** Gave up after the failure budget: the CAUTION is reused until `until`, then the event is
+   *  assessed afresh (an outage must not stop a STOP hatch for the rest of a proposal's period). */
+  private readonly gaveUp = new Map<string, { a: Assessment | null; error: string; until: number }>();
   /** target:new_hash -> the code a deployed event saw it replace. */
-  private readonly replacedBy = new Map<string, ReplacedCode>();
+  private readonly replacedBy = new Map<string, ReplacedCode & { seenMs: number }>();
   constructor(readonly o: GuardianOptions) {
     this.fired = o.fired ?? new Set();
     this.assessFn = o.assessor ?? assessPending;
@@ -239,7 +241,7 @@ export class Guardian {
       // fresh one that reads it at the block where the radar last saw it live.
       const key = `${ev.target}:${ev.new_hash}`;
       const base = { hash: ev.old_hash, height: ev.old_height };
-      this.replacedBy.set(key, base);
+      this.replacedBy.set(key, { ...base, seenMs: this.nowMs() });
       const a = this.cachedAgainst(key, base) ?? (await this.assessFn(this.o.assess, { target: ev.target, hash: ev.new_hash, deployed: true, replaced: base }));
       this.storeAfterChange(key, a);
       return { a, done: true };
@@ -254,13 +256,16 @@ export class Guardian {
         // The radar's last live read is already the new code: the deployed event of this change was
         // handled first (e.g. the DAO was unreadable, or this event failed, on the pass the code
         // changed). Grade against the code that change replaced, never the new code against itself.
+        // Only a change seen after this proposal was submitted can be its own; an older change to the
+        // same code (an earlier proposal) makes this one a no-op redeploy, and NO_CHANGE is right.
         const rec = this.replacedBy.get(key);
-        if (rec) base = rec;
-        else {
+        const ownChange = rec && rec.seenMs >= p.submitted_at_ms ? rec : null;
+        if (ownChange) base = { hash: ownChange.hash, height: ownChange.height };
+        else if (!rec) {
           // No change to this code was seen: either the code was already live before the proposal
           // (a no-op upgrade, NO_CHANGE is right) or an earlier assessment made against other code.
           const c = this.cache.get(key);
-          if (c && c.live_hash !== p.code_hash && c.code_source && !c.grade.flags.includes("REPLACED_CODE_UNAVAILABLE")) return { a: c, done: true };
+          if (c && c.live_hash !== p.code_hash && c.code_source && !c.grade.flags.includes("REPLACED_CODE_UNAVAILABLE") && Date.parse(c.at) >= p.submitted_at_ms) return { a: c, done: true };
         }
       }
       const a = this.cachedAgainst(key, base) ?? (await this.assessFn(this.o.assess, { target: p.target, hash: p.code_hash, dao: ev.dao, proposal: p, deployed: true, replaced: base }));
@@ -357,6 +362,8 @@ export class Guardian {
       const nowMs = this.nowMs();
       for (const h of this.o.hatches()) {
         if (this.fired.has(h.id) || !shouldFire(h, a, ev, nowMs)) continue;
+        const rf = this.retryFires.get(h.id);
+        if (rf && nowMs < rf.nextAt) continue; // a failed relay is backing off; retryFailedFires owns it
         fired.push(await this.fireOne(h, a, ev));
       }
     }
@@ -420,8 +427,10 @@ export class Guardian {
       const nowMs = this.nowMs();
       const f = this.failures.get(fk);
       if (f && nowMs < f.nextAt) continue; // backing off: reported again by the radar, not committed
+      const g = this.gaveUp.get(fk);
+      if (g && nowMs >= g.until) this.gaveUp.delete(fk);
       try {
-        const r = await this.process(ev, this.gaveUp.get(fk));
+        const r = await this.process(ev, g && nowMs < g.until ? g : undefined);
         this.failures.delete(fk);
         if (r.done) scan.commit(ev);
         if (r.alert) out.push(r.alert);
@@ -437,7 +446,7 @@ export class Guardian {
         // Budget spent: one alert that says the change could not be assessed, then commit.
         this.failures.delete(fk);
         const error = errText(e);
-        const failed = { a: failedAssessment(ev, error, attempts, Math.round((nowMs - firstAt) / 60_000), this.now()), error };
+        const failed = { a: failedAssessment(ev, error, attempts, Math.round((nowMs - firstAt) / 60_000), this.now()), error, until: nowMs + policy.windowMs };
         this.gaveUp.set(fk, failed);
         try {
           const r = await this.process(ev, failed);
@@ -448,7 +457,8 @@ export class Guardian {
         scan.commit(ev);
       }
     }
-    for (const k of [...this.failures.keys()]) if (!seen.has(k)) this.failures.delete(k);
+    // An event missing from one pass (its DAO unreadable, say) keeps its budget; only long-gone ones are dropped.
+    for (const [k, f] of [...this.failures]) if (!seen.has(k) && this.nowMs() - f.firstAt > 2 * policy.windowMs) this.failures.delete(k);
     // Hatches already attempted in this tick (their retry count moved) wait for the next one.
     const attempted = new Set([...this.retryFires].filter(([id, r]) => before.get(id) !== r.attempts).map(([id]) => id));
     out.push(...(await this.retryFailedFires(attempted)));

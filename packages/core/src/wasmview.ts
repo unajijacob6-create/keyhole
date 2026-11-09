@@ -2,7 +2,7 @@
 //
 // Purpose: read NEP-330 `contract_source_metadata` from code that is NOT deployed yet (bytes a DAO
 // stored for an upgrade proposal, or near-plugins staged code), so the declared repository, commit
-// and build image of a pending upgrade are known before the vote.
+// and build image of a pending upgrade are known before it executes.
 //
 // The stub implements only what a constant getter needs (registers, input, value_return, a zero
 // attached deposit, logs, panics). Any other host call (storage, promises, block info, ...) traps,

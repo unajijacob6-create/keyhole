@@ -4,7 +4,7 @@
  "type": "module",
  "main": "src/index.ts",
  "license": "MIT",
- "description": "Escape hatches for NEAR depositors: a withdraw-to-self signed in advance (receiver, method, args and deposit fixed by the signature), relayed by a guardian when Keyhole grades a code change of the venue STOP. The venue's code at execution decides where the funds go.",
+ "description": "Escape hatches for NEAR depositors: a withdraw-to-self signed in advance (receiver, method, args and deposit fixed by the signature), relayed later by anyone (the Keyhole guardian relays it on its trigger: stop, any-upgrade or manual). The venue's code at execution decides where the funds go.",
  "dependencies": {
   "@keyhole/core": "0.1.0",
   "near-api-js": "^7.4.0",

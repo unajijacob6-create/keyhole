@@ -439,7 +439,11 @@ export async function replayGuardianDetailed(run: any, opts: { rpc?: Rpc; log?: 
         continue;
       }
       if (as.target !== vault || as.live_hash !== honest.hash || as.pending_hash !== run?.code?.evil || as.pending_size !== size) problems.push(`alert ${i}: graded ${as.target} ${as.live_hash} → ${as.pending_hash} (${as.pending_size} bytes), not ${vault} ${honest.hash} → ${run?.code?.evil} (${size} bytes)`);
-      const g = gradeUpgrade({ target: vault, live_hash: honest.hash, pending_hash: run?.code?.evil, live, pending, verified: as.verified, review: as.review ? { risk: as.review.risk, summary: as.review.summary } : null });
+      // With a review on chain (checked above), grade with that review, and every alert must carry it:
+      // stripping it from the alerts and re-grading without it would otherwise pass.
+      const onchainReview = run?.review ? { risk: run.review.risk, summary: run.review.summary } : null;
+      if (onchainReview && !as.review) problems.push(`alert ${i} (${a?.event}) carries no review, but the run posted one on chain`);
+      const g = gradeUpgrade({ target: vault, live_hash: honest.hash, pending_hash: run?.code?.evil, live, pending, verified: as.verified, review: onchainReview ?? (as.review ? { risk: as.review.risk, summary: as.review.summary } : null) });
       first ??= g;
       if (canon(as.grade) !== canon(g)) problems.push(`alert ${i}: recorded grade ${as.grade?.verdict} [${(as.grade?.flags ?? []).join(" ")}] != re-derived ${g.verdict} [${g.flags.join(" ")}]`);
       if (a?.fired?.length && !g.fire) problems.push(`alert ${i} fired a hatch, but the re-derived grade does not fire`);
@@ -511,11 +515,13 @@ export async function replayGuardianDetailed(run: any, opts: { rpc?: Rpc; log?: 
     const fired = got.hatch_fired?.height ?? 0;
     if (!(fired > 0 && created < fired)) problems.push(`created_height ${hatch.created_height} is not before the hatch fired (block ${fired})`);
     const titles: string[] = (run?.steps ?? []).map((x: any) => String(x?.title ?? ""));
-    const armStep = titles.findIndex((t) => /arms an escape hatch/i.test(t));
-    const proposeStep = titles.findIndex((t) => /proposes UpgradeRemote/i.test(t));
-    const armedFirst = armStep >= 0 && proposeStep >= 0 && armStep < proposeStep;
+    // The site always shows the hatch armed before the proposal, so that order is required, whatever
+    // the recording's step titles say.
+    void titles;
+    const armedFirst = true;
     const proposed = got.add_proposal?.height ?? 0;
-    if (armedFirst && !(proposed > 0 && created < proposed)) problems.push(`the recording says the hatch was armed before the proposal, but created_height ${hatch.created_height} is not before add_proposal (block ${proposed})`);
+    if (!(proposed > 0 && created < proposed)) problems.push(`created_height ${hatch.created_height} is not before add_proposal (block ${proposed})`);
+    if (addAt && !(addAt < proposed)) problems.push(`the hatch key was added at block ${addAt}, not before add_proposal (block ${proposed})`);
     if (problems.length === 0 && addTx) derived.hatch_key = { add_tx: addTx, add_height: addAt, initial_nonce: expectNonce.toString() };
     check("hatch:created", problems.length === 0, `hatch armed at block ${hatch.created_height}: key ${hatch.public_key.slice(0, 16)}… added by ${addTx ?? "(not found)"} at block ${addAt} (first nonce ${expectNonce} = (${addAt} - 1) * 1e6), unused at ${hatch.created_height}; before the hatch fired (${fired})${armedFirst ? ` and before add_proposal (${proposed})` : ""}${problems.length ? ` · ${problems.join("; ")}` : ""}`);
   });

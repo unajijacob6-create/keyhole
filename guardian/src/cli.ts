@@ -80,7 +80,7 @@ if (cmd === "arm") {
     driver: relayer ? { health: (h) => hatchHealth(rpc, h), fire: (h) => fireHatch(h, relayer) } : null,
     maxDeposit,
     fireRetry: { ...DEFAULT_FIRE_RETRY, windowMs: fireRetryMinutes * 60_000 },
-    onError: (e, ev) => console.error(`[guardian] ${ev ? `${ev.kind} ${ev.target}` : "watch"} failed (reported again next tick): ${String((e as Error).message).slice(0, 200)}`),
+    onError: (e, ev) => console.error(`[guardian] ${ev ? `${ev.kind} ${ev.target}` : "watch"} failed (retried with backoff; after the failure budget it is reported as ASSESSMENT_FAILED): ${String((e as Error).message).slice(0, 200)}`),
     onAlert: (a: Alert) => {
       fs.mkdirSync(path.dirname(feed), { recursive: true });
       fs.appendFileSync(feed, JSON.stringify(a) + "\n");

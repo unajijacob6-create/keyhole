@@ -167,7 +167,7 @@ await check("Guardian: the hatch's signed bytes decode to exactly one withdraw-t
   return [`${d.senderId} → ${d.receiverId}.${d.actions[0].method}(${JSON.stringify(d.actions[0].args)}) · ${d.actions[0].deposit} yocto · nonce ${d.nonce} · valid to ${d.maxBlockHeight}`, "changing receiver, method, deposit or nonce fails verification"];
 });
 
-await check("Guardian: a real mainnet upgrade's bytes were public before its vote (Ref proposal 1018)", async () => {
+await check("Guardian: a real mainnet upgrade's bytes were public before it executed (Ref proposal 1018)", async () => {
   const p = (await listUpgradeProposals(mainnet, "ref-finance.sputnik-dao.near", { last: 40 })).find((x) => x.id === 1018);
   must(p && p.code_hash === "GZmkbfVLcN7ErxU9RDxP24YTaKmoVixhM6XyycP15Qvi" && p.target === "v2.ref-finance.near", `proposal 1018 not decoded as expected: ${JSON.stringify(p)?.slice(0, 160)}`);
   const blob = await fetchPendingCode({ api: txApi("mainnet"), dao: p!.dao, hash: p!.code_hash!, maxPages: 8 });
