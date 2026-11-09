@@ -1,23 +1,23 @@
 {
-  "rev": "e25277867579e711ba9096c0a32bc09dacb351bc",
-  "run": "https://github.com/unajijacob6-create/keyhole/actions/runs/42666687894",
+  "rev": "d9622f7bf9ffed78fac50b6fa12a439f6f27135f",
+  "run": "https://github.com/unajijacob6-create/keyhole/actions/runs/42670216474",
   "image": "sourcescan/cargo-near:0.23.0-rust-1.99.1@sha256:8013f039e8005627f10ae66b5519d1a6eeeed7d7aef4b5067d5e9a86c4302fcc",
-  "builtAt": "2026-11-09T17:42:01.835Z",
+  "builtAt": "2026-11-09T18:04:08.939Z",
   "wasm": {
     "demo_vault_v1.wasm": {
       "size": 111052,
-      "sha256": "c14e379a4cd0af29a886a3f851909bc688381ea1a3422b6ee6db564416bd9b61",
-      "code_hash": "E1arxbbpY645mRqub4aNTGw6bGLzznfEcSsL84VKdaKi"
+      "sha256": "d10da908b5e9a52fe28e41c73a395ae7889a1b23bb43d622c51a5a996a636f9e",
+      "code_hash": "F54HpmQ7uhwaR5Ftv9RG2Tr48j2P7WbnD2kf4okPHxAR"
     },
     "demo_vault_v2.wasm": {
       "size": 113021,
-      "sha256": "990e6cd29627c30b28a59b02ebad7431600297b797e0304585606dc32f3f4021",
-      "code_hash": "BJU8rR1MjywGrqRxGnDeu8EenKyUfQEeAXjGPKmJTrKA"
+      "sha256": "41827ab5e435b600e237039857f0ca6190996acf223e70c5928103e3f6439dc3",
+      "code_hash": "5Qiu2KEAcferwDp9YZZ4LPYAG8syMurXrMVPRBE6fveE"
     },
     "keyhole_registry.wasm": {
       "size": 220258,
-      "sha256": "796febbb729c4c28abf1b754e1745ea7f121371a36485f4f67fc24a962f44b70",
-      "code_hash": "9B3KFutjzDzFksS87qVVoNqxJSpTqNS9ZfxrvUnmHowV"
+      "sha256": "4a6debd3f57fea91a1a63f7442132beb81347b832135d802bb5c9ec13321dacd",
+      "code_hash": "61YPJUFAs1SKtMS7fFwNDXj4UJLJDoWcHLSibGCJRrRA"
     }
   }
 }
