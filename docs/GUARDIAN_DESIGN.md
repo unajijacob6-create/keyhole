@@ -38,14 +38,18 @@ DeployContract by a key, `unrestricted_upgrade`) — then Keyhole can only alert
 that authorize with `signer_account_id` (with a relayer, signer ≠ user); positions whose withdraw needs
 arguments that change (args are fixed at signing; prefer withdraw-all forms).
 
-Residual trust: the guardian decides *when* to submit (it can fire early or not at all). The worst it
-can do with a hatch is submit exactly the signed withdraw-to-self. It cannot redirect funds.
+Residual trust: the guardian decides *when* to submit (it can fire early, late or not at all). The
+worst it can do with a hatch is submit exactly the signed withdraw-to-self; it cannot change a field of
+it. The venue's code at the moment the call runs decides where the funds go, so a hatch fired after an
+upgrade landed runs the new code.
 
 ## Packages and interfaces
 
 ### contracts/guarded-vault (Rust, near-sdk 5.30, crate `guarded_vault`)
 
-Testnet-only demo venue that mirrors how Ref/Burrow look to a depositor.
+Testnet-only demo venue that mirrors how Ref/Burrow look to a depositor at the exit (a 1-yoctoNEAR
+withdraw). It holds native NEAR, whereas Ref and Burrow hold fungible tokens, whose drains the upgrade
+diff does not flag (GRADING.md section 7).
 
 State: `owner_id: AccountId` (the DAO), `balances: LookupMap<AccountId,u128>` (prefix `b"b"`), `total: u128`.
 Methods:

@@ -69,7 +69,7 @@
           <h2 id="intro-h" class="display">What is Keyhole?</h2>
           <a class="pill dark" href="#watch">Watch it happen <span class="arrow" aria-hidden="true">→</span></a>
         </div>
-        <p class="intro-right">On NEAR, most of the money sits in contracts a DAO can upgrade, and a Sputnik DAO executes an upgrade in the same call as its deciding vote. There is no timelock to wait out. Keyhole watches those proposals, reads the code they would install, and grades it while there is still time. If you armed an escape hatch, it gets you out before the vote lands. Every answer comes with the request that proves it.</p>
+        <p class="intro-right">Of 24 major NEAR contracts Keyhole surveyed (the <a href="#table">trust table</a> below), 11 are governed by a Sputnik DAO, among them Ref, Burrow, Meta Pool and LiNEAR, and none is immutable. A Sputnik DAO executes an upgrade in the same call as its deciding vote. There is no timelock to wait out. Keyhole watches those proposals, reads the code they would install, and grades it while there is still time. If you armed an escape hatch, it gets you out before the vote lands. Every answer comes with the request that proves it.</p>
       </section>
 
       <!-- Three cards: the three questions -->
@@ -77,7 +77,7 @@
         <article class="card light reveal">
           <div class="card-text">
             <h3>See it coming</h3>
-            <p>An upgrade proposal names the exact code hash, and the DAO's <code>store_blob</code> transaction holds the bytes. Keyhole reads them before the vote, for every DAO that controls a contract you use.</p>
+            <p>An upgrade proposal names the exact code hash. For <code>UpgradeRemote</code> and <code>UpgradeSelf</code>, a <code>store_blob</code> transaction to the DAO holds the bytes, and it must be on chain before the deciding vote; near-plugins deploys stage the code on the contract. When Keyhole finds those bytes, it reads them before the vote.</p>
           </div>
           <img class="card-img" src="img/key-960.webp" srcset="img/key-640.webp 640w, img/key-960.webp 960w" sizes="(max-width: 900px) 100vw, 50vw" alt="" loading="lazy" width="960" height="640" />
         </article>
@@ -88,7 +88,7 @@
         </article>
         <article class="card dark reveal" style="--d: 180ms">
           <h3>Get out first</h3>
-          <p>A withdraw-to-yourself you signed in advance, relayed the moment Keyhole says STOP. The guardian pays the gas and the 1 yoctoNEAR. It cannot change where the money goes.</p>
+          <p>A withdraw-to-yourself you signed in advance, relayed the moment Keyhole says STOP. The guardian pays the gas and the 1 yoctoNEAR. It cannot change a field of what you signed; the venue's code at that moment decides where the money goes.</p>
         </article>
       </section>
 
@@ -118,8 +118,10 @@
         <ul class="limits">
           <li><strong>No window, no head start.</strong> A change staged and deployed in one transaction, a direct redeploy by a key, or an unrestricted upgrade path leaves nothing to beat. Keyhole then alerts after the fact, within seconds.</li>
           <li><strong>Bytes, not intent.</strong> The diff sees new methods and privileged host calls. A logic change inside an existing method (a withdraw that keeps half) is invisible to it; that is what the private review and verified builds are for.</li>
+          <li><strong>Native NEAR, not tokens.</strong> A money path means native NEAR leaving the contract. Token balances, such as Ref and Burrow deposits, move with <code>ft_transfer</code> calls the diff does not flag: an upgrade that sends everyone's tokens out grades CAUTION if its code is unverified (OK if verified) unless an AI review says high risk, so a <code>stop</code> hatch would not fire.</li>
+          <li><strong>AI can raise an upgrade verdict, not lower it.</strong> For a pending upgrade, a high-risk AI review alone is enough for STOP, which fires <code>stop</code> hatches. No AI review lowers an upgrade verdict.</li>
           <li><strong>Your own keys.</strong> A hatch cannot help if a key on your account is compromised: any full-access key can delete it first.</li>
-          <li><strong>Off-chain trigger.</strong> The guardian decides when to submit. The worst it can do is the exit you signed, to your own account, early.</li>
+          <li><strong>Off-chain trigger.</strong> The guardian decides when to submit. The worst it can do is send the exit you signed early, late or never. In this build it also fires on STOP for code that already landed; the exit then runs the new code, which decides where the funds go.</li>
           <li><strong>A TEE receipt is provenance.</strong> It proves which model answered inside an attested enclave, over exactly which request. It does not prove the answer is right.</li>
           <li><strong>Testnet for the action.</strong> The radar reads mainnet. Hatches are demonstrated on testnet; nothing here signs on mainnet.</li>
         </ul>

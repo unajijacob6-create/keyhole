@@ -6,6 +6,7 @@ import path from "node:path";
 import zlib from "node:zlib";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { checkClaims, gradeable, read } from "./claims.mjs";
 
 const require = createRequire(import.meta.url);
 let chromium;
@@ -52,6 +53,9 @@ const ok = (cond, msg) => {
   if (!cond) failures.push(msg);
 };
 
+checkClaims(ok);
+const radarProps = JSON.parse(read("data/radar.json")).daos.flatMap((d) => d.proposals);
+
 const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
 for (const width of [360, 768, 1366]) {
   for (const scheme of ["light", "dark"]) {
@@ -77,6 +81,16 @@ for (const width of [360, 768, 1366]) {
     await page.click("#g-next").catch(() => {});
     ok((await page.locator(".prop").count()) >= 6, `${width}px ${scheme}: radar lists proposals (${await page.locator(".prop").count()})`);
     ok((await page.locator('[data-testid="hatch-card"] .hatch-fields div').count()) === 7, `${width}px ${scheme}: hatch card decodes 7 fields`);
+    // Claims on the rendered page (#15, #16, #17, #18) and the grade-button rule (#13).
+    const limitsText = ((await page.locator("#limits").textContent()) ?? "").replace(/\s+/g, " ");
+    ok(/ft_transfer/.test(limitsText) && /high-risk AI review alone/.test(limitsText), `${width}px ${scheme}: limits state the token-transfer gap and the AI rule`);
+    const hatchText = ((await page.locator("#hatch").textContent()) ?? "").replace(/\s+/g, " ");
+    ok(!/nowhere else/.test(hatchText) && /decides where the funds go/.test(hatchText) && /already landed/.test(hatchText), `${width}px ${scheme}: hatch copy says the venue's code decides where funds go, and that it fires on landed code`);
+    const radarHead = ((await page.locator("#radar .g-head").textContent()) ?? "").replace(/\s+/g, " ");
+    ok(/latest 12 per DAO/.test(radarHead) && !/Every upgrade proposal/.test(radarHead), `${width}px ${scheme}: radar scopes its list (latest 12 per DAO)`);
+    const cards = await page.locator(".prop").evaluateAll((els) => els.map((e) => ({ dao: e.dataset.dao, id: Number(e.dataset.id), btn: Boolean(e.querySelector(".grade-btn")) })));
+    const wrong = cards.filter((c) => c.btn !== gradeable(radarProps.find((p) => p.dao === c.dao && p.id === c.id)));
+    ok(cards.length > 0 && wrong.length === 0, `${width}px ${scheme}: "Grade it in your browser" only on open proposals or executed ones with a known replaced-code block (${cards.filter((c) => c.btn).length} of ${cards.length})${wrong.length ? `; wrong: ${wrong.map((c) => c.id).join(",")}` : ""}`);
     for (const id of ["watch", "radar", "hatch", "limits"]) await page.locator(`#${id}`).screenshot({ path: path.join(SHOTS, `${id}-${width}-${scheme}.png`) });
     await page.screenshot({ path: path.join(SHOTS, `home-${width}-${scheme}.png`), fullPage: false });
     // Inspect a fixture account through the search box.
@@ -94,6 +108,17 @@ for (const width of [360, 768, 1366]) {
     ok(errors.length === 0, `${width}px ${scheme}: no console errors${errors.length ? ": " + errors.slice(0, 3).join(" | ") : ""}`);
     await ctx.close();
   }
+}
+// The replay's first step qualifies the Ref/Burrow comparison (#18).
+{
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 900 }, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await route(page);
+  await page.goto(BASE, { waitUntil: "networkidle" });
+  for (let k = 0; k < 8; k++) await page.click("#g-prev");
+  const detail = (await page.locator("#g-detail").textContent()) ?? "";
+  ok(/Ref and Burrow/.test(detail) && /not a token one/.test(detail), `replay step 1 qualifies the Ref and Burrow comparison`);
+  await ctx.close();
 }
 // Keyboard: Tab reaches the input and the Inspect button with a visible focus ring.
 {

@@ -2,13 +2,16 @@
 
 **See the upgrade coming. Get out before it lands.**
 
-Most of the money on NEAR sits in contracts that a DAO can upgrade, and a Sputnik DAO executes an
-upgrade in the same call as the vote that reaches its threshold. There is no timelock to wait out.
-Keyhole watches those proposals, reads the exact code they would install (the bytes are public in the
-DAO's `store_blob` transaction before anyone votes), grades it, and can submit a withdraw-to-self the
-depositor signed in advance. Underneath is Keyhole's contract inspector: who can change a contract,
-and whether the code running now is the verified code. Every claim comes with the request that
-re-checks it.
+Of 24 major NEAR contracts Keyhole surveyed (`npm run survey`,
+[STATE_OF_NEAR.md](docs/STATE_OF_NEAR.md)), 11 are governed by a Sputnik DAO (their code is replaced
+through a DAO vote), among them Ref, Burrow, Meta Pool and LiNEAR, and none is immutable. A Sputnik DAO
+executes an upgrade in the same call as the vote that reaches its threshold. There is no timelock to
+wait out. Keyhole watches those proposals, reads the exact code they would install where it can (for
+`UpgradeRemote`/`UpgradeSelf` the code is the argument of a `store_blob` transaction to the DAO, which
+must be on chain before the proposal executes; for near-plugins deploys it is usually the code staged
+on the target), grades it, and can submit a withdraw call the depositor signed in advance. Underneath
+is Keyhole's contract inspector: who can change a contract, and whether the code running now is the
+verified code. Every claim comes with the request that re-checks it.
 
 - **Live site:** <https://unajijacob6-create.github.io/keyhole/> (static; the upgrade radar grades
   mainnet proposals in your browser)
@@ -175,7 +178,7 @@ Grading rules: [docs/GRADING.md](docs/GRADING.md). Design: [docs/DESIGN.md](docs
 | **near-plugins ACL** | `acl_get_super_admins` and deployer roles. The roles are read from verified source when available. |
 | **Named accounts + receipts** | The watcher follows executed receipts, so self-upgrades through an `upgrade` method and meta-transactions (`Delegate`) are caught, not only direct transactions. |
 | **NEAR AI Cloud TEE** | A private review whose receipt (TEE attestation + signature over request/response hashes) anyone can re-verify. Only hashes go on-chain. |
-| **Sputnik `store_blob` + `UpgradeRemote`/`UpgradeSelf`** | An upgrade proposal names the code hash, and the code itself is the argument of the DAO's `store_blob` transaction. Keyhole reads those bytes before the vote and checks `sha256 == hash`. |
+| **Sputnik `store_blob` + `UpgradeRemote`/`UpgradeSelf`** | An upgrade proposal names the code hash, and the code itself is the argument of a `store_blob` transaction to the DAO, which must be on chain before the proposal executes. When the FastNEAR tx index has that transaction, Keyhole reads those bytes before the deciding vote and checks `sha256 == hash`. In the upgrade eval it found a DAO `store_blob` for 16 of 130 real proposals (Ref and SWEAT); `FunctionCall` upgrades of near-plugins contracts use code staged on the target instead, and a release registration (`add_release_info`) carries only a hash. |
 | **Sputnik execution on the threshold vote** | `act_proposal` executes in the call that reaches the threshold; `proposal_period` is an expiry. That is why the window is "until the deciding vote", and why it can be minutes. |
 | **near-plugins `Upgradable`** | `up_staged_code_hash` / `up_staged_code` expose staged code before `up_deploy_code`; `up_get_delay_status` shows whether any staging delay is enforced. |
 | **NEP-366 meta-transactions (`SignedDelegateAction`)** | The escape hatch: a depositor signs one withdraw-to-self now; anyone can relay it later, and the signature covers every field. Signed by a dedicated full-access key because a function-call key cannot attach the 1 yoctoNEAR most withdraws demand. |
@@ -223,6 +226,24 @@ Two numbers from earlier research were **corrected** before publishing:
   **5 of 5** seeded malicious diffs (drain, unchecked owner change, removed balance check, fee
   diversion, new deploy capability) and flagged **0 of 2** benign diffs. Every receipt verified.
   This is evidence about one model on seven small diffs, not proof.
+- **Upgrade eval** ([docs/EVAL_UPGRADES.md](docs/EVAL_UPGRADES.md), `npm run eval:upgrades`, data in
+  `eval/upgrades.json`): 130 real mainnet upgrade proposals with a code hash, up to the latest 30 of
+  each of 5 DAOs (Ref, Burrow, Intents, the Omni bridge, SWEAT).
+  - **Windows.** 101 executed proposals have a measured window from submission to the block where
+    the target's code changed (archival bisection): shortest 2.4 min, median 90.0 min, longest
+    144.0 h; 12 executed in under 10 minutes. 19 more are release registrations
+    (`add_release_info`), which change no code and are not timed.
+  - **False alarms.** 101 real upgrades could be graded (old and new bytes both retrievable); 23 of
+    them grade STOP and would have fired a `stop` hatch. No known incident is attached to these
+    upgrades, so every STOP is counted as a false alarm; that is an assumption, not a proof that the
+    upgrades were safe. All 23 STOPs were on code without a verified build (each carries
+    `UNVERIFIED_PENDING_CODE`; the eval checks SourceScan and runs no AI review). Under
+    `gradeUpgrade`, a reproducible build or SourceScan verification of the new hash would have made
+    each of them CAUTION.
+  - **Seeded attacks.** 4 of 6 graded as expected. The two misses are `evil-owner` (a new
+    `set_owner` that only writes state; the danger, taking ownership and then calling `upgrade`, is
+    one hop away) and `evil-fee` (`withdraw_all` keeps half): logic changes that add no host-call
+    path, so the structural diff cannot see them. Both grade CAUTION, not STOP.
 - **Independent verification**: Keyhole's CI rebuilt `intents.near` (rev `16d04f6`) and
   `token.sweat` from their on-chain `build_info`, and both match the deployed hash. SourceScan's entry
   for intents.near is for an older hash. `lst.rhealab.near`'s declared repository returns 404, so it
@@ -241,7 +262,18 @@ Full text: [docs/SECURITY.md](docs/SECURITY.md).
   - A deploy import is not proof of upgradeability.
   - Wasm analysis can't see business logic.
   - There is no state simulation.
-  - The AI review is evidence, never the grade.
+  - The AI review counts by fixed rules ([GRADING.md](docs/GRADING.md)). For a pending upgrade, a
+    high-risk AI review alone is enough for STOP, which fires `stop` hatches; an AI review never
+    lowers an upgrade verdict. For a contract's own grade, a low-risk attested review keeps a fresh
+    unverified change at CAUTION instead of STOP.
+  - A hatch fixes the call (receiver, method, args, deposit), not the outcome: the venue's code at
+    the moment the call runs decides where the funds go. The guardian in this build also fires on
+    STOP for code that already landed (an executed proposal or a changed live hash); such a hatch runs
+    the new code. See [HATCH.md](docs/HATCH.md).
+  - The upgrade diff sees native NEAR transfers, not token transfers: a new method that sends
+    fungible tokens out with `ft_transfer` (how Ref and Burrow deposits move) is not a new money
+    path to it. For such venues the verdict rests on verification (unverified code is at least
+    CAUTION) and the AI review.
 
 ## Repository
 
@@ -295,9 +327,12 @@ scripts/        factcheck, survey, demo:attack, demo:guardian, setup:guardian, h
   per-upgrade TEE review for teams.
 - **Guardian as a service.** Alerts per contract you hold, hatches armed from a wallet, a hosted
   relayer, and protocols pre-registering verified builds so routine upgrades don't trigger exits.
-- **DAO tooling.** A "review this upgrade proposal" step for Trezu and NEAR Business (Proposal X-Ray
-  already decodes proposals; Keyhole adds the bytes, the diff and the receipt), and a clear-signing
-  descriptor NEP for NEAR methods.
+- **DAO tooling.** A "review this upgrade proposal" step for Trezu and NEAR Business, and a
+  clear-signing descriptor NEP for NEAR methods. Proposal X-Ray already decodes proposals, flags
+  upgrade proposals, and checks `UpgradeSelf` hashes against the releases `sputnik-dao.near` publishes;
+  Keyhole adds fetching the proposed bytes and checking `sha256(bytes) == hash`, the export and
+  call-graph diff against the live code, SourceScan and reproducible-build checks for any target
+  (including `UpgradeRemote` targets), and the TEE review receipt.
 - **Other chains.** The wasm analysis generalises to CosmWasm and Stylus.
 
 ## Other project by the same builder
