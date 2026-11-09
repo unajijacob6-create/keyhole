@@ -33,3 +33,7 @@
 [watch] mainnet at block 223,824,531 (head 223,824,721, lag 190); scanned 8259, skipped 8979 blocks; 13 event(s); neardata 10080 req, 1788 rate-limited
 [watch] mainnet at block 223,824,994 (head 223,825,544, lag 550); scanned 8722, skipped 8979 blocks; 13 event(s); neardata 10655 req, 1898 rate-limited
 [watch] mainnet at block 223,825,478 (head 223,825,544, lag 66); scanned 9206, skipped 8979 blocks; 13 event(s); neardata 11243 req, 2002 rate-limited
+[watch] mainnet at block 223,825,908 (head 223,827,308, lag 1400); scanned 9636, skipped 8979 blocks; 13 event(s); neardata 11788 req, 2117 rate-limited
+[watch] block 223,825,996  32e3a97463193414add251390434f809cbdc2d34.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] block 223,826,010  65fa2d5960fbaeae2574b2f53641d50ebbd4664e.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] block 223,826,252  arsoncoin.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
