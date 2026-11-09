@@ -1,2 +1,56 @@
-[watch] mainnet from block 223,834,812; watching (none); network-wide deploy feed on
-[watch] mainnet: head refresh failed (HTTP 429); keeping 223834826
+[watch] mainnet from block 223,807,293; watching (none); network-wide deploy feed on
+[watch] block 223,807,462  sinu.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,807,780 (head 223,808,181, lag 401); scanned 487, skipped 0 blocks; 1 event(s); neardata 604 req, 105 rate-limited
+[watch] block 223,807,884  guard.nearcarta.near  DeployContract (transaction)  new code 7uEdU1…
+[watch] mainnet at block 223,808,250 (head 223,809,249, lag 999); scanned 957, skipped 0 blocks; 2 event(s); neardata 1182 req, 212 rate-limited
+[watch] mainnet at block 223,808,735 (head 223,809,249, lag 514); scanned 1442, skipped 0 blocks; 2 event(s); neardata 1769 req, 314 rate-limited
+[watch] block 223,809,121  v1.signer  DeployContract (contract-receipt)  new code CpGX8y…
+[watch] mainnet at block 223,809,222 (head 223,809,249, lag 27); scanned 1929, skipped 0 blocks; 3 event(s); neardata 2367 req, 425 rate-limited
+[watch] block 223,809,333  mlc-2.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,809,730 (head 223,811,517, lag 1787); scanned 2437, skipped 0 blocks; 4 event(s); neardata 2977 req, 526 rate-limited
+[watch] block 223,809,808  townhall.nearcarta.near  DeployContract (transaction)  new code GgECZv…
+[watch] block 223,810,040  board.nearcarta.near  DeployContract (transaction)  new code Gi4P5h…
+[watch] block 223,810,209  board.nearcarta.near  DeployContract (transaction)  new code DYjXmY…
+[watch] mainnet at block 223,810,210 (head 223,811,517, lag 1307); scanned 2917, skipped 0 blocks; 7 event(s); neardata 3568 req, 637 rate-limited
+[watch] mainnet at block 223,810,719 (head 223,811,517, lag 798); scanned 3426, skipped 0 blocks; 7 event(s); neardata 4179 req, 739 rate-limited
+[watch] mainnet at block 223,811,201 (head 223,811,517, lag 316); scanned 3908, skipped 0 blocks; 7 event(s); neardata 4769 req, 847 rate-limited
+[watch] mainnet: 4761 blocks behind; skipping to head 223,816,279 (blocks 223811518–223816278 not scanned)
+[watch] mainnet at block 223,816,459 (head 223,816,652, lag 193); scanned 4405, skipped 4761 blocks; 7 event(s); neardata 5371 req, 944 rate-limited
+[watch] block 223,816,708  nks.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,816,965 (head 223,817,061, lag 96); scanned 4911, skipped 4761 blocks; 8 event(s); neardata 5978 req, 1044 rate-limited
+[watch] mainnet at block 223,817,422 (head 223,817,890, lag 468); scanned 5368, skipped 4761 blocks; 8 event(s); neardata 6537 req, 1145 rate-limited
+[watch] mainnet at block 223,817,862 (head 223,817,890, lag 28); scanned 5808, skipped 4761 blocks; 8 event(s); neardata 7090 req, 1258 rate-limited
+[watch] block 223,817,868  nks-2.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] block 223,817,902  nks-3.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] block 223,818,126  kimtrenche.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,818,388 (head 223,819,842, lag 1454); scanned 6334, skipped 4761 blocks; 11 event(s); neardata 7723 req, 1364 rate-limited
+[watch] mainnet at block 223,818,821 (head 223,819,842, lag 1021); scanned 6767, skipped 4761 blocks; 11 event(s); neardata 8275 req, 1483 rate-limited
+[watch] block 223,819,113  raen_trade.near  DeployContract (transaction)  new code 63jixw…
+[watch] mainnet at block 223,819,330 (head 223,819,842, lag 512); scanned 7276, skipped 4761 blocks; 12 event(s); neardata 8887 req, 1585 rate-limited
+[watch] mainnet at block 223,819,838 (head 223,819,842, lag 4); scanned 7784, skipped 4761 blocks; 12 event(s); neardata 9498 req, 1688 rate-limited
+[watch] mainnet: 4218 blocks behind; skipping to head 223,824,061 (blocks 223819843–223824060 not scanned)
+[watch] block 223,824,521  joulity-pendle.near  DeployContract (transaction)  new code B7JFox…
+[watch] mainnet at block 223,824,531 (head 223,824,721, lag 190); scanned 8259, skipped 8979 blocks; 13 event(s); neardata 10080 req, 1788 rate-limited
+[watch] mainnet at block 223,824,994 (head 223,825,544, lag 550); scanned 8722, skipped 8979 blocks; 13 event(s); neardata 10655 req, 1898 rate-limited
+[watch] mainnet at block 223,825,478 (head 223,825,544, lag 66); scanned 9206, skipped 8979 blocks; 13 event(s); neardata 11243 req, 2002 rate-limited
+[watch] mainnet at block 223,825,908 (head 223,827,308, lag 1400); scanned 9636, skipped 8979 blocks; 13 event(s); neardata 11788 req, 2117 rate-limited
+[watch] block 223,825,996  32e3a97463193414add251390434f809cbdc2d34.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] block 223,826,010  65fa2d5960fbaeae2574b2f53641d50ebbd4664e.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] block 223,826,252  arsoncoin.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,826,350 (head 223,827,308, lag 958); scanned 10078, skipped 8979 blocks; 16 event(s); neardata 12342 req, 2228 rate-limited
+[watch] block 223,826,570  dabi.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] block 223,826,609  85abfced7309.user0.tmplr.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,826,832 (head 223,827,308, lag 476); scanned 10560, skipped 8979 blocks; 18 event(s); neardata 12927 req, 2331 rate-limited
+[watch] mainnet at block 223,827,279 (head 223,827,308, lag 29); scanned 11007, skipped 8979 blocks; 18 event(s); neardata 13478 req, 2436 rate-limited
+[watch] mainnet: 4024 blocks behind; skipping to head 223,831,333 (blocks 223827309–223831332 not scanned)
+[watch] block 223,831,336  house.nearcarta.near  DeployContract (contract-receipt)  new code 3z6dbe…
+[watch] block 223,831,612  townhall.nearcarta.near  DeployContract (transaction)  new code 6LWPMM…
+[watch] mainnet at block 223,831,750 (head 223,831,771, lag 21); scanned 11454, skipped 13003 blocks; 20 event(s); neardata 14039 req, 2541 rate-limited
+[watch] block 223,831,842  32a2341f99292acce1a240550195936ed1cb3d13.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] block 223,831,950  guard.nearcarta.near  DeployContract (transaction)  new code 9dkjuG…
+[watch] mainnet at block 223,832,248 (head 223,832,346, lag 98); scanned 11952, skipped 13003 blocks; 22 event(s); neardata 14642 req, 2646 rate-limited
+[watch] mainnet at block 223,832,671 (head 223,833,539, lag 868); scanned 12375, skipped 13003 blocks; 22 event(s); neardata 15179 req, 2759 rate-limited
+[watch] block 223,832,922  6c70b30e9b0879e7fc1439cb41d9c51e8e57bb67.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,833,142 (head 223,833,539, lag 397); scanned 12846, skipped 13003 blocks; 23 event(s); neardata 15761 req, 2869 rate-limited
+[watch] block 223,833,353  rhea001596.multica.near  UseGlobalContract (contract-receipt)
+[watch] block 223,833,576  c8889e5294cf4d48b273402fc4b2ac211187e627.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
