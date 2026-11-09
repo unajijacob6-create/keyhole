@@ -124,3 +124,78 @@ These are also listed in `docs/SECURITY.md`:
 - Wasm analysis cannot see business logic.
 - The archival search can miss an A → B → A change.
 - The AI review is evidence, not a guarantee.
+
+## 7. Upgrade grading (pending upgrades)
+
+`gradeUpgrade()` in `packages/core/src/upgrade.ts` grades a code change *before* it lands: the code
+a DAO proposal or a near-plugins staging would deploy, against the code running now. It is a pure
+function, unit-tested in `packages/core/test/upgrade.test.ts`; `keyhole pending <dao-or-contract>
+--fetch-code` runs it on live data. The verdict decides what a hatch with the default "strict"
+trigger does: `fire` is true exactly when the verdict is STOP.
+
+### Where the pending code comes from
+
+| source | how Keyhole reads the hash | how it gets the bytes |
+|---|---|---|
+| Sputnik `UpgradeRemote` / `UpgradeSelf` | the proposal's `hash` field | the DAO's `store_blob` transaction: its args are the wasm |
+| Sputnik `FunctionCall` to an upgrade method (`upgrade`, `up_deploy_code`, `up_stage_code`, `deploy`, `deploy_code`, `update_contract`, `unrestricted_upgrade`, `add_release_info`, `stage_code`, `set_code`, `upgrade_contract`; whole-name match, so `deploy_token` does not count) | a top-level `hash` / `code_hash` / `codeHash` / `new_code_hash` arg in base58, hex, a 32-byte array or padded base64; or, if the args are wasm (`\0asm`), sha256 of the args | the target's staged code (`up_staged_code`), or a stage call / `store_blob` on the DAO or the target |
+| near-plugins `up_staged_code_hash` (base58 string, or a raw 32-byte array from older plugin versions) | that view | `up_staged_code` |
+
+Bytes are found through the FastNEAR transactions API (`/v0/account`, newest first, at most 20
+pages; `/v0/transactions`, at most 20 hashes per request). Keyhole accepts them **only if
+sha256(bytes) equals the proposed hash**, so the API is not trusted for content. Staged code equal
+to the live code means nothing is pending (near-plugins keeps the staged code after deploying).
+
+A proposal's state is `pending` while Sputnik status is `InProgress` and `submission_time +
+proposal_period` has not passed; after that it is `expired` (Sputnik's own rule; it uses the current
+policy's period). `Approved` → `executed`; `Rejected`, `Removed`, `Expired`, `Moved`, `Failed` map
+to their lower-case names. `required` is the number of approvals the DAO's policy needs for the
+proposal kind's label (`upgrade_remote`, `upgrade_self`, `call`), computed as in section 1.
+
+### Flags
+
+The diff is `exportDiff(live, pending)` plus the call graph of each side (section 1, "Call paths").
+"Specific path" means a call path that avoids near-sdk's shared action dispatcher.
+
+| flag | rule |
+|---|---|
+| `NO_CHANGE` | the pending hash equals the live hash |
+| `UNVERIFIED_PENDING_CODE` | no `ReproducibleBuild` attestation with `matches: true` and no SourceScan verification for the pending hash (or the hash is unknown) |
+| `PENDING_CODE_UNAVAILABLE` | the pending bytes could not be fetched and checked |
+| `NEW_CODE_CHANGE_PATH` | the pending code adds the `deploy_contract`, `use_global_contract`, `add_full_access_key` or `delete_account` capability (import level), or an exported method gains a specific path to one of them |
+| `NEW_KEY_PATH` | the same for `add_function_call_key` / `delete_key` |
+| `NEW_MONEY_PATH` | an added method, or an existing method that had none, has a specific path to `transfer` |
+| `EXIT_METHOD_REMOVED` | a removed export reached `transfer` in the live code (specific path or via the dispatcher) |
+| `AI_REVIEW_HIGH` | an AI review of the pending code reports high risk (passed in, or a registry `AiReview` whose summary starts with `high:`) |
+
+If the call graph of the pending code is unavailable, added methods are assumed to reach every
+capability the pending code imports (the reason says "assumed"). If there is no analysis of the live
+code, the pending code is compared with an empty contract, so every capability counts as new.
+
+### Verdict
+
+| verdict | rule |
+|---|---|
+| **STOP** `[XX]` | `UNVERIFIED_PENDING_CODE` **and** at least one of `NEW_CODE_CHANGE_PATH`, `NEW_MONEY_PATH`, `EXIT_METHOD_REMOVED`, `NEW_KEY_PATH`; **or** `AI_REVIEW_HIGH` |
+| **CAUTION** `[!!]` | not STOP, and any flag other than `NO_CHANGE` (in particular unverified code, or code that could not be read) |
+| **OK** `[OK]` | otherwise: verified code with no new path and no removed exit, or `NO_CHANGE` |
+
+Notes:
+- Unverified code is never OK. The diff only sees exports and host-call reachability; a change inside
+  an existing method (for example a `withdraw` that sends half) is invisible to it.
+- Verified code that adds a money or code-change path is CAUTION, not OK: a reviewed source can
+  still add a power the depositor did not sign up for.
+- A medium-risk AI review is shown as a caution reason but sets no flag and does not change the
+  verdict. AI never lowers a verdict.
+- For a proposal whose code is already live, `keyhole pending --fetch-code` grades it
+  retrospectively against the code it replaced (found by the archival search of section 3).
+
+Worked examples (from the unit tests, on wasm committed in this repo):
+
+| live → pending | verified | flags | verdict |
+|---|---|---|---|
+| `contracts/repro/demo_vault_v1.wasm` → `demo_vault_v2.wasm` (adds `sweep`, which reaches transfer) | no | `UNVERIFIED_PENDING_CODE`, `NEW_MONEY_PATH` | STOP |
+| same | reproducible build | `NEW_MONEY_PATH` | CAUTION |
+| `contracts/out/demo_vault_v1.wasm` → `contracts/repro/demo_vault_v1.wasm` (two builds of one source; different hashes, empty diff) | reproducible build | none | OK |
+| same | no | `UNVERIFIED_PENDING_CODE` | CAUTION |
+| `demo_vault_v1.wasm` → `contracts/fixtures/out/fixture_upgradable.wasm` | no | `UNVERIFIED_PENDING_CODE`, `NEW_CODE_CHANGE_PATH`, `EXIT_METHOD_REMOVED` | STOP |
