@@ -18,6 +18,9 @@ import { analyzeWasm, codeHash, exportDiff, inspect, Rpc, txApi, type KeyholeRep
 import { armDelegateHatch, fireHatch, hatchHealth, verifyHatch, decodeHatch, type Hatch } from "../packages/hatch/src/index.ts";
 import { Guardian, type Alert } from "../guardian/src/guardian.ts";
 import { Radar } from "../guardian/src/radar.ts";
+import { teeReviewer, type TeeReview } from "../guardian/src/tee.ts";
+import { verifyReceiptOffline } from "../reviewer/src/review.ts";
+import { registryPoster } from "../watcher/src/poster.ts";
 import { account, accountExists, cfg, NEAR, provider, saveKey, TGAS, txLink, view, yoctoToNear } from "./lib/near.ts";
 import { replayGuardianRun } from "./lib/replay.ts";
 
@@ -47,6 +50,8 @@ export interface GuardianRun {
   balances: Record<string, string>;
   verdicts: Record<string, { verdict: string; class?: string; flags: string[]; headline: string }>;
   alerts: Alert[];
+  /** Private review of the pending bytes' structural diff in a NEAR AI Cloud TEE (optional). */
+  review: { risk: string; summary: string; model: string; receipt: TeeReview["receipt"]; registry_id?: number } | null;
   steps: Step[];
   outcome: { alice_safe: boolean; bob_swept: boolean; fired_before_execution: boolean } | null;
 }
@@ -67,6 +72,7 @@ const run: GuardianRun = {
   balances: {},
   verdicts: {},
   alerts: [],
+  review: null,
   steps: [],
   outcome: null,
 };
@@ -128,6 +134,16 @@ run.vault = vaultId;
   const kp = KeyPair.fromRandom("ed25519");
   await master.createSubAccount({ accountOrPrefix: vaultId, publicKey: kp.getPublicKey(), nearToTransfer: NEAR(1.4) });
   saveKey(vaultId, kp);
+  // The RPC is load-balanced: wait until the new account's key is visible before signing with it.
+  for (let i = 0; ; i++) {
+    try {
+      await provider.viewAccessKey({ accountId: vaultId, publicKey: kp.getPublicKey().toString(), finalityQuery: { finality: "final" } } as any);
+      break;
+    } catch (e) {
+      if (i >= 30) throw e;
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
   const v = account(vaultId);
   await record("deploy_vault", await v.deployContract(HONEST), vaultId);
   await record("init_vault", await v.callFunctionRaw({ contractId: vaultId, methodName: "new", args: { owner_id: cfg.dao }, gas: TGAS(30), waitUntil: "FINAL" } as any), vaultId);
@@ -167,13 +183,15 @@ say(`health: ${health.state} (${health.blocks_left ?? "?"} blocks left)`);
 step(4, "guardian starts watching the vault");
 const api = txApi("testnet");
 const alerts: Alert[] = [];
+let tee: TeeReview | null = null;
 const radar = new Radar(rpc, "testnet", undefined, { last: 10 });
 const ctl = await radar.watch(vaultId);
 say(`controller resolved by inspect: ${ctl.daos.join(", ") || "(none)"}`);
 const relayer = account(cfg.guardian);
 const guardian = new Guardian({
   rpc,
-  assess: { rpc, api, registry: { rpc, account: cfg.registry } },
+  // The TEE review is optional: if NEAR AI Cloud is unreachable the deterministic grade stands alone.
+  assess: { rpc, api, registry: { rpc, account: cfg.registry }, reviewer: process.env.KH_NO_REVIEW ? null : teeReviewer({ onReceipt: (r) => (tee = r) }) },
   radar,
   hatches: () => [hatch],
   driver: {
@@ -193,9 +211,14 @@ const guardian = new Guardian({
   onAlert: (a) => {
     alerts.push(a);
     const g = a.assessment?.grade;
-    say(`ALERT ${a.event}${a.proposal_id !== null ? ` #${a.proposal_id}` : ""} on ${a.target}${a.votes_to_execute !== null ? ` · ${a.votes_to_execute} more approval(s) execute it` : ""}${g ? ` · ${g.verdict}: ${g.headline}` : ""}`);
-    for (const l of a.assessment?.summary ?? []) say(`   diff: ${l}`);
-    if (a.assessment?.code_source) say(`   bytes: ${a.assessment.pending_size} from ${a.assessment.code_source.kind}${"tx" in a.assessment.code_source ? ` ${a.assessment.code_source.tx}` : ""}`);
+    const seen = alerts.filter((x) => x.assessment?.pending_hash === a.assessment?.pending_hash).length > 1;
+    const what = a.event === "proposal" ? `proposal #${a.proposal_id}` : a.event === "deployed" ? "code changed" : "code staged";
+    say(`ALERT ${what} on ${a.target}${a.votes_to_execute ? ` · ${a.votes_to_execute} more approval(s) execute it` : a.votes_to_execute === 0 ? " · executed" : ""}${g ? ` · ${g.headline.startsWith(g.verdict) ? g.headline : `${g.verdict}: ${g.headline}`}` : ""}`);
+    if (!seen) {
+      if (a.assessment?.code_source) say(`   bytes: ${a.assessment.pending_size} read from ${a.assessment.code_source.kind}${"tx" in a.assessment.code_source ? ` tx ${a.assessment.code_source.tx}` : ""}`);
+      for (const l of a.assessment?.summary ?? []) say(`   diff: ${l}`);
+      if (a.assessment?.review) say(`   TEE review: ${a.assessment.review.risk} — ${a.assessment.review.summary}`);
+    }
     for (const f of a.fired) say(`   ${f.ok ? "FIRED" : "NOT FIRED"} hatch ${f.hatch} for ${f.account}${f.tx ? `: ${txLink(f.tx)}` : ""}${f.error ? ` (${f.error})` : ""}`);
   },
 });
@@ -234,6 +257,23 @@ for (let i = 0; i < 60 && !alerts.some((a) => a.proposal_id === run.proposal_id 
 mark("graded");
 const graded = alerts.find((a) => a.proposal_id === run.proposal_id && a.assessment?.code_source);
 if (graded?.assessment) run.verdicts.pending = { verdict: graded.assessment.grade.verdict, flags: graded.assessment.grade.flags, headline: graded.assessment.grade.headline };
+if (tee) {
+  const t: TeeReview = tee;
+  const v = verifyReceiptOffline({ receipt: t.receipt });
+  say(`private review ran on ${t.model} in a NEAR AI Cloud TEE`);
+  say(`receipt: signed by ${t.receipt.signed_by} ${t.receipt.recovered_signer}, re-verified offline: ${v.ok}`);
+  run.review = { risk: t.risk, summary: t.summary, model: t.model, receipt: t.receipt };
+  try {
+    const poster = await registryPoster({ registry: cfg.registry });
+    const posted = await poster.attest!(run.code.evil, { kind: "AiReview", model: t.model, request_sha256: t.receipt.request_hash, response_sha256: t.receipt.response_hash, signer: t.receipt.recovered_signer, chat_id: t.receipt.chat_id.slice(0, 200), verdict_summary: `${t.risk}: ${t.summary}`.slice(0, 280) });
+    run.review.registry_id = posted.id;
+    run.tx.ai_review = posted.tx;
+    run.signers.ai_review = cfg.attester;
+    say(`registry ${cfg.registry} AiReview #${posted.id} for the pending hash (posted before the deciding vote): ${txLink(posted.tx)}`);
+  } catch (e) {
+    say(`AiReview not posted to the registry: ${String((e as Error).message).slice(0, 100)}`);
+  }
+} else say("private TEE review: not available in this run (the deterministic grade stands on its own)");
 const d = exportDiff(analyzeWasm(HONEST), analyzeWasm(EVIL));
 say(`independent check from repo builds: + ${d.addedMethods.join(", ") || "(none)"}`);
 health = await hatchHealth(rpc, hatch);

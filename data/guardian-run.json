@@ -1,9 +1,9 @@
 {
  "schema": "keyhole.guardian-run/1",
- "recordedAt": "2026-11-09T21:33:22.756Z",
+ "recordedAt": "2026-11-09T21:37:52.592Z",
  "network": "testnet",
  "dao": "kh-guardian.sputnikv2.testnet",
- "vault": "gv-mw9s2vws.keyhole.testnet",
+ "vault": "gv-mw9s8ox4.keyhole.testnet",
  "accounts": {
   "alice": "alice.keyhole.testnet",
   "bob": "bob.keyhole.testnet",
@@ -16,71 +16,73 @@
   "honest": "4sU3LRdpBN6z7NeAjxwNPRPhybfKV5HYPGG1AGkhdeN1",
   "evil": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm"
  },
- "proposal_id": 1,
+ "proposal_id": 2,
  "hatch": {
   "schema": "keyhole.hatch/1",
-  "id": "05007c4fc337f4a1",
+  "id": "474ac154d50db38a",
   "network": "testnet",
   "account": "alice.keyhole.testnet",
-  "venue": "gv-mw9s2vws.keyhole.testnet",
+  "venue": "gv-mw9s8ox4.keyhole.testnet",
   "method": "withdraw_all",
   "args": {},
   "deposit": "1",
   "gas": "50000000000000",
   "mode": "delegate",
-  "public_key": "ed25519:H9ciDz75ArpyoPBjj4zbykGYsve2ENrxhxWUZQtvNm7s",
-  "nonce": "276975981000001",
-  "max_block_height": "277580783",
-  "signed_delegate": "FQAAAGFsaWNlLmtleWhvbGUudGVzdG5ldBsAAABndi1tdzlzMnZ3cy5rZXlob2xlLnRlc3RuZXQBAAAAAgwAAAB3aXRoZHJhd19hbGwCAAAAe30AID2IeS0AAAEAAAAAAAAAAAAAAAAAAABBdfV+6PsAAO+LixAAAAAAAO/wA/y9J3jAmmZcOxjqxiqZNmeHXqk2E/MYQHCZDST2AEzf5pU8+icGpVOAHgiq5RS4ylAlgYkLMrZCi8u31LSygmwUXYIfjsQb7FQFI/RsZUTiST8Z2e4QHvV44HHFTQI=",
-  "created_at": "2026-11-09T21:33:47.135Z",
-  "created_height": 276975983,
+  "public_key": "ed25519:qknUneCNzDGocmGbx2huFJYBUfqfwZXrh8RaKViYWfP",
+  "nonce": "276976456000001",
+  "max_block_height": "277581259",
+  "signed_delegate": "FQAAAGFsaWNlLmtleWhvbGUudGVzdG5ldBsAAABndi1tdzlzOG94NC5rZXlob2xlLnRlc3RuZXQBAAAAAgwAAAB3aXRoZHJhd19hbGwCAAAAe30AID2IeS0AAAEAAAAAAAAAAAAAAAAAAAABYkWb6PsAAMuNixAAAAAAAAx9Yr1CE9Xlar5slMOHSw5oiwpnTPiRvEcpCZZUlyauAHPNt7N8zhQzJ4OaIChZDVcEZauXvacpLV+4Wr1sRD6u1wae6qzBQOGK9MHi0Lp5Htoga+Vlg7YowJtBYg66nQ4=",
+  "created_at": "2026-11-09T21:38:25.852Z",
+  "created_height": 276976459,
   "trigger": "stop"
  },
  "tx": {
-  "deploy_vault": "2ZMmDt8piaB4VYR7XFJijYG1ApMgS5mBZAY8rc7zoZzU",
-  "init_vault": "",
-  "delete_vault_key": "HcDKYbxnBUJPExgBg1mm7FoaMZa7kLegERdvP7oC1BNN",
-  "alice_deposit": "",
-  "bob_deposit": "",
-  "store_blob": "35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
-  "add_proposal": "DHU99LjGgUEpYP2h7359xN68DSqDEjciJPRrXEJb9wCx",
-  "hatch_fired": "7wcimw12a3Ea3dHUd7b7YVy493Duwe1uPChKuUDas7ko",
-  "vote_1": "Gq1nzvUzzPTphcGz9ncokqcQbHVRq1TtU2T8Z4eay5qp",
-  "vote_2": "598gqNkWm41mdknTHTLxug7ePeYVNEYRSAbPjfTduqaT",
-  "sweep": "38eQd9gXpvSNDLjHV4m5N1JJyLNjtEDChTJDahRdka87"
+  "deploy_vault": "BaTcWUj8AEFBbfiHq8XZAuuhE75rYfn4R8urjuczeCFj",
+  "init_vault": "CttCuukQCpiAnauxDjpNBsa7USAdWs2vsrgPu9gt5JEE",
+  "delete_vault_key": "2YydrsQ31X7KCDNtEL4V5nocRonog2Bh3KLYP8ucugtf",
+  "alice_deposit": "DsWikAD2GjMYfNwJc88CYzcgZqVUmwTyitnEuXg69aMi",
+  "bob_deposit": "CcxuXF6hRHWH4KpmhzaH4c5NuDEKzrHHRGwbDpfEtFPH",
+  "store_blob": "E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
+  "add_proposal": "ACiTpr8Js5GktTckgp2sETA8vUquQWRZnP6teyfzYjkV",
+  "hatch_fired": "rRASc9f6YheRZiEZiW22XS1HBHXxBTnuq1aAZEmZp36",
+  "ai_review": "BGAkMDLPWfyDfT5b2nNuMuotfELgtt2zb5bb7NBq4Hjy",
+  "vote_1": "5xB8pCmh5Bgdy66nUuFPqVBVHzBnQ12ZVSRTmtGbU1g3",
+  "vote_2": "H1NhMFzFxCrB5Wte5dVUEmY22Cao98WZw4h3VZnvpaNb",
+  "sweep": "5J62Gifwwd85MGxHCnvF3hACse2qW3twSrwsBTTenuG"
  },
  "signers": {
-  "deploy_vault": "gv-mw9s2vws.keyhole.testnet",
-  "init_vault": "gv-mw9s2vws.keyhole.testnet",
-  "delete_vault_key": "gv-mw9s2vws.keyhole.testnet",
+  "deploy_vault": "gv-mw9s8ox4.keyhole.testnet",
+  "init_vault": "gv-mw9s8ox4.keyhole.testnet",
+  "delete_vault_key": "gv-mw9s8ox4.keyhole.testnet",
   "alice_deposit": "alice.keyhole.testnet",
   "bob_deposit": "bob.keyhole.testnet",
   "store_blob": "council-a.keyhole.testnet",
   "add_proposal": "council-a.keyhole.testnet",
   "hatch_fired": "guardian.keyhole.testnet",
+  "ai_review": "watcher.keyhole.testnet",
   "vote_1": "council-a.keyhole.testnet",
   "vote_2": "council-b.keyhole.testnet",
   "sweep": "keyhole.testnet"
  },
  "heights": {
-  "deploy_vault": 276975953,
-  "init_vault": 0,
-  "delete_vault_key": 276975962,
-  "alice_deposit": 0,
-  "bob_deposit": 0,
-  "store_blob": 276975995,
-  "add_proposal": 276976003,
-  "hatch_fired": 276976018,
-  "vote_1": 276976030,
-  "vote_2": 276976038,
-  "sweep": 276976050
+  "deploy_vault": 276976417,
+  "init_vault": 276976423,
+  "delete_vault_key": 276976429,
+  "alice_deposit": 276976436,
+  "bob_deposit": 276976443,
+  "store_blob": 276976473,
+  "add_proposal": 276976482,
+  "hatch_fired": 276976501,
+  "vote_1": 276976516,
+  "vote_2": 276976524,
+  "sweep": 276976535
  },
  "timings_ms": {
-  "proposed": 36741,
-  "fire_sent": 41166,
-  "fire_done": 47012,
-  "graded": 47334,
-  "executed": 58758
+  "proposed": 46579,
+  "fire_sent": 52613,
+  "fire_done": 58376,
+  "graded": 58732,
+  "executed": 71162
  },
  "balances": {
   "alice_in_vault_after_fire": "0",
@@ -101,37 +103,38 @@
    "verdict": "STOP",
    "flags": [
     "UNVERIFIED_PENDING_CODE",
-    "NEW_MONEY_PATH"
+    "NEW_MONEY_PATH",
+    "AI_REVIEW_HIGH"
    ],
-   "headline": "STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds."
+   "headline": "STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds."
   }
  },
  "alerts": [
   {
    "schema": "keyhole.alert/1",
    "event": "proposal",
-   "target": "gv-mw9s2vws.keyhole.testnet",
+   "target": "gv-mw9s8ox4.keyhole.testnet",
    "dao": "kh-guardian.sputnikv2.testnet",
-   "proposal_id": 1,
+   "proposal_id": 2,
    "votes_to_execute": 2,
    "assessment": {
     "schema": "keyhole.assessment/1",
-    "target": "gv-mw9s2vws.keyhole.testnet",
+    "target": "gv-mw9s8ox4.keyhole.testnet",
     "dao": "kh-guardian.sputnikv2.testnet",
     "proposal": {
      "dao": "kh-guardian.sputnikv2.testnet",
-     "id": 1,
+     "id": 2,
      "proposer": "council-a.keyhole.testnet",
      "description": "Vault v1.1: gas optimisations",
      "kind": "UpgradeRemote",
-     "target": "gv-mw9s2vws.keyhole.testnet",
+     "target": "gv-mw9s8ox4.keyhole.testnet",
      "method": "upgrade",
      "code_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
      "hash_from": "proposal",
      "status": "InProgress",
      "state": "pending",
-     "submitted_at_ms": 1794260036859,
-     "expires_at_ms": 1794864836859,
+     "submitted_at_ms": 1794260316572,
+     "expires_at_ms": 1794865116572,
      "votes": {
       "approve": 0,
       "reject": 0,
@@ -144,9 +147,9 @@
     "pending_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
     "code_source": {
      "kind": "store_blob",
-     "tx": "35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
+     "tx": "E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
      "signer": "council-a.keyhole.testnet",
-     "height": 276975995
+     "height": 276976473
     },
     "pending_size": 113387,
     "verified": {
@@ -162,7 +165,8 @@
      "verdict": "STOP",
      "flags": [
       "UNVERIFIED_PENDING_CODE",
-      "NEW_MONEY_PATH"
+      "NEW_MONEY_PATH",
+      "AI_REVIEW_HIGH"
      ],
      "reasons": [
       {
@@ -176,6 +180,10 @@
       {
        "severity": "info",
        "text": "Export diff vs live: +1 method (sweep)."
+      },
+      {
+       "severity": "stop",
+       "text": "AI review of the pending code reports high risk: New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable."
       }
      ],
      "diff": {
@@ -197,48 +205,52 @@
       ]
      },
      "fire": true,
-     "headline": "STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds."
+     "headline": "STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds."
     },
-    "review": null,
-    "at": "2026-11-09T21:34:03.564Z"
+    "review": {
+     "risk": "high",
+     "summary": "New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable.",
+     "receipt_id": "chatcmpl-72089f1d-be15-43e5-b225-a3f26040d1ee"
+    },
+    "at": "2026-11-09T21:38:44.856Z"
    },
    "fired": [
     {
-     "hatch": "05007c4fc337f4a1",
+     "hatch": "474ac154d50db38a",
      "account": "alice.keyhole.testnet",
-     "venue": "gv-mw9s2vws.keyhole.testnet",
-     "tx": "7wcimw12a3Ea3dHUd7b7YVy493Duwe1uPChKuUDas7ko",
+     "venue": "gv-mw9s8ox4.keyhole.testnet",
+     "tx": "rRASc9f6YheRZiEZiW22XS1HBHXxBTnuq1aAZEmZp36",
      "ok": true,
-     "at": "2026-11-09T21:34:10.089Z"
+     "at": "2026-11-09T21:38:51.323Z"
     }
    ],
-   "at": "2026-11-09T21:34:10.089Z"
+   "at": "2026-11-09T21:38:51.323Z"
   },
   {
    "schema": "keyhole.alert/1",
    "event": "proposal",
-   "target": "gv-mw9s2vws.keyhole.testnet",
+   "target": "gv-mw9s8ox4.keyhole.testnet",
    "dao": "kh-guardian.sputnikv2.testnet",
-   "proposal_id": 1,
+   "proposal_id": 2,
    "votes_to_execute": 1,
    "assessment": {
     "schema": "keyhole.assessment/1",
-    "target": "gv-mw9s2vws.keyhole.testnet",
+    "target": "gv-mw9s8ox4.keyhole.testnet",
     "dao": "kh-guardian.sputnikv2.testnet",
     "proposal": {
      "dao": "kh-guardian.sputnikv2.testnet",
-     "id": 1,
+     "id": 2,
      "proposer": "council-a.keyhole.testnet",
      "description": "Vault v1.1: gas optimisations",
      "kind": "UpgradeRemote",
-     "target": "gv-mw9s2vws.keyhole.testnet",
+     "target": "gv-mw9s8ox4.keyhole.testnet",
      "method": "upgrade",
      "code_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
      "hash_from": "proposal",
      "status": "InProgress",
      "state": "pending",
-     "submitted_at_ms": 1794260036859,
-     "expires_at_ms": 1794864836859,
+     "submitted_at_ms": 1794260316572,
+     "expires_at_ms": 1794865116572,
      "votes": {
       "approve": 0,
       "reject": 0,
@@ -251,9 +263,9 @@
     "pending_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
     "code_source": {
      "kind": "store_blob",
-     "tx": "35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
+     "tx": "E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
      "signer": "council-a.keyhole.testnet",
-     "height": 276975995
+     "height": 276976473
     },
     "pending_size": 113387,
     "verified": {
@@ -269,7 +281,8 @@
      "verdict": "STOP",
      "flags": [
       "UNVERIFIED_PENDING_CODE",
-      "NEW_MONEY_PATH"
+      "NEW_MONEY_PATH",
+      "AI_REVIEW_HIGH"
      ],
      "reasons": [
       {
@@ -283,6 +296,10 @@
       {
        "severity": "info",
        "text": "Export diff vs live: +1 method (sweep)."
+      },
+      {
+       "severity": "stop",
+       "text": "AI review of the pending code reports high risk: New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable."
       }
      ],
      "diff": {
@@ -304,39 +321,43 @@
       ]
      },
      "fire": true,
-     "headline": "STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds."
+     "headline": "STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds."
     },
-    "review": null,
-    "at": "2026-11-09T21:34:03.564Z"
+    "review": {
+     "risk": "high",
+     "summary": "New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable.",
+     "receipt_id": "chatcmpl-72089f1d-be15-43e5-b225-a3f26040d1ee"
+    },
+    "at": "2026-11-09T21:38:44.856Z"
    },
    "fired": [],
-   "at": "2026-11-09T21:34:16.410Z"
+   "at": "2026-11-09T21:38:58.347Z"
   },
   {
    "schema": "keyhole.alert/1",
    "event": "proposal",
-   "target": "gv-mw9s2vws.keyhole.testnet",
+   "target": "gv-mw9s8ox4.keyhole.testnet",
    "dao": "kh-guardian.sputnikv2.testnet",
-   "proposal_id": 1,
+   "proposal_id": 2,
    "votes_to_execute": 0,
    "assessment": {
     "schema": "keyhole.assessment/1",
-    "target": "gv-mw9s2vws.keyhole.testnet",
+    "target": "gv-mw9s8ox4.keyhole.testnet",
     "dao": "kh-guardian.sputnikv2.testnet",
     "proposal": {
      "dao": "kh-guardian.sputnikv2.testnet",
-     "id": 1,
+     "id": 2,
      "proposer": "council-a.keyhole.testnet",
      "description": "Vault v1.1: gas optimisations",
      "kind": "UpgradeRemote",
-     "target": "gv-mw9s2vws.keyhole.testnet",
+     "target": "gv-mw9s8ox4.keyhole.testnet",
      "method": "upgrade",
      "code_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
      "hash_from": "proposal",
      "status": "InProgress",
      "state": "pending",
-     "submitted_at_ms": 1794260036859,
-     "expires_at_ms": 1794864836859,
+     "submitted_at_ms": 1794260316572,
+     "expires_at_ms": 1794865116572,
      "votes": {
       "approve": 0,
       "reject": 0,
@@ -349,9 +370,9 @@
     "pending_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
     "code_source": {
      "kind": "store_blob",
-     "tx": "35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
+     "tx": "E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
      "signer": "council-a.keyhole.testnet",
-     "height": 276975995
+     "height": 276976473
     },
     "pending_size": 113387,
     "verified": {
@@ -367,7 +388,8 @@
      "verdict": "STOP",
      "flags": [
       "UNVERIFIED_PENDING_CODE",
-      "NEW_MONEY_PATH"
+      "NEW_MONEY_PATH",
+      "AI_REVIEW_HIGH"
      ],
      "reasons": [
       {
@@ -381,6 +403,10 @@
       {
        "severity": "info",
        "text": "Export diff vs live: +1 method (sweep)."
+      },
+      {
+       "severity": "stop",
+       "text": "AI review of the pending code reports high risk: New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable."
       }
      ],
      "diff": {
@@ -402,39 +428,43 @@
       ]
      },
      "fire": true,
-     "headline": "STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds."
+     "headline": "STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds."
     },
-    "review": null,
-    "at": "2026-11-09T21:34:03.564Z"
+    "review": {
+     "risk": "high",
+     "summary": "New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable.",
+     "receipt_id": "chatcmpl-72089f1d-be15-43e5-b225-a3f26040d1ee"
+    },
+    "at": "2026-11-09T21:38:44.856Z"
    },
    "fired": [],
-   "at": "2026-11-09T21:34:23.007Z"
+   "at": "2026-11-09T21:39:05.034Z"
   },
   {
    "schema": "keyhole.alert/1",
    "event": "deployed",
-   "target": "gv-mw9s2vws.keyhole.testnet",
+   "target": "gv-mw9s8ox4.keyhole.testnet",
    "dao": null,
    "proposal_id": null,
    "votes_to_execute": null,
    "assessment": {
     "schema": "keyhole.assessment/1",
-    "target": "gv-mw9s2vws.keyhole.testnet",
+    "target": "gv-mw9s8ox4.keyhole.testnet",
     "dao": "kh-guardian.sputnikv2.testnet",
     "proposal": {
      "dao": "kh-guardian.sputnikv2.testnet",
-     "id": 1,
+     "id": 2,
      "proposer": "council-a.keyhole.testnet",
      "description": "Vault v1.1: gas optimisations",
      "kind": "UpgradeRemote",
-     "target": "gv-mw9s2vws.keyhole.testnet",
+     "target": "gv-mw9s8ox4.keyhole.testnet",
      "method": "upgrade",
      "code_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
      "hash_from": "proposal",
      "status": "InProgress",
      "state": "pending",
-     "submitted_at_ms": 1794260036859,
-     "expires_at_ms": 1794864836859,
+     "submitted_at_ms": 1794260316572,
+     "expires_at_ms": 1794865116572,
      "votes": {
       "approve": 0,
       "reject": 0,
@@ -447,9 +477,9 @@
     "pending_hash": "GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm",
     "code_source": {
      "kind": "store_blob",
-     "tx": "35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
+     "tx": "E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
      "signer": "council-a.keyhole.testnet",
-     "height": 276975995
+     "height": 276976473
     },
     "pending_size": 113387,
     "verified": {
@@ -465,7 +495,8 @@
      "verdict": "STOP",
      "flags": [
       "UNVERIFIED_PENDING_CODE",
-      "NEW_MONEY_PATH"
+      "NEW_MONEY_PATH",
+      "AI_REVIEW_HIGH"
      ],
      "reasons": [
       {
@@ -479,6 +510,10 @@
       {
        "severity": "info",
        "text": "Export diff vs live: +1 method (sweep)."
+      },
+      {
+       "severity": "stop",
+       "text": "AI review of the pending code reports high risk: New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable."
       }
      ],
      "diff": {
@@ -500,128 +535,186 @@
       ]
      },
      "fire": true,
-     "headline": "STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds."
+     "headline": "STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds."
     },
-    "review": null,
-    "at": "2026-11-09T21:34:03.564Z"
+    "review": {
+     "risk": "high",
+     "summary": "New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable.",
+     "receipt_id": "chatcmpl-72089f1d-be15-43e5-b225-a3f26040d1ee"
+    },
+    "at": "2026-11-09T21:38:44.856Z"
    },
    "fired": [],
-   "at": "2026-11-09T21:34:23.007Z"
+   "at": "2026-11-09T21:39:05.034Z"
   }
  ],
+ "review": {
+  "risk": "high",
+  "summary": "New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable.",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+  "receipt": {
+   "model": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+   "nonce": "6d02a1bff3c17b5db7b3dc16481d0b5024f82164618f3f7f2e5b42917f7fed6a",
+   "attestation": {
+    "model_signing_addresses": [
+     "0xfe0071895500a9755c18044948ab4f4e1a7f337e"
+    ],
+    "gateway_signing_address": "0xb98a789cdc4817275f5155593ba73ef2a957e779",
+    "nonce_echoed": true,
+    "has_intel_quote": true,
+    "has_nvidia_payload": true
+   },
+   "chat_id": "chatcmpl-72089f1d-be15-43e5-b225-a3f26040d1ee",
+   "request_hash": "50979db86ff6011832053ee6f9ddb7ccc7e8ee177b946d4686d781063f08cf08",
+   "response_hash": "eaa06606016ad7c6984986d1e3e057aef9cf8a272e1cd77f2f2bdd4b9579cf79",
+   "signature": {
+    "text": "deepseek-ai/DeepSeek-V4.1-Flash-1017:50979db86ff6011832053ee6f9ddb7ccc7e8ee177b946d4686d781063f08cf08:eaa06606016ad7c6984986d1e3e057aef9cf8a272e1cd77f2f2bdd4b9579cf79",
+    "signature": "0x26fb77598f60e02c0f7fdbc8b3a8de903f8c145f1e74b9884b5214a591f381303a3b60d8147cda4d9dd7da43bfa195ca556f9d94e23ce1fc78fadec20e1d86bc1c",
+    "signing_address": "0xfe0071895500a9755c18044948ab4f4e1a7f337e",
+    "signing_algo": "ecdsa",
+    "signature_kind": "provider_tee"
+   },
+   "recovered_signer": "0xfe0071895500a9755c18044948ab4f4e1a7f337e",
+   "verified": true,
+   "signed_by": "provider_tee",
+   "checks": [
+    "signed text = model:sha256(request):sha256(response)",
+    "signer matches exactly one attested model TEE",
+    "attestation nonce echoed (fresh report)"
+   ],
+   "usage": {
+    "prompt_tokens": 311,
+    "total_tokens": 360,
+    "completion_tokens": 49,
+    "prompt_tokens_details": {
+     "cached_tokens": 0,
+     "created_cache_tokens": 256
+    },
+    "completion_tokens_details": {
+     "reasoning_tokens": 0
+    }
+   },
+   "at": "2026-11-09T21:38:44.855Z"
+  },
+  "registry_id": 16
+ },
  "steps": [
   {
-   "t": 8,
+   "t": 7,
    "step": 0,
    "title": "setup: a fresh vault owned by the DAO",
    "lines": [
-    "+ 12.5s  gv-mw9s2vws.keyhole.testnet: guarded vault (withdraw_all needs exactly 1 yoctoNEAR, like Ref and Burrow), owner kh-guardian.sputnikv2.testnet, no access keys left"
+    "+ 18.2s  gv-mw9s8ox4.keyhole.testnet: guarded vault (withdraw_all needs exactly 1 yoctoNEAR, like Ref and Burrow), owner kh-guardian.sputnikv2.testnet, no access keys left"
    ]
   },
   {
-   "t": 12470,
+   "t": 18176,
    "step": 1,
    "title": "Alice deposits 1 NEAR, Bob deposits 0.5 NEAR",
    "lines": [
-    "+ 17.6s  vault total 1.5000 NEAR (alice 1.0000, bob 0.5000)"
+    "+ 26.6s  vault total 1.5000 NEAR (alice 1.0000, bob 0.5000)"
    ]
   },
   {
-   "t": 17600,
+   "t": 26611,
    "step": 2,
-   "title": "Keyhole inspects gv-mw9s2vws.keyhole.testnet",
+   "title": "Keyhole inspects gv-mw9s8ox4.keyhole.testnet",
    "lines": [
-    "+ 20.6s  CAUTION · GOVERNED · UNVERIFIED_CODE NO_BUILD_INFO — Code can be replaced only with multiple approvals (2 of 2). Current code is not source-verified.",
-    "+ 20.6s     [!!] The code running now is not source-verified (no SourceScan entry or matching reproducible build for this hash).",
-    "+ 20.6s     [--] The contract can deploy contract through method `upgrade`, gated by its owner (inferred): kh-guardian.sputnikv2.testnet via get_owner() — Sputnik DAO kh-guardian.sputnikv2.testnet: 2 of 2 \"council\" members can pass a \"call\" proposal.",
-    "+ 20.6s     [--] NEP-330 metadata has no build_info, so the build cannot be reproduced from it."
+    "+ 29.5s  CAUTION · GOVERNED · UNVERIFIED_CODE NO_BUILD_INFO — Code can be replaced only with multiple approvals (2 of 2). Current code is not source-verified.",
+    "+ 29.5s     [!!] The code running now is not source-verified (no SourceScan entry or matching reproducible build for this hash).",
+    "+ 29.5s     [--] The contract can deploy contract through method `upgrade`, gated by its owner (inferred): kh-guardian.sputnikv2.testnet via get_owner() — Sputnik DAO kh-guardian.sputnikv2.testnet: 2 of 2 \"council\" members can pass a \"call\" proposal.",
+    "+ 29.5s     [--] NEP-330 metadata has no build_info, so the build cannot be reproduced from it."
    ]
   },
   {
-   "t": 20597,
+   "t": 29454,
    "step": 3,
    "title": "Alice arms an escape hatch (pre-signed withdraw_all, 1 yoctoNEAR, relayed by the guardian)",
    "lines": [
-    "+ 24.4s  hatch 05007c4fc337f4a1: alice.keyhole.testnet → gv-mw9s2vws.keyhole.testnet.withdraw_all({}) deposit 1 yocto, valid to block 277580783",
-    "+ 24.4s  signature check: valid (ed25519 signature over sha256(NEP-461 prefix + delegate) is valid; sender, receiver, method, args, deposit, gas, nonce, expiry and key match the record)",
-    "+ 24.4s  dedicated full-access key ed25519:H9ciDz75ArpyoPBjj4zbykGYsve2ENrxhxWUZQtvNm7s added; its secret was used once to sign and never written to disk",
-    "+ 24.7s  health: ARMED (604800 blocks left)"
+    "+ 33.3s  hatch 474ac154d50db38a: alice.keyhole.testnet → gv-mw9s8ox4.keyhole.testnet.withdraw_all({}) deposit 1 yocto, valid to block 277581259",
+    "+ 33.3s  signature check: valid (ed25519 signature over sha256(NEP-461 prefix + delegate) is valid; sender, receiver, method, args, deposit, gas, nonce, expiry and key match the record)",
+    "+ 33.3s  dedicated full-access key ed25519:qknUneCNzDGocmGbx2huFJYBUfqfwZXrh8RaKViYWfP added; its secret was used once to sign and never written to disk",
+    "+ 33.7s  health: ARMED (604801 blocks left)"
    ]
   },
   {
-   "t": 24747,
+   "t": 33657,
    "step": 4,
    "title": "guardian starts watching the vault",
    "lines": [
-    "+ 27.9s  controller resolved by inspect: kh-guardian.sputnikv2.testnet",
-    "+ 28.4s  baseline taken; waiting for changes"
+    "+ 36.9s  controller resolved by inspect: kh-guardian.sputnikv2.testnet",
+    "+ 37.6s  baseline taken; waiting for changes"
    ]
   },
   {
-   "t": 28431,
+   "t": 37589,
    "step": 5,
-   "title": "council-a.keyhole.testnet stores a new wasm and proposes UpgradeRemote(gv-mw9s2vws.keyhole.testnet.upgrade)",
+   "title": "council-a.keyhole.testnet stores a new wasm and proposes UpgradeRemote(gv-mw9s8ox4.keyhole.testnet.upgrade)",
    "lines": [
-    "+ 33.0s  store_blob: 113387 bytes, https://testnet.nearblocks.io/txns/35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
-    "+ 36.9s  proposal #1 \"Vault v1.1: gas optimisations\": https://testnet.nearblocks.io/txns/DHU99LjGgUEpYP2h7359xN68DSqDEjciJPRrXEJb9wCx"
+    "+ 42.7s  store_blob: 113387 bytes, https://testnet.nearblocks.io/txns/E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
+    "+ 46.8s  proposal #2 \"Vault v1.1: gas optimisations\": https://testnet.nearblocks.io/txns/ACiTpr8Js5GktTckgp2sETA8vUquQWRZnP6teyfzYjkV"
    ]
   },
   {
-   "t": 36911,
+   "t": 46761,
    "step": 6,
    "title": "guardian: fetch the exact bytes being voted on, diff, grade, act",
    "lines": [
-    "+ 47.3s  ALERT proposal #1 on gv-mw9s2vws.keyhole.testnet · 2 more approval(s) execute it · STOP: STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds.",
-    "+ 47.3s     diff: new methods: sweep",
-    "+ 47.3s     diff: transfer now reachable from: sweep",
-    "+ 47.3s     bytes: 113387 from store_blob 35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
-    "+ 47.3s     FIRED hatch 05007c4fc337f4a1 for alice.keyhole.testnet: https://testnet.nearblocks.io/txns/7wcimw12a3Ea3dHUd7b7YVy493Duwe1uPChKuUDas7ko",
-    "+ 47.4s  independent check from repo builds: + sweep",
-    "+ 47.7s  hatch health now: USED",
-    "+ 48.0s  alice in vault: 0.0000 NEAR · bob in vault: 0.5000 NEAR"
+    "+ 58.7s  ALERT proposal #2 on gv-mw9s8ox4.keyhole.testnet · 2 more approval(s) execute it · STOP: STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds.",
+    "+ 58.7s     diff: new methods: sweep",
+    "+ 58.7s     diff: transfer now reachable from: sweep",
+    "+ 58.7s     TEE review: high — New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable.",
+    "+ 58.7s     bytes: 113387 from store_blob E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
+    "+ 58.7s     FIRED hatch 474ac154d50db38a for alice.keyhole.testnet: https://testnet.nearblocks.io/txns/rRASc9f6YheRZiEZiW22XS1HBHXxBTnuq1aAZEmZp36",
+    "+ 58.7s  private review (deepseek-ai/DeepSeek-V4.1-Flash-1017, NEAR AI Cloud TEE): high — New 'sweep' method can transfer the contract's balance, and a new hard-coded account 'keyhole-attacker.testnet' appears. Depositors' funds may be drainable.",
+    "+ 58.7s  receipt: signed by provider_tee 0xfe0071895500a9755c18044948ab4f4e1a7f337e, re-verified offline: true",
+    "+ 60.5s  registry registry.keyhole.testnet AiReview #16 for the pending hash (posted before the deciding vote): https://testnet.nearblocks.io/txns/BGAkMDLPWfyDfT5b2nNuMuotfELgtt2zb5bb7NBq4Hjy",
+    "+ 60.5s  independent check from repo builds: + sweep",
+    "+ 60.9s  hatch health now: USED",
+    "+ 61.2s  alice in vault: 0.0000 NEAR · bob in vault: 0.5000 NEAR"
    ]
   },
   {
-   "t": 48014,
+   "t": 61201,
    "step": 7,
    "title": "the council votes; the second approval executes the upgrade in the same call",
    "lines": [
-    "+ 52.9s  vote 1/2 by council-a.keyhole.testnet: https://testnet.nearblocks.io/txns/Gq1nzvUzzPTphcGz9ncokqcQbHVRq1TtU2T8Z4eay5qp",
-    "+ 53.7s  ALERT proposal #1 on gv-mw9s2vws.keyhole.testnet · 1 more approval(s) execute it · STOP: STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds.",
-    "+ 53.7s     diff: new methods: sweep",
-    "+ 53.7s     diff: transfer now reachable from: sweep",
-    "+ 53.7s     bytes: 113387 from store_blob 35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
-    "+ 58.8s  vote 2/2 by council-b.keyhole.testnet: https://testnet.nearblocks.io/txns/598gqNkWm41mdknTHTLxug7ePeYVNEYRSAbPjfTduqaT",
-    "+ 59.2s  vault code is now GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm (version 1.1.0)",
-    "+ 60.3s  ALERT proposal #1 on gv-mw9s2vws.keyhole.testnet · 0 more approval(s) execute it · STOP: STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds.",
-    "+ 60.3s     diff: new methods: sweep",
-    "+ 60.3s     diff: transfer now reachable from: sweep",
-    "+ 60.3s     bytes: 113387 from store_blob 35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz",
-    "+ 60.3s  ALERT deployed on gv-mw9s2vws.keyhole.testnet · STOP: STOP: unverified code for gv-mw9s2vws.keyhole.testnet adds a new path to move funds.",
-    "+ 60.3s     diff: new methods: sweep",
-    "+ 60.3s     diff: transfer now reachable from: sweep",
-    "+ 60.3s     bytes: 113387 from store_blob 35RZ8M3zMT8LtA2Yzk6DVaAyEmXMPiiLQUHTGfhjqPhz"
+    "+ 65.2s  vote 1/2 by council-a.keyhole.testnet: https://testnet.nearblocks.io/txns/5xB8pCmh5Bgdy66nUuFPqVBVHzBnQ12ZVSRTmtGbU1g3",
+    "+ 65.8s  ALERT proposal #2 on gv-mw9s8ox4.keyhole.testnet · 1 more approval(s) execute it · STOP: STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds.",
+    "+ 65.8s     diff: new methods: sweep",
+    "+ 65.8s     diff: transfer now reachable from: sweep",
+    "+ 65.8s     bytes: 113387 from store_blob E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
+    "+ 71.2s  vote 2/2 by council-b.keyhole.testnet: https://testnet.nearblocks.io/txns/H1NhMFzFxCrB5Wte5dVUEmY22Cao98WZw4h3VZnvpaNb",
+    "+ 71.7s  vault code is now GHmAPqMjCHbj9PQcmp9Wjjh4WMRcBxq5vF9pFaYbFWsm (version 1.1.0)",
+    "+ 72.4s  ALERT proposal #2 on gv-mw9s8ox4.keyhole.testnet · 0 more approval(s) execute it · STOP: STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds.",
+    "+ 72.4s     diff: new methods: sweep",
+    "+ 72.4s     diff: transfer now reachable from: sweep",
+    "+ 72.4s     bytes: 113387 from store_blob E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ",
+    "+ 72.4s  ALERT deployed on gv-mw9s8ox4.keyhole.testnet · STOP: STOP: unverified code for gv-mw9s8ox4.keyhole.testnet adds a new path to move funds.",
+    "+ 72.4s     diff: new methods: sweep",
+    "+ 72.4s     diff: transfer now reachable from: sweep",
+    "+ 72.4s     bytes: 113387 from store_blob E7eefiBGPxxn22onTwpaENpVZgWwbV7ChCUoMT9yKdWJ"
    ]
   },
   {
-   "t": 60251,
+   "t": 72442,
    "step": 8,
    "title": "anyone calls sweep()",
    "lines": [
-    "+ 65.4s  sweep: https://testnet.nearblocks.io/txns/38eQd9gXpvSNDLjHV4m5N1JJyLNjtEDChTJDahRdka87"
+    "+ 77.4s  sweep: https://testnet.nearblocks.io/txns/5J62Gifwwd85MGxHCnvF3hACse2qW3twSrwsBTTenuG"
    ]
   },
   {
-   "t": 65710,
+   "t": 77760,
    "step": 9,
    "title": "outcome",
    "lines": [
-    "+ 65.7s  alice: hatch fired at block 276976018, upgrade executed at block 276976038 → out before it landed",
-    "+ 65.7s  bob: no hatch; the sweep took the vault's remaining total",
-    "+ 65.7s  proposal → STOP+fire: 10.271s (wall clock in this run)",
-    "+ 66.0s  hatch health: USED",
-    "+ 67.6s  alice deleted the used hatch key",
-    "+ 70.8s  proposer removed the blob (storage deposit refunded)"
+    "+ 77.8s  alice: hatch fired at block 276976501, upgrade executed at block 276976524 → out before it landed",
+    "+ 77.8s  bob: no hatch; the sweep took the vault's remaining total",
+    "+ 77.8s  proposal → STOP+fire: 11.797s (wall clock in this run)",
+    "+ 78.1s  hatch health: USED",
+    "+ 79.4s  alice deleted the used hatch key",
+    "+ 83.0s  proposer removed the blob (storage deposit refunded)"
    ]
   }
  ],
