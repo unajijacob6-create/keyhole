@@ -5,3 +5,5 @@
 [watch] mainnet at block 223,808,250 (head 223,809,249, lag 999); scanned 957, skipped 0 blocks; 2 event(s); neardata 1182 req, 212 rate-limited
 [watch] mainnet at block 223,808,735 (head 223,809,249, lag 514); scanned 1442, skipped 0 blocks; 2 event(s); neardata 1769 req, 314 rate-limited
 [watch] block 223,809,121  v1.signer  DeployContract (contract-receipt)  new code CpGX8y…
+[watch] mainnet at block 223,809,222 (head 223,809,249, lag 27); scanned 1929, skipped 0 blocks; 3 event(s); neardata 2367 req, 425 rate-limited
+[watch] block 223,809,333  mlc-2.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
