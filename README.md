@@ -119,6 +119,25 @@ deposit NOT sent: GuardRefusal thrown before signing; no transaction was created
 **7. Website.** Watch the recorded Guardian run, browse the mainnet upgrade radar, or paste any account. Or paste a transaction under **Before you sign**: it decodes
 `ft_transfer_call` messages and meta-transactions, then grades every contract the transaction will run.
 
+## For agents
+
+- **`@keyhole/guard`** ([packages/guard/README.md](packages/guard/README.md)). `guardCall()` grades
+  the target before the agent's call and refuses STOP in code: it throws `GuardRefusal` and never
+  calls `execute`. The verdict is the worst of the live code's grade and the grade of every upgrade
+  that can still execute (`policy.checkPending`, default on): Sputnik proposals of the DAO that
+  controls the target, and near-plugins staged code, each graded from the exact bytes. A live
+  pending upgrade graded STOP refuses the call. Bytes that cannot be read, an RPC error or an
+  unfinished proposal list give CAUTION, never OK; CAUTION asks a human (`policy.ask`) or is denied
+  by default.
+- **Auto-hatch, testnet only.** Pass `hatch` to `guardCall` and, after a successful call, the guard
+  arms a delegate hatch for the same venue ([HATCH.md](docs/HATCH.md)). It refuses before deciding
+  or executing when the network or the venue is not testnet.
+- **`@keyhole/mcp`** ([packages/mcp/README.md](packages/mcp/README.md)), `npm run mcp`. A stdio MCP
+  server with four read-only tools: `keyhole_inspect`, `keyhole_pending`, `keyhole_check_call` (what
+  `guardCall` would decide, without executing) and `keyhole_verify_hatch` (offline). No tool takes a
+  key, signs or sends a transaction. The chain can change between a check and a transaction, so send
+  the call itself through `guardCall`.
+
 ## How it works
 
 ```
@@ -178,7 +197,7 @@ Grading rules: [docs/GRADING.md](docs/GRADING.md). Design: [docs/DESIGN.md](docs
 | **near-plugins ACL** | `acl_get_super_admins` and deployer roles. The roles are read from verified source when available. |
 | **Named accounts + receipts** | The watcher follows executed receipts, so self-upgrades through an `upgrade` method and meta-transactions (`Delegate`) are caught, not only direct transactions. |
 | **NEAR AI Cloud TEE** | A private review whose receipt (TEE attestation + signature over request/response hashes) anyone can re-verify. Only hashes go on-chain. |
-| **Sputnik `store_blob` + `UpgradeRemote`/`UpgradeSelf`** | An upgrade proposal names the code hash, and the code itself is the argument of a `store_blob` transaction to the DAO, which must be on chain before the proposal executes. When the FastNEAR tx index has that transaction, Keyhole reads those bytes before the deciding vote and checks `sha256 == hash`. In the upgrade eval it found a DAO `store_blob` for 16 of 130 real proposals (Ref and SWEAT); `FunctionCall` upgrades of near-plugins contracts use code staged on the target instead, and a release registration (`add_release_info`) carries only a hash. |
+| **Sputnik `store_blob` + `UpgradeRemote`/`UpgradeSelf`** | An upgrade proposal names the code hash, and the code itself is the argument of a `store_blob` transaction to the DAO, which must be on chain before the proposal executes. When the FastNEAR tx index has that transaction, Keyhole can read those bytes before the proposal executes and checks `sha256 == hash`. In the upgrade eval it found a DAO `store_blob` for 16 of 130 real proposals (Ref and SWEAT); `FunctionCall` upgrades of near-plugins contracts use code staged on the target instead, and a release registration (`add_release_info`) carries only a hash. |
 | **Sputnik execution on the threshold vote** | `act_proposal` executes in the call that reaches the threshold; `proposal_period` is an expiry. That is why the window is "until the deciding vote", and why it can be minutes. |
 | **near-plugins `Upgradable`** | `up_staged_code_hash` / `up_staged_code` expose staged code before `up_deploy_code`; `up_get_delay_status` shows whether any staging delay is enforced. |
 | **NEP-366 meta-transactions (`SignedDelegateAction`)** | The escape hatch: a depositor signs one withdraw-to-self now; anyone can relay it later, and the signature covers every field. Signed by a dedicated full-access key because a function-call key cannot attach the 1 yoctoNEAR most withdraws demand. |
@@ -281,7 +300,8 @@ Full text: [docs/SECURITY.md](docs/SECURITY.md).
 packages/core   inspect(), wasm analysis, controller resolution, grade(), decodeTransactions(), CLI
 packages/core   + pending.ts (upgrade proposals, staged code, store_blob bytes), upgrade.ts (gradeUpgrade), wasmview.ts
 packages/hatch  escape hatches: NEP-366 delegate (dedicated key) and function-call-key modes; verify, health, fire, deposit probe
-packages/guard  guardCall(): agents refuse STOP in code; CAUTION asks a human or fails closed
+packages/guard  guardCall(): agents refuse STOP in code (live code and pending upgrades); CAUTION asks a human or fails closed; testnet auto-hatch
+packages/mcp    read-only MCP server: keyhole_inspect, keyhole_pending, keyhole_check_call, keyhole_verify_hatch
 guardian/       radar (proposals, staged code, live hash) → assess (bytes, diff, verification, TEE review) → fire
 contracts/      registry (Rust, near-sdk 5), demo vaults v1/v2, guarded vault (+ seeded upgrades), reproducible builds
 watcher/        neardata follower (tx + Delegate + receipts) → registry + public feed branch
@@ -301,6 +321,7 @@ scripts/        factcheck, survey, demo:attack, demo:guardian, setup:guardian, h
 | `npm run guardian -- run --network mainnet --watch <contracts>` | watch contracts' DAOs and staged code; alert-only without `--relayer` |
 | `npm run eval:upgrades` | real mainnet upgrade proposals: windows, bytes, grades ([docs/EVAL_UPGRADES.md](docs/EVAL_UPGRADES.md)) |
 | `npm run radar` | refresh the website's upgrade-radar snapshot |
+| `npm run mcp` | start the read-only MCP server on stdio ([packages/mcp/README.md](packages/mcp/README.md)) |
 | `npm run watch -- --network mainnet --all` | follow the chain locally |
 | `bash contracts/test.sh` | build the contracts, then run unit and sandbox tests |
 | `npm run test:web` | build the site and run the Playwright smoke test |

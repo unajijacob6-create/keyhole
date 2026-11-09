@@ -26,7 +26,7 @@ const md = [
   "",
   `Run with \`npm run eval:review\` at ${at.slice(0, 16).replace("T", " ")} UTC, model \`${rows[0]?.model}\` in a NEAR AI Cloud TEE. Each case edits the honest demo vault (comments and tests stripped) and asks for a review of the diff. A malicious case counts as caught when the review reports medium or high risk *and* a finding in the expected category. A benign case is a false alarm if it is flagged medium or high.`,
   "",
-  `**Caught ${caught} of ${mal.length} seeded malicious diffs; ${fp} false alarm(s) on ${ben.length} benign diffs.** Every call's receipt verified: ${rows.every((r) => r.receipt_verified) ? "yes" : "no"}. This is evidence about one model on seven small diffs, not proof of review quality; the AI never sets the grade.`,
+  `**Caught ${caught} of ${mal.length} seeded malicious diffs; ${fp} false alarm(s) on ${ben.length} benign diffs.** Every call's receipt verified: ${rows.every((r) => r.receipt_verified) ? "yes" : "no"}. This is evidence about one model on seven small diffs, not proof of review quality; an AI review changes a grade only by the fixed rules in [GRADING.md](GRADING.md).`,
   "",
   "| case | seeded change | expected | model risk | findings | result |",
   "|---|---|---|---|---|---|",

@@ -12,12 +12,12 @@ Sputnik executes a proposal in the same call as the vote that reaches the thresh
 
 | DAO | proposal | target | window | bytes from | verdict | flags |
 |---|---|---|---|---|---|---|
-| ref-finance | #1022 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 4.4 h | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| ref-finance | #1018 UpgradeRemote `upgrade` | v2.ref-finance.near | 2.4 min | store_blob tx (public before the vote) | STOP | UNVERIFIED_PENDING_CODE NEW_MONEY_PATH |
-| ref-finance | #1016 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 3.6 min | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| ref-finance | #969 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 3.5 h | store_blob tx (public before the vote) | STOP | UNVERIFIED_PENDING_CODE EXIT_METHOD_REMOVED |
-| ref-finance | #923 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 7.7 min | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| ref-finance | #920 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 28.8 min | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
+| ref-finance | #1022 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 4.4 h | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| ref-finance | #1018 UpgradeRemote `upgrade` | v2.ref-finance.near | 2.4 min | store_blob tx | STOP | UNVERIFIED_PENDING_CODE NEW_MONEY_PATH |
+| ref-finance | #1016 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 3.6 min | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| ref-finance | #969 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 3.5 h | store_blob tx | STOP | UNVERIFIED_PENDING_CODE EXIT_METHOD_REMOVED |
+| ref-finance | #923 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 7.7 min | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| ref-finance | #920 UpgradeRemote `upgrade` | dclv2.ref-labs.near | 28.8 min | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
 | ref-finance | #874 FunctionCall `up_deploy_code` | xtoken.rhealab.near | 11.7 min | code at the change block | STOP | UNVERIFIED_PENDING_CODE NEW_CODE_CHANGE_PATH |
 | ref-finance | #841 UpgradeRemote `upgrade` | v2.ref-finance.near | 19.8 min | code at the change block | STOP | UNVERIFIED_PENDING_CODE NEW_MONEY_PATH |
 | ref-finance | #783 UpgradeRemote `upgrade` | v2.ref-finance.near | 17.1 min | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
@@ -116,16 +116,16 @@ Sputnik executes a proposal in the same call as the vote that reaches the thresh
 | rainbowbridge | #248 FunctionCall `up_deploy_code` | zcash-connector.bridge.near | 62.4 h | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
 | rainbowbridge | #247 FunctionCall `up_deploy_code` | btc-connector.bridge.near | 59.4 min | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
 | rainbowbridge | #246 FunctionCall `up_deploy_code` | omni.bridge.near | 71.6 min | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
-| sweat-multisig | #45 FunctionCall `up_deploy_code` | v2.jars.sweat | 39.6 min | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| sweat-multisig | #44 UpgradeRemote `up_stage_code` | v2.jars.sweat | 40.9 min | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| sweat-multisig | #43 FunctionCall `up_deploy_code` | v2.jars.sweat | - | store_blob tx (public before the vote) | - |  |
-| sweat-multisig | #42 UpgradeRemote `up_stage_code` | 2.jars.sweat | - | store_blob tx (public before the vote) | - | the first code change after submission was to null, not the proposal hash (another upgrade landed first, or this one was never applied) |
-| sweat-multisig | #40 FunctionCall `up_deploy_code` | token.sweat | 6.2 h | store_blob tx (public before the vote) | OK |  |
-| sweat-multisig | #39 UpgradeRemote `up_stage_code` | token.sweat | 6.2 h | store_blob tx (public before the vote) | OK |  |
-| sweat-multisig | #38 FunctionCall `up_deploy_code` | v2.jars.sweat | 105.9 min | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| sweat-multisig | #37 UpgradeRemote `up_stage_code` | v2.jars.sweat | 109.3 min | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| sweat-multisig | #36 FunctionCall `up_deploy_code` | v2.jars.sweat | 88.3 h | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
-| sweat-multisig | #35 UpgradeRemote `up_stage_code` | v2.jars.sweat | 88.3 h | store_blob tx (public before the vote) | CAUTION | UNVERIFIED_PENDING_CODE |
+| sweat-multisig | #45 FunctionCall `up_deploy_code` | v2.jars.sweat | 39.6 min | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| sweat-multisig | #44 UpgradeRemote `up_stage_code` | v2.jars.sweat | 40.9 min | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| sweat-multisig | #43 FunctionCall `up_deploy_code` | v2.jars.sweat | - | store_blob tx | - |  |
+| sweat-multisig | #42 UpgradeRemote `up_stage_code` | 2.jars.sweat | - | store_blob tx | - | the first code change after submission was to null, not the proposal hash (another upgrade landed first, or this one was never applied) |
+| sweat-multisig | #40 FunctionCall `up_deploy_code` | token.sweat | 6.2 h | store_blob tx | OK |  |
+| sweat-multisig | #39 UpgradeRemote `up_stage_code` | token.sweat | 6.2 h | store_blob tx | OK |  |
+| sweat-multisig | #38 FunctionCall `up_deploy_code` | v2.jars.sweat | 105.9 min | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| sweat-multisig | #37 UpgradeRemote `up_stage_code` | v2.jars.sweat | 109.3 min | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| sweat-multisig | #36 FunctionCall `up_deploy_code` | v2.jars.sweat | 88.3 h | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
+| sweat-multisig | #35 UpgradeRemote `up_stage_code` | v2.jars.sweat | 88.3 h | store_blob tx | CAUTION | UNVERIFIED_PENDING_CODE |
 | sweat-multisig | #29 FunctionCall `up_deploy_code` | v2.jars.sweat | 67.5 h | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
 | sweat-multisig | #28 UpgradeRemote `up_stage_code` | v2.jars.sweat | 67.5 h | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
 | sweat-multisig | #27 FunctionCall `up_deploy_code` | v2.jars.sweat | 68.9 h | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
@@ -142,6 +142,8 @@ Sputnik executes a proposal in the same call as the vote that reaches the thresh
 | sweat-multisig | #9 FunctionCall `up_deploy_code` | token.sweat | 3.0 min | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
 | sweat-multisig | #8 FunctionCall `up_deploy_code` | token.sweat | - | - | - |  |
 | sweat-multisig | #7 UpgradeRemote `up_stage_code` | token.sweat | 36.6 min | code at the change block | CAUTION | UNVERIFIED_PENDING_CODE |
+
+"store_blob tx" means a DAO `store_blob` transaction whose bytes hash to the proposal hash was found in the FastNEAR tx index. For `UpgradeRemote` and `UpgradeSelf`, Sputnik reads the code from that stored blob when the proposal executes, so the `store_blob` always precedes execution: the bytes were public before the upgrade ran, though not necessarily before every vote. For other proposal kinds the eval does not compare the two blocks. "code at the change block" means the bytes were read from the target at the block where its code changed, i.e. after the fact.
 
 ## The grader on real upgrades (false alarms)
 

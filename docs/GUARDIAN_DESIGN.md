@@ -6,7 +6,8 @@ in parallel. Public-facing claims live in `docs/GUARDIAN.md` (written last) and 
 ## One line
 
 See the upgrade coming, get out before it lands. Keyhole reads the exact code a DAO is voting on,
-grades it before the deciding vote, and can fire a withdraw-to-self the user signed in advance.
+grades it (before the proposal executes, when the window allows), and can fire a withdraw-to-self
+the user signed in advance.
 
 ## Verified facts this design rests on (2026-11-09, re-check before publishing)
 
