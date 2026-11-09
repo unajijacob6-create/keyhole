@@ -49,6 +49,11 @@ const md = [
   "",
   "Ground-truth evidence for every row is in `eval/corpus.json`. Excluded from accuracy because the truth could not be established:",
   ...mainnet.unlabelled.map((u: any) => `- ${u.account}: ${u.why}`),
+  "",
+  "Limits of this eval:",
+  "- Labels describe the first level of control. A DAO's own code can itself be upgradable (Sputnik DAOs link `deploy_contract`, and testnet's `sputnik-v2.testnet` factory holds full-access keys); Keyhole resolves one level and says so.",
+  "- \"2 approvals\" counts accounts, not people: two council accounts may be run by one person.",
+  "- Two testnet fixtures depend on third-party state (a testnet DAO's policy, an unregistered account name); `scripts/eval-fixtures.ts` re-checks both on every run.",
 ];
 fs.writeFileSync("docs/EVAL.md", md.join("\n") + "\n");
 console.log(`\n${correct}/${rows.length} correct, ${dangerous} dangerous`);

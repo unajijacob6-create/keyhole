@@ -1,0 +1,22 @@
+# Eval fixture contracts (testnet only). A separate workspace so `contracts/test.sh` and the
+# main workspace's Cargo.lock are untouched. See contracts/README.md, "Eval fixtures".
+[workspace]
+resolver = "2"
+members = ["upgradable", "upgradable-hidden"]
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/unajijacob6-create/keyhole"
+
+[workspace.dependencies]
+near-sdk = "5.30"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+overflow-checks = true
+strip = true

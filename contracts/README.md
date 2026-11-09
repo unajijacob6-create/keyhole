@@ -146,3 +146,38 @@ It has exactly the v1 state layout, so a redeploy over v1 reads v1's state with 
 - `version() -> "2.0.0"`.
 
 `demo-vault-v2/tests/silent_upgrade.rs` plays the demo end to end in the sandbox. It deploys v1, takes deposits from two users and runs a v1 withdraw. It then redeploys v2 with the vault account's own full-access key, checks that the code hash changed and the state carried over, and has the owner sweep about 7 NEAR. Keyhole should catch this: a `ChangeObserved` attestation with v1's hash as `old_hash` and v2's as `new_hash`.
+
+## Eval fixtures (`fixtures/`): testnet only
+
+Two tiny contracts for the labelled testnet corpus that `scripts/eval-fixtures.ts` builds (`eval/testnet-fixtures.json`). They live in their own cargo workspace (`fixtures/Cargo.toml`, own `Cargo.lock`), so `test.sh` and the main workspace are unchanged.
+
+| Crate | Wasm (`fixtures/out/`) | What it is |
+|---|---|---|
+| `fixture-upgradable` | `fixture_upgradable.wasm` | State `owner_id`; `new(owner_id)`, view `get_owner()`, and `upgrade()`: owner only, deploys the call's raw input to the contract's own account with `env::promise_batch_create` + `env::promise_batch_action_deploy_contract` |
+| `fixture-upgradable-hidden` | `fixture_upgradable_hidden.wasm` | The same, minus `get_owner`: no view method reveals the owner |
+
+Once the account's own keys are deleted, `upgrade()` is the only way to change the code, so the expected class follows from who the owner is (one key, a DAO's threshold, a missing account, or hidden).
+
+```bash
+cd contracts/fixtures
+cargo test --workspace --lib
+for c in upgradable upgradable-hidden; do cargo near build non-reproducible-wasm --locked --manifest-path $c/Cargo.toml; done
+install -m 644 target/near/fixture_upgradable/fixture_upgradable.wasm target/near/fixture_upgradable_hidden/fixture_upgradable_hidden.wasm out/
+# then, from the repo root: NODE_USE_ENV_PROXY=1 npx tsx scripts/eval-fixtures.ts
+```
+
+The script builds these accounts under its own faucet master (labels are true by construction; each entry lists its transactions):
+
+| Account prefix | Built as | Expected |
+|---|---|---|
+| `fx-immutable` | `demo_vault_v1`, every key deleted | IMMUTABLE |
+| `fx-fak` | `demo_vault_v1`, keeps its full-access key | CUSTODIAL |
+| `fx-fconly` | `demo_vault_v1`, only a function-call key (`deposit`) | IMMUTABLE |
+| `fx-owner-key` | `fixture-upgradable`, owner a plain account with a full-access key, no own keys | CUSTODIAL |
+| `fx-owner-dao` | `fixture-upgradable`, owner a Sputnik DAO needing 2+ approvals for every proposal kind | GOVERNED |
+| `fx-owner-dao-weak` | `fixture-upgradable`, owner a Sputnik DAO where one member passes a `call` | CUSTODIAL |
+| `fx-hidden-owner` | `fixture-upgradable-hidden`, no own keys | UNRESOLVED |
+| `fx-nocode` | plain account | NO_CODE |
+| `fx-owner-gone` | `fixture-upgradable`, owner an unregistered top-level name | UNRESOLVED |
+
+The DAO owners are third-party testnet DAOs and the missing owner name can be registered by anyone, so the script re-checks those conditions on every run and warns when one no longer holds.

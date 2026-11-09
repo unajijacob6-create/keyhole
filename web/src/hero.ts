@@ -85,6 +85,9 @@ export function mountHero(pre: HTMLPreElement, caption: HTMLElement): Hero {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const small = matchMedia("(max-width: 480px)");
   let grid = buildGrid(small.matches ? 36 : 72);
+  // Reserve the art's height up front so font loading never shifts the layout (CLS).
+  const reserve = () => (pre.style.height = `${grid.rows * 1.05}em`);
+  reserve();
   let hash = "";
   let feed: string[] = [];
   let resolveAt: Float32Array | null = null;
@@ -123,6 +126,7 @@ export function mountHero(pre: HTMLPreElement, caption: HTMLElement): Hero {
   };
   small.addEventListener("change", () => {
     grid = buildGrid(small.matches ? 36 : 72);
+    reserve();
     draw(performance.now());
   });
   new IntersectionObserver((e) => {

@@ -1,0 +1,209 @@
+{
+ "master": "kh-fx-lcic22.testnet",
+ "funders": [],
+ "createdAt": "2026-11-09T18:18:35.081Z",
+ "helpers": [
+  {
+   "account": "fx-owner.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "NO_CODE",
+   "construction": "Helper: plain account with one full-access key, no code; owner of fx-owner-key and fx-hidden-owner.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/DfZmU4Mp5TK7LC6yvSnX29d2cRZ79oEhWzbTdWWp31aj"
+   ],
+   "details": {
+    "wasm": null,
+    "checked_at": "2026-11-09T18:20:11.155Z",
+    "code_hash": "11111111111111111111111111111111",
+    "full_access_keys": 1,
+    "function_call_keys": []
+   }
+  }
+ ],
+ "skipped": [],
+ "fixtures": [
+  {
+   "account": "fx-immutable.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "IMMUTABLE",
+   "construction": "demo_vault_v1 (imports no deploy/global/add-full-access-key host function) deployed and initialised, then every access key deleted in the same transaction.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/AZA4viEG1Aqn5upp4a2sVW4ByBULPazU8hPmyLAUaPSz",
+    "https://testnet.nearblocks.io/txns/4UkPXtfkirsmAoezwRRxb27VRYmP8R2EB39AnzKQtq6U"
+   ],
+   "details": {
+    "wasm": "contracts/repro/demo_vault_v1.wasm",
+    "checked_at": "2026-11-09T18:20:11.508Z",
+    "code_hash": "E1arxbbpY645mRqub4aNTGw6bGLzznfEcSsL84VKdaKi",
+    "full_access_keys": 0,
+    "function_call_keys": []
+   }
+  },
+  {
+   "account": "fx-fak.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "construction": "demo_vault_v1 deployed and initialised; the account keeps its full-access key, which alone can deploy new code.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/AzWT8oipJmkdMoQSL8FbrMLas91MgAKjdKh4uhRiCv78",
+    "https://testnet.nearblocks.io/txns/FX1eXFc6o7cAfEKDdjSUJxnddcsAEmQNR8stNLgaetC"
+   ],
+   "details": {
+    "wasm": "contracts/repro/demo_vault_v1.wasm",
+    "checked_at": "2026-11-09T18:20:11.872Z",
+    "code_hash": "E1arxbbpY645mRqub4aNTGw6bGLzznfEcSsL84VKdaKi",
+    "full_access_keys": 1,
+    "function_call_keys": []
+   }
+  },
+  {
+   "account": "fx-fconly.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "IMMUTABLE",
+   "construction": "demo_vault_v1 deployed and initialised, a function-call key (receiver itself, method deposit, private key discarded) added and the full-access key deleted; function-call keys cannot deploy.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/G2MN17NfpD2daq2h92DKWEv22U2PpM5iQAgZ87FpY5Ab",
+    "https://testnet.nearblocks.io/txns/AZ4EVc6jv6ZcPVEBffv71MN7E1fAUn4sNJD2rnYFxDnB"
+   ],
+   "details": {
+    "wasm": "contracts/repro/demo_vault_v1.wasm",
+    "checked_at": "2026-11-09T18:20:12.204Z",
+    "code_hash": "E1arxbbpY645mRqub4aNTGw6bGLzznfEcSsL84VKdaKi",
+    "full_access_keys": 0,
+    "function_call_keys": [
+     {
+      "receiver": "fx-fconly.kh-fx-lcic22.testnet",
+      "methods": [
+       "deposit"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "account": "fx-owner-key.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "construction": "fixture-upgradable with owner fx-owner.kh-fx-lcic22.testnet, a plain account holding one full-access key; the fixture's own keys deleted, so that one key can call upgrade().",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/7FMouDv9yBNA83Zg48fj861zmNraqvNZLemjwbn4vtpi",
+    "https://testnet.nearblocks.io/txns/3Rz6A5L9VacNcwCd5HrHXfnumRAPDYrCZR3S4FXnkxbt"
+   ],
+   "details": {
+    "wasm": "contracts/fixtures/out/fixture_upgradable.wasm",
+    "checked_at": "2026-11-09T18:20:12.856Z",
+    "code_hash": "8JzKciP5XWyWDE3hYsDEqipaJBJoCd4UjCEbhJnpVXrD",
+    "full_access_keys": 0,
+    "function_call_keys": [],
+    "get_owner": "fx-owner.kh-fx-lcic22.testnet"
+   }
+  },
+  {
+   "account": "fx-owner-dao.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "GOVERNED",
+   "construction": "fixture-upgradable with owner the Sputnik DAO kdd1794191632.sputnik-v2.testnet (every proposal kind needs 2+ approvals (weakest: 2 of 3 \"council\" for \"config\"), no access keys, no token or Everyone votes); the fixture's own keys deleted.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/FLY74jAtpzz3iQfW6xc3MdconAeQBHVJr5hfftyX2Fdu",
+    "https://testnet.nearblocks.io/txns/3iVrJUWskDCrTYxqQcqwWWEEW3aqhVV7Fm4iYt5mTnQ3"
+   ],
+   "details": {
+    "dao": "kdd1794191632.sputnik-v2.testnet",
+    "dao_approvals": 2,
+    "dao_role_size": 3,
+    "dao_role": "council",
+    "dao_kind": "config",
+    "dao_checked_kinds": "all",
+    "wasm": "contracts/fixtures/out/fixture_upgradable.wasm",
+    "checked_at": "2026-11-09T18:20:14.387Z",
+    "code_hash": "8JzKciP5XWyWDE3hYsDEqipaJBJoCd4UjCEbhJnpVXrD",
+    "full_access_keys": 0,
+    "function_call_keys": [],
+    "get_owner": "kdd1794191632.sputnik-v2.testnet"
+   }
+  },
+  {
+   "account": "fx-owner-dao-weak.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "construction": "fixture-upgradable with owner the Sputnik DAO agora-arbiter.sputnik-v2.testnet (1 of 1 \"council\" member (kyle-n8n.testnet, which holds a full-access key) passes a \"call\" proposal); the fixture's own keys deleted.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/95brGYLXRdkY2HvAfSGGwbcgft3UaA2fj4XnQfWCeHKv",
+    "https://testnet.nearblocks.io/txns/3yYFmLnh68Ygcu9o6ymb2uC3svYebXQLxYkuYWxuwRfW"
+   ],
+   "details": {
+    "dao": "agora-arbiter.sputnik-v2.testnet",
+    "dao_approvals": 1,
+    "dao_role_size": 1,
+    "dao_role": "council",
+    "dao_kind": "call",
+    "dao_checked_kinds": [
+     "call"
+    ],
+    "wasm": "contracts/fixtures/out/fixture_upgradable.wasm",
+    "checked_at": "2026-11-09T18:20:16.368Z",
+    "code_hash": "8JzKciP5XWyWDE3hYsDEqipaJBJoCd4UjCEbhJnpVXrD",
+    "full_access_keys": 0,
+    "function_call_keys": [],
+    "get_owner": "agora-arbiter.sputnik-v2.testnet"
+   }
+  },
+  {
+   "account": "fx-hidden-owner.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "construction": "fixture-upgradable-hidden (owner-gated upgrade(), no view returns the owner) with owner fx-owner.kh-fx-lcic22.testnet; own keys deleted. The real controller is one key, but no view method reveals it.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/BziiU4po9DA3wRCrJCREZ75amCYkkyPxVt1vaNM8yhn5",
+    "https://testnet.nearblocks.io/txns/FWx1d7LyezN9Ps5s7E3Y7oCPmmnZa7Nha4a1JZAYhxSF"
+   ],
+   "details": {
+    "owner_private": "fx-owner.kh-fx-lcic22.testnet",
+    "wasm": "contracts/fixtures/out/fixture_upgradable_hidden.wasm",
+    "checked_at": "2026-11-09T18:20:16.718Z",
+    "code_hash": "CTgm5UwL4T2X3vaL2uUeUzHTNYxUh935KsmsDzo5JiR8",
+    "full_access_keys": 0,
+    "function_call_keys": []
+   },
+   "truth_note": "True controller is fx-owner (one full-access key), but no view method reveals it; UNRESOLVED from Keyhole is a conservative miss."
+  },
+  {
+   "account": "fx-nocode.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "NO_CODE",
+   "construction": "Plain account with one full-access key and no contract code.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/FAgPLnJMa9HHFrUV7zdgpMaHeJR7JFyWLEPg3XCRF99v"
+   ],
+   "details": {
+    "wasm": null,
+    "checked_at": "2026-11-09T18:20:17.079Z",
+    "code_hash": "11111111111111111111111111111111",
+    "full_access_keys": 1,
+    "function_call_keys": []
+   }
+  },
+  {
+   "account": "fx-owner-gone.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "construction": "fixture-upgradable with owner fx-nobody-nnfonavi.testnet, a top-level name that did not exist when checked (anyone may register it later); own keys deleted.",
+   "evidence": [
+    "https://testnet.nearblocks.io/txns/4GwvMjoc7QvS7CdCU8VaDaNaqYrXZb1BTUjBSYRi846p",
+    "https://testnet.nearblocks.io/txns/84As5KqadSuvLscvA21xXUxGgXqhVfynEUibrFeDuVjC"
+   ],
+   "details": {
+    "owner_absent": "fx-nobody-nnfonavi.testnet",
+    "owner_absent_at_check": true,
+    "wasm": "contracts/fixtures/out/fixture_upgradable.wasm",
+    "checked_at": "2026-11-09T18:20:18.765Z",
+    "code_hash": "8JzKciP5XWyWDE3hYsDEqipaJBJoCd4UjCEbhJnpVXrD",
+    "full_access_keys": 0,
+    "function_call_keys": [],
+    "get_owner": "fx-nobody-nnfonavi.testnet"
+   },
+   "truth_note": "The owner name does not exist yet; whoever registers it controls upgrades with one key. UNRESOLVED from Keyhole is a conservative miss."
+  }
+ ],
+ "updatedAt": "2026-11-09T18:20:18.765Z"
+}

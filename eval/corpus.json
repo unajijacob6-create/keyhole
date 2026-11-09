@@ -1,0 +1,152 @@
+{
+ "generatedAt": "2026-11-09T18:24:41.475Z",
+ "entries": [
+  {
+   "account": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: view_access_key_list shows 1 full-access key on the contract account (any full-access key can DeployContract)",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "aurora",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: 1 full-access key on the account",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "social.near",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: 1 full-access key on the account",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "game.hot.tg",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: 66 full-access keys on the account",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "x.paras.near",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: 1 full-access key on the account",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "tkn.near",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: 1 full-access key on the account",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "sputnik-dao.near",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: 3 full-access keys on the factory account",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "token.sweat",
+   "network": "mainnet",
+   "expected_class": "GOVERNED",
+   "evidence": "source Sweat-Foundation/sweat-token@75dc5b48 (CI rebuild matches the deployed hash; SourceScan-verified): #[upgradable(code_deployers(Role::UpgradeManager))]; acl_get_grantees(UpgradeManager) and acl_get_super_admins = [sweat-multisig.sputnik-dao.near]; that DAO needs 3 of 5 for upgrade-relevant proposals; no full-access keys",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "omni.bridge.near",
+   "network": "mainnet",
+   "expected_class": "GOVERNED",
+   "evidence": "source Near-One/omni-bridge@83e3ac1e (SourceScan-verified at the deployed hash): code_deployers(Role::UpgradableCodeDeployer, Role::DAO); UpgradableCodeDeployer has no grantees; DAO = [omni.bridge.near, rainbowbridge.sputnik-dao.near]; super admin rainbowbridge.sputnik-dao.near (3 of 5); no full-access keys",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "ref-finance.sputnik-dao.near",
+   "network": "mainnet",
+   "expected_class": "GOVERNED",
+   "evidence": "Sputnik DAO: replaces its own code only via an upgrade_self proposal; get_policy: single 'council' group of 5 with threshold [1,2] → 3 of 5 (sputnikdao2 policy.rs to_weight); no full-access keys",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "jau.sputnik-dao.near",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "Sputnik DAO (global contract by hash): get_policy role 'Admin' (2 members) has upgrade_self/policy permissions with absolute threshold \"1\" → one member alone can pass an upgrade_self proposal",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "v2-verifier.sourcescan.near",
+   "network": "mainnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "protocol fact: full-access key on the account (its wasm imports no deploy host function, so the key is the only path)",
+   "source": "mainnet, hand-labelled"
+  },
+  {
+   "account": "fx-immutable.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "IMMUTABLE",
+   "evidence": "demo_vault_v1 (imports no deploy/global/add-full-access-key host function) deployed and initialised, then every access key deleted in the same transaction.",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-fak.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "demo_vault_v1 deployed and initialised; the account keeps its full-access key, which alone can deploy new code.",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-fconly.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "IMMUTABLE",
+   "evidence": "demo_vault_v1 deployed and initialised, a function-call key (receiver itself, method deposit, private key discarded) added and the full-access key deleted; function-call keys cannot deploy.",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-owner-key.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "fixture-upgradable with owner fx-owner.kh-fx-lcic22.testnet, a plain account holding one full-access key; the fixture's own keys deleted, so that one key can call upgrade().",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-owner-dao.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "GOVERNED",
+   "evidence": "fixture-upgradable with owner the Sputnik DAO kdd1794191632.sputnik-v2.testnet (every proposal kind needs 2+ approvals (weakest: 2 of 3 \"council\" for \"config\"), no access keys, no token or Everyone votes); the fixture's own keys deleted.",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-owner-dao-weak.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "fixture-upgradable with owner the Sputnik DAO agora-arbiter.sputnik-v2.testnet (1 of 1 \"council\" member (kyle-n8n.testnet, which holds a full-access key) passes a \"call\" proposal); the fixture's own keys deleted.",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-hidden-owner.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "fixture-upgradable-hidden (owner-gated upgrade(), no view returns the owner) with owner fx-owner.kh-fx-lcic22.testnet; own keys deleted. The real controller is one key, but no view method reveals it.",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-nocode.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "NO_CODE",
+   "evidence": "Plain account with one full-access key and no contract code.",
+   "source": "testnet fixture, by construction"
+  },
+  {
+   "account": "fx-owner-gone.kh-fx-lcic22.testnet",
+   "network": "testnet",
+   "expected_class": "CUSTODIAL",
+   "evidence": "fixture-upgradable with owner fx-nobody-nnfonavi.testnet, a top-level name that did not exist when checked (anyone may register it later); own keys deleted.",
+   "source": "testnet fixture, by construction"
+  }
+ ]
+}

@@ -206,8 +206,16 @@ async function liveRecheck() {
   };
   await Promise.all([worker(), worker()]);
 }
-// Start live re-checks once the page is idle, so first paint and the hero stay fast.
-setTimeout(() => ("requestIdleCallback" in window ? (window as any).requestIdleCallback(() => liveRecheck(), { timeout: 5000 }) : liveRecheck()), 2500);
+// Start live re-checks only when the table scrolls into view, so first paint and the hero stay fast.
+{
+  let started = false;
+  new IntersectionObserver((e, o) => {
+    if (started || !e[0].isIntersecting) return;
+    started = true;
+    o.disconnect();
+    liveRecheck();
+  }, { rootMargin: "200px" }).observe(tableEl);
+}
 
 // ── how it works ──
 $("#how").innerHTML = `
