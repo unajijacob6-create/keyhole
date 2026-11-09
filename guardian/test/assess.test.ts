@@ -86,4 +86,23 @@ describe("assessPending: FunctionCall proposal carrying the wasm in its args (ha
     expect(a.grade.flags).not.toContain("PENDING_CODE_UNAVAILABLE");
     expect(a.grade.verdict).toBe("STOP");
   });
+
+  it("pending bytes that do not parse as wasm are a CAUTION with PENDING_CODE_INVALID_WASM, not a throw (L1)", async () => {
+    const c = new Chain();
+    c.setCode(VAULT, V1);
+    // The wasm header, then an export section cut short: analyzeWasm throws "unexpected end".
+    const junk = new Uint8Array([0x00, 0x61, 0x73, 0x6d, 1, 0, 0, 0, 7, 0x10, 3, 9, 9]);
+    c.daos[DAO] = { policy: policy(), proposals: [argsCodeProposal(0, VAULT, junk, "InProgress", 0)] };
+    const [p] = await listUpgradeProposals(c.rpc(), DAO, { nowMs: NOW });
+    expect(p.code_hash).toBe(await codeHash(junk));
+    const a = await assessPending({ rpc: c.rpc(), api: emptyTxApi }, { target: VAULT, hash: p.code_hash, dao: DAO, proposal: p });
+    expect(a.code_source).toEqual({ kind: "proposal_args", dao: DAO, id: 0 });
+    expect(a.pending_size).toBe(junk.length);
+    expect(a.grade.verdict).toBe("CAUTION");
+    expect(a.grade.fire).toBe(false);
+    expect(a.grade.flags).toEqual(["UNVERIFIED_PENDING_CODE", "PENDING_CODE_INVALID_WASM"]);
+    expect(a.grade.headline).toMatch(/not a valid wasm module/);
+    expect(a.grade.reasons.map((r) => r.text).join(" ")).toMatch(new RegExp(`\\(${junk.length} bytes\\) was read, but it is not a valid wasm module \\(unexpected end\\)`));
+    expect(a.grade.diff).toBeNull();
+  });
 });

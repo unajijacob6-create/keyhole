@@ -5,7 +5,7 @@ import { KeyPair } from "near-api-js";
 import { codeHash } from "../../packages/core/src/index.ts";
 import { prepareDelegateHatch, type Hatch } from "../../packages/hatch/src/index.ts";
 import { fireRefusal, Guardian, shouldFire, type HatchDriver } from "../src/guardian.ts";
-import type { Assessment } from "../src/assess.ts";
+import { assessPending, type Assessment } from "../src/assess.ts";
 import { Radar, type RadarEvent } from "../src/radar.ts";
 import { newAccountIds, printableStrings } from "../src/tee.ts";
 import { Chain, emptyTxApi, NOW, policy, upgradeRemote, V1, V2 } from "./chain.ts";
@@ -186,6 +186,20 @@ describe("Guardian", () => {
     expect(assessorCalls[1]).toMatchObject({ deployed: true, replaced: { hash: "OTHER", height: 950 } });
   });
 
+  it("a post-change NO_CHANGE never replaces a cached assessment made against other code (L2)", async () => {
+    const noChange = (): Assessment => {
+      const a = assessment("OK");
+      return { ...a, live_hash: "P", code_source: { kind: "deployed" }, grade: { ...a.grade, flags: ["NO_CHANGE"] } };
+    };
+    const { g, assessorCalls } = guardianWith([[proposalEv("executed", 2, 2, { prev: "P" })]], "OK", { assessor: async () => noChange() });
+    const before = assessment("CAUTION");
+    const kept: Assessment = { ...before, live_hash: "unknown", code_source: { kind: "deployed" }, grade: { ...before.grade, flags: ["UNVERIFIED_PENDING_CODE", "REPLACED_CODE_UNAVAILABLE"] } };
+    g.cache.set("vault.testnet:P", kept);
+    await g.tick();
+    expect(assessorCalls).toHaveLength(1);
+    expect(g.cache.get("vault.testnet:P")).toBe(kept);
+  });
+
   it("unreadable bytes: re-read with backoff, then keep the CAUTION; one alert, not one per tick (#4)", async () => {
     const clock = { t: NOW };
     const { g, assessorCalls, commits } = guardianWith([[proposalEv("pending")]], "STOP", { clock, codeSource: () => false });
@@ -215,7 +229,7 @@ describe("Guardian", () => {
   it("a throw while handling one event does not drop the others, and the failed one is reported again (#2)", async () => {
     const e1 = proposalEv("pending", 0, 2, { id: 1 });
     const e2 = proposalEv("pending", 0, 2, { id: 2 });
-    const { g, errors, commits } = guardianWith([[e1, e2]], "CAUTION", {
+    const { g, errors, commits, clock } = guardianWith([[e1, e2]], "CAUTION", {
       assessor: async (n) => {
         if (n === 1) throw new Error("txApi gave up");
         return assessment("CAUTION");
@@ -225,8 +239,41 @@ describe("Guardian", () => {
     expect(t1.map((a) => a.proposal_id)).toEqual([2]);
     expect(errors).toHaveLength(1);
     expect(commits).toEqual([e2]);
+    clock.t += 3_000; // the first retry is due after DEFAULT_FAILURE_RETRY.baseMs
     const t2 = await g.tick();
     expect(t2.map((a) => a.proposal_id)).toEqual([1]);
+  });
+
+  it("an event whose handling always throws is retried with backoff, then reported once as CAUTION / ASSESSMENT_FAILED and committed (L1)", async () => {
+    const batches: RadarEvent[][] = [[proposalEv("pending", 0, 2)]];
+    const { g, errors, commits, assessorCalls, clock } = guardianWith(batches, "STOP", {
+      assessor: async () => {
+        throw new Error("unexpected end");
+      },
+    });
+    const alerts = [];
+    for (let i = 0; i < 200; i++) {
+      alerts.push(...(await g.tick())); // every 3 s for 10 minutes
+      clock.t += 3_000;
+    }
+    // DEFAULT_FAILURE_RETRY: 3 s doubling to 60 s within 5 minutes: attempts at 0, 3, 9, 21, 45, 93,
+    // 153, 213, 273 s; the next one (333 s) is past the window, so the 9th failure gives up.
+    expect(assessorCalls).toHaveLength(9);
+    expect(errors).toHaveLength(9);
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].error).toBe("unexpected end");
+    expect(alerts[0].fired).toEqual([]); // a stop hatch does not fire on CAUTION
+    expect(alerts[0].assessment?.grade).toMatchObject({ verdict: "CAUTION", flags: ["ASSESSMENT_FAILED"], fire: false });
+    expect(alerts[0].assessment?.grade.headline).toMatch(/could not be assessed \(unexpected end\)/);
+    expect(alerts[0].assessment?.grade.reasons[0].text).toMatch(/9 attempts over 5 min/);
+    expect(commits).toHaveLength(1);
+    // A later vote on the same proposal: a new alert, but no new round of assessment.
+    batches.push([proposalEv("pending", 1, 2)]);
+    const later = await g.tick();
+    expect(later).toHaveLength(1);
+    expect(later[0]).toMatchObject({ votes_to_execute: 1, error: "unexpected end" });
+    expect(later[0].assessment?.grade.flags).toEqual(["ASSESSMENT_FAILED"]);
+    expect(assessorCalls).toHaveLength(9);
   });
 
   it("a Failed proposal that can still be re-executed is assessed and fires a stop hatch (#6)", async () => {
@@ -238,9 +285,11 @@ describe("Guardian", () => {
   });
 
   it("a failed relay is retried on later ticks while the trigger holds, bounded, never after the hatch is used (#7)", async () => {
-    const { g, fires } = guardianWith([[proposalEv("pending")]], "STOP", { fire: (n) => (n === 1 ? { tx: null, ok: false, error: "relayer RPC timeout" } : { tx: "FIRE_TX", ok: true }) });
+    const { g, fires, clock } = guardianWith([[proposalEv("pending")]], "STOP", { fire: (n) => (n === 1 ? { tx: null, ok: false, error: "relayer RPC timeout" } : { tx: "FIRE_TX", ok: true }) });
     const [a1] = await g.tick();
     expect(a1.fired[0]).toMatchObject({ ok: false, error: "relayer RPC timeout" });
+    expect(await g.tick()).toEqual([]); // backing off: the retry is due 3 s later
+    clock.t += 3_000;
     const t2 = await g.tick(); // no new radar event
     expect(t2).toHaveLength(1);
     expect(t2[0]).toMatchObject({ retry: 2, fired: [expect.objectContaining({ ok: true, tx: "FIRE_TX" })] });
@@ -249,12 +298,46 @@ describe("Guardian", () => {
     expect(g.fired.has(HATCH.id)).toBe(true);
   });
 
-  it("retries stop after the attempt budget, and stop when the trigger no longer holds (#7)", async () => {
-    const always = guardianWith([[proposalEv("pending")]], "STOP", { fire: () => ({ tx: null, ok: false, error: "x" }) });
-    for (let i = 0; i < 10; i++) await always.g.tick();
-    expect(always.fires).toHaveLength(5); // DEFAULT_FIRE_ATTEMPTS
+  it("a relay that keeps failing for 10 minutes (relayer out of gas) is still retried, with backoff, and fires once it works (L3)", async () => {
+    const clock = { t: NOW };
+    const t = guardianWith([[{ kind: "deployed", target: "vault.testnet", old_hash: "L", new_hash: "P", old_height: 1 }]], "STOP", {
+      clock,
+      fire: () => (clock.t < NOW + 10 * 60_000 ? { tx: null, ok: false, error: "relayer has not enough balance" } : { tx: "FIRE_TX", ok: true }),
+    });
+    for (let i = 0; i < 300; i++) {
+      await t.g.tick(); // every 3 s for 15 minutes; a deployed event is reported once
+      clock.t += 3_000;
+    }
+    expect(t.g.fired.has(HATCH.id)).toBe(true);
+    // Backoff 3 s doubling to 60 s: far fewer relays than ticks, none after it worked.
+    expect(t.fires.length).toBeGreaterThan(5);
+    expect(t.fires.length).toBeLessThan(20);
+  });
+
+  it("retries end after the fire-retry window (default 30 minutes), and stop when the trigger no longer holds (L3, #7)", async () => {
+    const clock = { t: NOW };
+    const at: number[] = [];
+    const always = guardianWith([[proposalEv("pending")]], "STOP", { clock, fire: () => (at.push(clock.t - NOW), { tx: null, ok: false, error: "x" }) });
+    for (let i = 0; i < 800; i++) {
+      await always.g.tick(); // every 3 s for 40 minutes
+      clock.t += 3_000;
+    }
+    // Attempts at 0, 3, 9, 21, 45, 93 s, then every 60 s up to 1773 s; 1833 s is past 30 minutes.
+    expect(at.slice(0, 7)).toEqual([0, 3_000, 9_000, 21_000, 45_000, 93_000, 153_000]);
+    expect(at).toHaveLength(34);
+    expect(at.at(-1)).toBe(1_773_000);
+    const short = guardianWith([[proposalEv("pending")]], "STOP", { clock: { t: NOW }, fire: () => ({ tx: null, ok: false, error: "x" }) });
+    (short.g.o as any).fireRetry = { baseMs: 1_000, maxMs: 1_000, windowMs: 2_500 };
+    for (let i = 0; i < 10; i++) {
+      await short.g.tick();
+      short.clock.t += 1_000;
+    }
+    expect(short.fires).toHaveLength(3); // 0, 1, 2 s
     const gone = guardianWith([[proposalEv("pending")]], "STOP", { fire: () => ({ tx: null, ok: false, error: "x" }), current: (ev) => (ev.kind === "proposal" ? { ...ev, proposal: { ...ev.proposal, state: "rejected", status: "Rejected" } } : ev) });
-    for (let i = 0; i < 4; i++) await gone.g.tick();
+    for (let i = 0; i < 4; i++) {
+      await gone.g.tick();
+      gone.clock.t += 60_000;
+    }
     expect(gone.fires).toHaveLength(1);
   });
 
@@ -263,6 +346,7 @@ describe("Guardian", () => {
     const t = guardianWith([[proposalEv("pending")]], "STOP", { fire: () => ((health = "USED"), { tx: "T", ok: false, error: "outcome failed" }) });
     (t.g.o.driver as any).health = async () => ({ state: health, reasons: [] });
     await t.g.tick();
+    t.clock.t += 3_000;
     const [a] = await t.g.tick();
     expect(a.fired[0].error).toMatch(/USED/);
     expect(t.fires).toHaveLength(1);
@@ -325,6 +409,93 @@ describe("Guardian on a mock chain, real radar and assessor", () => {
       expect(a.assessment?.live_hash).toBe(await codeHash(V1));
     }
     expect(fires).toEqual([HATCH.id]);
+  });
+
+  /** v1 live, a 1-of-1 DAO; `setup` runs a real radar and assessor over it. */
+  async function chainGuardian(o: { assessor?: typeof assessPending } = {}) {
+    const c = new Chain();
+    const VAULT = "vault.testnet";
+    const DAO = "dao.testnet";
+    c.setCode(VAULT, V1);
+    c.daos[DAO] = { policy: policy([1, 2]), proposals: [] };
+    const rpc = c.rpc();
+    const clock = { t: NOW };
+    const radar = new Radar(rpc, "testnet", undefined, { nowMs: () => clock.t, resolve: async (t) => ({ target: t, daos: [DAO], upgradable: false }) });
+    const fires: string[] = [];
+    const g = new Guardian({
+      rpc,
+      assess: { rpc, api: emptyTxApi },
+      radar,
+      hatches: () => [HATCH],
+      driver: { health: async () => ({ state: "ARMED", reasons: [] }), fire: async (h) => (fires.push(h.id), { tx: "T", ok: true }) },
+      now: () => new Date(clock.t),
+      assessor: o.assessor,
+    });
+    const h1 = await codeHash(V1);
+    const h2 = await codeHash(V2);
+    // The upgrade is proposed, approved and executed between two ticks.
+    const upgrade = () => {
+      c.advance(3);
+      c.daos[DAO].proposals.push(upgradeRemote(0, VAULT, h2, "Approved", 1));
+      c.setCode(VAULT, V2);
+    };
+    return { c, g, fires, clock, h1, h2, upgrade, DAO };
+  }
+
+  it("an executed proposal handled after its deployed event (DAO unreadable that pass) reuses the grade against the replaced code, not OK NO_CHANGE (L2a)", async () => {
+    const { c, g, fires, clock, h1, h2, upgrade, DAO } = await chainGuardian();
+    expect(await g.tick()).toEqual([]);
+    upgrade();
+    let failOnce = true;
+    c.fail = (p) => (p.account_id === DAO && p.method_name === "get_proposals" && failOnce ? ((failOnce = false), 503) : null);
+    const t2 = await g.tick();
+    expect(t2.map((a) => a.event)).toEqual(["deployed", "unreadable"]);
+    expect(t2[0].assessment?.grade.verdict).toBe("STOP");
+    clock.t += 3_000;
+    const t3 = await g.tick();
+    expect(t3.map((a) => a.event)).toEqual(["proposal"]);
+    const a = t3[0].assessment!;
+    expect(a.grade.flags).not.toContain("NO_CHANGE");
+    expect(a.grade.verdict).toBe("STOP");
+    expect(a.live_hash).toBe(h1);
+    expect(g.cache.get(`vault.testnet:${h2}`)?.live_hash).toBe(h1);
+    expect(g.cache.get(`vault.testnet:${h2}`)?.grade.verdict).toBe("STOP");
+    expect(fires).toEqual([HATCH.id]);
+  });
+
+  it("an executed proposal whose handling threw once, while its deployed event succeeded, is graded against the replaced code on the retry (L2b)", async () => {
+    let threw = false;
+    const { g, clock, h1, h2, upgrade } = await chainGuardian({
+      assessor: async (deps, o) => {
+        if (o.proposal && !threw) {
+          threw = true;
+          throw new Error("tx API timeout");
+        }
+        return assessPending(deps, o);
+      },
+    });
+    expect(await g.tick()).toEqual([]);
+    upgrade();
+    const t2 = await g.tick();
+    expect(t2.map((a) => a.event)).toEqual(["deployed"]);
+    expect(t2[0].assessment?.grade.verdict).toBe("STOP");
+    clock.t += 3_000;
+    const t3 = await g.tick();
+    expect(t3.map((a) => a.event)).toEqual(["proposal"]);
+    expect(t3[0].assessment?.grade.verdict).toBe("STOP");
+    expect(t3[0].assessment?.live_hash).toBe(h1);
+    expect(g.cache.get(`vault.testnet:${h2}`)?.grade.flags).not.toContain("NO_CHANGE");
+  });
+
+  it("an executed proposal whose code was already live before it (a no-op upgrade) is still OK NO_CHANGE (L2)", async () => {
+    const { c, g, h1, DAO } = await chainGuardian();
+    expect(await g.tick()).toEqual([]);
+    c.advance(3);
+    c.daos[DAO].proposals.push(upgradeRemote(0, "vault.testnet", h1, "Approved", 1));
+    const [a] = await g.tick();
+    expect(a.event).toBe("proposal");
+    expect(a.assessment?.grade.flags).toContain("NO_CHANGE");
+    expect(a.assessment?.grade.verdict).toBe("OK");
   });
 });
 

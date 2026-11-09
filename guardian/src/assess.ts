@@ -6,6 +6,9 @@
 // that was REPLACED, read at a block where it was still live. If that code cannot be read, the
 // assessment says so (REPLACED_CODE_UNAVAILABLE, CAUTION): it never compares against the code that
 // is live now (that would say "no change") nor against nothing (every capability would look new).
+//
+// Pending bytes that do not parse as wasm (store_blob and up_stage_code accept any bytes) are a
+// CAUTION with PENDING_CODE_INVALID_WASM, not an error: there is nothing to diff, and that is the news.
 import {
   analyzeWasm,
   codeHash,
@@ -34,8 +37,14 @@ export type CodeSource =
   | { kind: "proposal_args"; dao: string; id: number }
   | null;
 
-/** Guardian-level flag on top of the core upgrade flags. */
-export type AssessmentFlag = UpgradeFlag | "REPLACED_CODE_UNAVAILABLE";
+/** Guardian-level flags on top of the core upgrade flags. */
+export type AssessmentFlag =
+  | UpgradeFlag
+  | "REPLACED_CODE_UNAVAILABLE"
+  /** The pending bytes were read (their hash matches) but do not parse as wasm. */
+  | "PENDING_CODE_INVALID_WASM"
+  /** Set by the guardian when assessing an event kept failing (the alert carries the error). */
+  | "ASSESSMENT_FAILED";
 export type AssessmentGrade = Omit<UpgradeGrade, "flags"> & { flags: AssessmentFlag[] };
 
 /** The code a change replaced, as the radar last saw it live. */
@@ -140,6 +149,38 @@ function gradeWithoutBase(i: Parameters<typeof gradeUpgrade>[0], havePending: bo
   };
 }
 
+/** The analysis of `bytes`, or null when they are not a wasm module Keyhole can parse. */
+function analyzeOrNull(bytes: Uint8Array): WasmAnalysis | null {
+  try {
+    return analyzeWasm(bytes);
+  } catch {
+    return null;
+  }
+}
+
+/** The grade when the pending bytes were read but are not wasm: verification and an AI review
+ *  still count; there is no diff. */
+function gradeNotWasm(i: Parameters<typeof gradeUpgrade>[0], size: number, err: string): AssessmentGrade {
+  const g = gradeUpgrade({ ...i, live: null, pending: null });
+  if (g.flags.includes("NO_CHANGE")) return g;
+  const aiHigh = g.flags.includes("AI_REVIEW_HIGH");
+  const flags: AssessmentFlag[] = g.flags.map((f) => (f === "PENDING_CODE_UNAVAILABLE" ? "PENDING_CODE_INVALID_WASM" : f));
+  const reasons = g.reasons.map((r) =>
+    /could not be fetched/.test(r.text)
+      ? { severity: "caution" as const, text: `The pending code${i.pending_hash ? ` ${short(i.pending_hash)}` : ""} (${size} bytes) was read, but it is not a valid wasm module (${err}), so what it can do cannot be analysed.` }
+      : r,
+  );
+  const verdict = aiHigh ? "STOP" : "CAUTION";
+  return {
+    verdict,
+    flags,
+    reasons,
+    diff: null,
+    fire: verdict === "STOP",
+    headline: aiHigh ? g.headline : `CAUTION: the pending code for ${i.target} is not a valid wasm module, so it could not be analysed.`,
+  };
+}
+
 export async function assessPending(
   deps: AssessDeps,
   o: {
@@ -215,8 +256,17 @@ export async function assessPending(
       baseKnown = before !== null;
     }
   }
-  const live: WasmAnalysis | null = before ? analyzeWasm(before) : null;
-  const pending = pendingBytes ? analyzeWasm(pendingBytes) : null;
+  // Live code that does not parse is graded like "no analysis of the live code".
+  const live: WasmAnalysis | null = before ? analyzeOrNull(before) : null;
+  let pending: WasmAnalysis | null = null;
+  let notWasm: string | null = null;
+  if (pendingBytes) {
+    try {
+      pending = analyzeWasm(pendingBytes);
+    } catch (e) {
+      notWasm = String((e as Error)?.message ?? e).slice(0, 200);
+    }
+  }
 
   let sourcescanOk: boolean | null = null;
   let reproducible: boolean | null = null;
@@ -252,7 +302,11 @@ export async function assessPending(
     verified: { reproducible, sourcescan: sourcescanOk, registry_review: registryReview },
   };
   const gradeOf = (review: Assessment["review"]): AssessmentGrade =>
-    baseKnown ? gradeUpgrade({ ...baseInput, review }) : gradeWithoutBase({ ...baseInput, review }, pending !== null, o.replaced?.hash ?? null);
+    notWasm !== null
+      ? gradeNotWasm({ ...baseInput, review }, pendingBytes!.length, notWasm)
+      : baseKnown
+        ? gradeUpgrade({ ...baseInput, review })
+        : gradeWithoutBase({ ...baseInput, review }, pending !== null, o.replaced?.hash ?? null);
   let grade = gradeOf(null);
   let review: Assessment["review"] = null;
   const summary = describeDiff(grade);

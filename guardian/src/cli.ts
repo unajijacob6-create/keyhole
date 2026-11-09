@@ -2,11 +2,13 @@
 //
 //   run     [--network testnet|mainnet] [--hatches file.json] [--watch a,b] [--interval 3] [--duration s]
 //           [--feed data/alerts-<network>.jsonl] [--relayer <account>] [--review] [--max-deposit 1]
+//           [--fire-retry-minutes 30]
 //           Watch the venues of every hatch (and --watch targets), grade pending upgrades, fire
 //           hatches whose trigger matches. Without --relayer it only alerts (read-only). Before
 //           relaying, every hatch is checked offline (verifyHatch, signed receiver = venue, signed
 //           sender = account) and its attached deposit, which the relayer pays, must be at most
-//           --max-deposit yoctoNEAR (default 1).
+//           --max-deposit yoctoNEAR (default 1). A relay that fails is retried with backoff while
+//           its trigger still holds, for up to --fire-retry-minutes (default 30).
 //   arm     --account <id> --venue <contract> --method <name> [--args '{}'] [--deposit 1] [--gas 50]
 //           [--ttl-blocks 604800] [--trigger stop|any-upgrade|manual] [--hatches file.json]
 //           Adds a dedicated full-access key to <account> (signed with its key from
@@ -21,7 +23,7 @@ import os from "node:os";
 import path from "node:path";
 import { Rpc, txApi, ARCHIVAL_RPC, KEYHOLE_REGISTRY, type Network } from "../../packages/core/src/index.ts";
 import { armDelegateHatch, fireHatch, hatchHealth, decodeHatch, type Hatch } from "../../packages/hatch/src/index.ts";
-import { Guardian, type Alert } from "./guardian.ts";
+import { DEFAULT_FIRE_RETRY, Guardian, type Alert } from "./guardian.ts";
 import { Radar } from "./radar.ts";
 import { teeReviewer } from "./tee.ts";
 
@@ -66,6 +68,8 @@ if (cmd === "arm") {
   const relayer = relayerId ? (await import("../../scripts/lib/near.ts")).account(relayerId) : null;
   const maxDeposit = BigInt(arg("--max-deposit", "1")!);
   if (maxDeposit < 0n) throw new Error("--max-deposit must be a non-negative yoctoNEAR amount");
+  const fireRetryMinutes = Number(arg("--fire-retry-minutes", String(DEFAULT_FIRE_RETRY.windowMs / 60_000)));
+  if (!Number.isFinite(fireRetryMinutes) || fireRetryMinutes < 0) throw new Error("--fire-retry-minutes must be a non-negative number");
   const radar = new Radar(rpc, network, undefined, { last: 20 });
   for (const t of arg("--watch", "")!.split(",").filter(Boolean)) await radar.watch(t);
   const guardian = new Guardian({
@@ -75,6 +79,7 @@ if (cmd === "arm") {
     hatches: load,
     driver: relayer ? { health: (h) => hatchHealth(rpc, h), fire: (h) => fireHatch(h, relayer) } : null,
     maxDeposit,
+    fireRetry: { ...DEFAULT_FIRE_RETRY, windowMs: fireRetryMinutes * 60_000 },
     onError: (e, ev) => console.error(`[guardian] ${ev ? `${ev.kind} ${ev.target}` : "watch"} failed (reported again next tick): ${String((e as Error).message).slice(0, 200)}`),
     onAlert: (a: Alert) => {
       fs.mkdirSync(path.dirname(feed), { recursive: true });

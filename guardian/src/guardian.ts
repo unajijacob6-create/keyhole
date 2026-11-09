@@ -6,6 +6,13 @@
 // Before relaying, the guardian checks that the signed bytes are what the record says (so a hatch
 // that names one venue cannot run a call on another) and that the deposit it would pay is within
 // its cap.
+//
+// An event whose handling keeps failing is retried with backoff for a bounded time, then reported
+// once as CAUTION with ASSESSMENT_FAILED and committed. A failed relay is retried with backoff while
+// its trigger still holds, for up to fireRetry.windowMs (default 30 minutes).
+//
+// State is kept in memory only: primed pairs, retry schedules and the last alerts are lost on a
+// restart (the caller persists only the fired hatch ids).
 import { isLive, type Rpc } from "../../packages/core/src/index.ts";
 import { decodeHatch, verifyHatch, type Hatch } from "../../packages/hatch/src/index.ts";
 import { assessPending, type AssessDeps, type Assessment, type ReplacedCode } from "./assess.ts";
@@ -31,7 +38,8 @@ export interface Alert {
   votes_to_execute: number | null;
   assessment: Assessment | null;
   fired: FireResult[];
-  /** For an "unreadable" event: what could not be read. */
+  /** For an "unreadable" event: what could not be read. For an ASSESSMENT_FAILED alert: the last
+   *  error handling the event gave. */
   error?: string;
   /** Set on an alert that only reports a retried fire. */
   retry?: number;
@@ -62,13 +70,28 @@ export interface GuardianOptions {
   maxDeposit?: bigint;
   /** Pending code whose bytes cannot be read: how often to re-read before keeping the CAUTION. */
   unreadableRetry?: { attempts: number; baseMs: number; maxMs: number };
-  /** Attempts per hatch when the relay fails (RPC error, relayer out of gas). Default 5. */
-  fireAttempts?: number;
+  /** A relay that failed (RPC error, relayer out of gas, health check error): retried with backoff
+   *  (baseMs doubling to maxMs) while its trigger still holds, for up to windowMs after the first
+   *  failure. Never after the hatch is USED / REVOKED / EXPIRED / STALE. */
+  fireRetry?: RetryPolicy;
+  /** Handling an event threw (assessment, relay, alert sink): re-tried with backoff for up to
+   *  windowMs, then one CAUTION / ASSESSMENT_FAILED alert and the event is committed. */
+  failureRetry?: RetryPolicy;
+}
+
+export interface RetryPolicy {
+  baseMs: number;
+  maxMs: number;
+  windowMs: number;
 }
 
 export const DEFAULT_MAX_DEPOSIT = 1n;
 export const DEFAULT_UNREADABLE_RETRY = { attempts: 10, baseMs: 2_000, maxMs: 60_000 };
-export const DEFAULT_FIRE_ATTEMPTS = 5;
+export const DEFAULT_FIRE_RETRY: RetryPolicy = { baseMs: 3_000, maxMs: 60_000, windowMs: 30 * 60_000 };
+export const DEFAULT_FAILURE_RETRY: RetryPolicy = { baseMs: 3_000, maxMs: 60_000, windowMs: 5 * 60_000 };
+
+const backoff = (p: RetryPolicy, attempts: number) => Math.min(p.baseMs * 2 ** (attempts - 1), p.maxMs);
+const errText = (e: unknown) => String((e as Error)?.message ?? e).slice(0, 300);
 
 /** Should this hatch fire for this assessment? Pure, so the policy is testable on its own. A
  *  proposal "can still matter" while it can execute (isLive: pending, or failed inside its period,
@@ -112,6 +135,41 @@ function subjectOf(ev: RadarEvent): string {
   return `unreadable:${ev.target}`;
 }
 
+/** What a failure budget is about: the subject, and a proposal's state (executing it is news). */
+const failureKey = (ev: RadarEvent) => (ev.kind === "proposal" ? `${subjectOf(ev)}:${ev.proposal.state}` : subjectOf(ev));
+
+/** The assessment reported when assessing `ev` kept failing: CAUTION, nothing graded. */
+function failedAssessment(ev: RadarEvent, error: string, attempts: number, minutes: number, at: string): Assessment | null {
+  if (ev.kind === "unreadable") return null;
+  const p = ev.kind === "proposal" ? ev.proposal : null;
+  const hash = ev.kind === "proposal" ? ev.proposal.code_hash : ev.kind === "staged" ? ev.staged.staged_hash : ev.new_hash;
+  const live = ev.kind === "deployed" ? ev.old_hash : ev.kind === "proposal" ? (ev.prev_live?.hash ?? "unknown") : "unknown";
+  return {
+    schema: "keyhole.assessment/1",
+    target: ev.target,
+    dao: ev.kind === "proposal" ? ev.dao : null,
+    proposal: p,
+    staged: ev.kind === "staged" ? ev.staged : null,
+    live_hash: live,
+    pending_hash: hash,
+    code_source: null,
+    pending_size: null,
+    replaced: null,
+    verified: { reproducible: null, sourcescan: null, registry_review: null },
+    summary: [],
+    grade: {
+      verdict: "CAUTION",
+      flags: ["ASSESSMENT_FAILED"],
+      reasons: [{ severity: "caution", text: `The guardian could not assess this change (${attempts} attempt${attempts > 1 ? "s" : ""} over ${minutes} min; last error: ${error}). What the change does is unknown.` }],
+      diff: null,
+      fire: false,
+      headline: `CAUTION: the change for ${ev.target} could not be assessed (${error.slice(0, 120)}).`,
+    },
+    review: null,
+    at,
+  };
+}
+
 export class Guardian {
   readonly fired: Set<string>;
   /** target:hash -> assessment, so the same code is graded once. */
@@ -120,9 +178,15 @@ export class Guardian {
   /** dao#id:hash -> re-read schedule for pending code whose bytes were not readable. */
   private readonly unreadable = new Map<string, { attempts: number; nextAt: number; last: Assessment }>();
   /** hatch id -> a fire that failed and is retried while its trigger still holds. */
-  private readonly retryFires = new Map<string, { ev: RadarEvent; a: Assessment; attempts: number }>();
+  private readonly retryFires = new Map<string, { ev: RadarEvent; a: Assessment; attempts: number; firstAt: number; nextAt: number }>();
   /** subject -> signature of the last alert, so an unchanged re-report is not alerted twice. */
   private readonly lastAlert = new Map<string, string>();
+  /** failureKey -> retry schedule of an event whose handling threw. */
+  private readonly failures = new Map<string, { attempts: number; firstAt: number; nextAt: number }>();
+  /** failureKey -> the ASSESSMENT_FAILED assessment kept once the failure budget ran out. */
+  private readonly gaveUp = new Map<string, { a: Assessment | null; error: string }>();
+  /** target:new_hash -> the code a deployed event saw it replace. */
+  private readonly replacedBy = new Map<string, ReplacedCode>();
   constructor(readonly o: GuardianOptions) {
     this.fired = o.fired ?? new Set();
     this.assessFn = o.assessor ?? assessPending;
@@ -152,6 +216,14 @@ export class Guardian {
     return c;
   }
 
+  /** Cache an after-the-change assessment, but never let one that compares the code with itself
+   *  (NO_CHANGE) replace one made against the code it replaced. */
+  private storeAfterChange(key: string, a: Assessment): void {
+    const c = this.cache.get(key);
+    if (c && a.pending_hash !== null && a.live_hash === a.pending_hash && c.live_hash !== a.pending_hash && c.code_source) return;
+    if (!c || a.code_source) this.cache.set(key, a);
+  }
+
   /** Assess `ev`. done = false: not finished (bytes not readable yet), report it again later. */
   private async assessEvent(ev: RadarEvent): Promise<{ a: Assessment | null; done: boolean }> {
     const nowMs = this.nowMs();
@@ -167,8 +239,9 @@ export class Guardian {
       // fresh one that reads it at the block where the radar last saw it live.
       const key = `${ev.target}:${ev.new_hash}`;
       const base = { hash: ev.old_hash, height: ev.old_height };
+      this.replacedBy.set(key, base);
       const a = this.cachedAgainst(key, base) ?? (await this.assessFn(this.o.assess, { target: ev.target, hash: ev.new_hash, deployed: true, replaced: base }));
-      if (!this.cache.has(key) || a.code_source) this.cache.set(key, a);
+      this.storeAfterChange(key, a);
       return { a, done: true };
     }
     const p = ev.proposal;
@@ -176,9 +249,22 @@ export class Guardian {
     if (!p.code_hash || !(live || p.state === "executed")) return { a: null, done: true };
     const key = `${p.target}:${p.code_hash}`;
     if (p.state === "executed") {
-      const base = ev.prev_live;
+      let base = ev.prev_live;
+      if (base && base.hash === p.code_hash) {
+        // The radar's last live read is already the new code: the deployed event of this change was
+        // handled first (e.g. the DAO was unreadable, or this event failed, on the pass the code
+        // changed). Grade against the code that change replaced, never the new code against itself.
+        const rec = this.replacedBy.get(key);
+        if (rec) base = rec;
+        else {
+          // No change to this code was seen: either the code was already live before the proposal
+          // (a no-op upgrade, NO_CHANGE is right) or an earlier assessment made against other code.
+          const c = this.cache.get(key);
+          if (c && c.live_hash !== p.code_hash && c.code_source && !c.grade.flags.includes("REPLACED_CODE_UNAVAILABLE")) return { a: c, done: true };
+        }
+      }
       const a = this.cachedAgainst(key, base) ?? (await this.assessFn(this.o.assess, { target: p.target, hash: p.code_hash, dao: ev.dao, proposal: p, deployed: true, replaced: base }));
-      if (!this.cache.has(key) || a.code_source) this.cache.set(key, a);
+      this.storeAfterChange(key, a);
       return { a, done: true };
     }
     const cached = this.cache.get(key);
@@ -208,9 +294,15 @@ export class Guardian {
       this.retryFires.delete(h.id);
       return res(null, false, `not fired: refused: ${refusal}`);
     }
-    const attempts = (this.retryFires.get(h.id)?.attempts ?? 0) + 1;
+    const prev = this.retryFires.get(h.id);
+    const attempts = (prev?.attempts ?? 0) + 1;
     const failed = (r: FireResult) => {
-      if (attempts < (this.o.fireAttempts ?? DEFAULT_FIRE_ATTEMPTS)) this.retryFires.set(h.id, { ev, a, attempts });
+      // Retried with backoff, while the trigger holds (retryFailedFires checks), within the window.
+      const policy = this.o.fireRetry ?? DEFAULT_FIRE_RETRY;
+      const nowMs = this.nowMs();
+      const firstAt = prev?.firstAt ?? nowMs;
+      const nextAt = nowMs + backoff(policy, attempts);
+      if (nextAt - firstAt <= policy.windowMs) this.retryFires.set(h.id, { ev, a, attempts, firstAt, nextAt });
       else this.retryFires.delete(h.id);
       return r;
     };
@@ -239,7 +331,7 @@ export class Guardian {
     return failed(res(r.tx, false, r.error));
   }
 
-  private alertOf(ev: RadarEvent, a: Assessment | null, fired: FireResult[]): Alert {
+  private alertOf(ev: RadarEvent, a: Assessment | null, fired: FireResult[], error?: string): Alert {
     const p = ev.kind === "proposal" ? ev.proposal : null;
     return {
       schema: "keyhole.alert/1",
@@ -250,15 +342,16 @@ export class Guardian {
       votes_to_execute: p && p.required !== null ? Math.max(0, p.required - p.votes.approve) : null,
       assessment: a,
       fired,
-      ...(ev.kind === "unreadable" ? { error: ev.error } : {}),
+      ...(ev.kind === "unreadable" ? { error: ev.error } : error !== undefined ? { error } : {}),
       at: this.now(),
     };
   }
 
   /** Assess, fire, alert. Returns the alert (null when it would repeat the last one unchanged) and
-   *  whether the event is finished (commit it) or must be reported again. */
-  async process(ev: RadarEvent): Promise<{ alert: Alert | null; done: boolean }> {
-    const { a, done } = await this.assessEvent(ev);
+   *  whether the event is finished (commit it) or must be reported again. With `failed`, the
+   *  failure budget ran out: report that assessment (ASSESSMENT_FAILED) instead of assessing. */
+  async process(ev: RadarEvent, failed?: { a: Assessment | null; error: string }): Promise<{ alert: Alert | null; done: boolean }> {
+    const { a, done } = failed ? { a: failed.a, done: true } : await this.assessEvent(ev);
     const fired: FireResult[] = [];
     if (a && this.o.driver) {
       const nowMs = this.nowMs();
@@ -267,10 +360,10 @@ export class Guardian {
         fired.push(await this.fireOne(h, a, ev));
       }
     }
-    const alert = this.alertOf(ev, a, fired);
+    const alert = this.alertOf(ev, a, fired, failed?.error);
     const subject = subjectOf(ev);
     const p = ev.kind === "proposal" ? ev.proposal : null;
-    const sig = JSON.stringify([p && `${p.status}/${p.state}/${p.votes.approve}`, a?.pending_hash, a?.grade.verdict, a?.grade.flags, a?.code_source?.kind ?? null, ev.kind === "unreadable" ? ev.error : null]);
+    const sig = JSON.stringify([p && `${p.status}/${p.state}/${p.votes.approve}`, a?.pending_hash, a?.grade.verdict, a?.grade.flags, a?.code_source?.kind ?? null, ev.kind === "unreadable" ? ev.error : (failed?.error ?? null)]);
     if (!fired.length && this.lastAlert.get(subject) === sig) return { alert: null, done };
     await this.o.onAlert?.(alert);
     this.lastAlert.set(subject, sig);
@@ -296,6 +389,7 @@ export class Guardian {
         this.retryFires.delete(id);
         continue;
       }
+      if (nowMs < rf.nextAt) continue; // backing off
       try {
         const fr = await this.fireOne(h, rf.a, cur);
         const alert = { ...this.alertOf(cur, rf.a, [fr]), retry: rf.attempts + 1 };
@@ -309,22 +403,52 @@ export class Guardian {
   }
 
   /** One radar pass; every event is assessed and acted on in order, each on its own: an event whose
-   *  handling throws is not committed, so the radar reports it again next tick. */
+   *  handling throws is not committed, so the radar reports it again; it is retried with backoff
+   *  (skipped, not committed, until its next attempt is due) until failureRetry.windowMs after its
+   *  first failure, then reported once as CAUTION / ASSESSMENT_FAILED and committed. */
   async tick(): Promise<Alert[]> {
     await this.watchHatches();
     const scan = await this.o.radar.scan();
     scan.commitQuiet();
     const out: Alert[] = [];
     const before = new Map([...this.retryFires].map(([id, r]) => [id, r.attempts]));
+    const policy = this.o.failureRetry ?? DEFAULT_FAILURE_RETRY;
+    const seen = new Set<string>();
     for (const ev of scan.events) {
+      const fk = failureKey(ev);
+      seen.add(fk);
+      const nowMs = this.nowMs();
+      const f = this.failures.get(fk);
+      if (f && nowMs < f.nextAt) continue; // backing off: reported again by the radar, not committed
       try {
-        const r = await this.process(ev);
+        const r = await this.process(ev, this.gaveUp.get(fk));
+        this.failures.delete(fk);
         if (r.done) scan.commit(ev);
         if (r.alert) out.push(r.alert);
       } catch (e) {
         this.o.onError?.(e, ev);
+        const attempts = (f?.attempts ?? 0) + 1;
+        const firstAt = f?.firstAt ?? nowMs;
+        const nextAt = nowMs + backoff(policy, attempts);
+        if (nextAt - firstAt <= policy.windowMs) {
+          this.failures.set(fk, { attempts, firstAt, nextAt });
+          continue;
+        }
+        // Budget spent: one alert that says the change could not be assessed, then commit.
+        this.failures.delete(fk);
+        const error = errText(e);
+        const failed = { a: failedAssessment(ev, error, attempts, Math.round((nowMs - firstAt) / 60_000), this.now()), error };
+        this.gaveUp.set(fk, failed);
+        try {
+          const r = await this.process(ev, failed);
+          if (r.alert) out.push(r.alert);
+        } catch (e2) {
+          this.o.onError?.(e2, ev);
+        }
+        scan.commit(ev);
       }
     }
+    for (const k of [...this.failures.keys()]) if (!seen.has(k)) this.failures.delete(k);
     // Hatches already attempted in this tick (their retry count moved) wait for the next one.
     const attempted = new Set([...this.retryFires].filter(([id, r]) => before.get(id) !== r.attempts).map(([id]) => id));
     out.push(...(await this.retryFailedFires(attempted)));
