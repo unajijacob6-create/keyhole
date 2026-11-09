@@ -41,3 +41,7 @@
 [watch] block 223,826,570  dabi.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
 [watch] block 223,826,609  85abfced7309.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,826,832 (head 223,827,308, lag 476); scanned 10560, skipped 8979 blocks; 18 event(s); neardata 12927 req, 2331 rate-limited
+[watch] mainnet at block 223,827,279 (head 223,827,308, lag 29); scanned 11007, skipped 8979 blocks; 18 event(s); neardata 13478 req, 2436 rate-limited
+[watch] mainnet: 4024 blocks behind; skipping to head 223,831,333 (blocks 223827309–223831332 not scanned)
+[watch] block 223,831,336  house.nearcarta.near  DeployContract (contract-receipt)  new code 3z6dbe…
+[watch] block 223,831,612  townhall.nearcarta.near  DeployContract (transaction)  new code 6LWPMM…
