@@ -142,6 +142,17 @@ async function realRows(): Promise<Row[]> {
       throw e;
     }
   };
+  /** Code bytes at height h; a height with no block steps `dir` (-1 back, +1 forward) until one exists. */
+  const codeBytesAt = async (target: string, h: number, dir: 1 | -1): Promise<Uint8Array> => {
+    for (let i = 0; i < 20; i++) {
+      try {
+        return (await arch.viewCode(target, h + i * dir)).code;
+      } catch (e) {
+        if (!/UNKNOWN_BLOCK/.test(String((e as Error).message))) throw e;
+      }
+    }
+    throw new Error(`no block near ${h}`);
+  };
   const perDao: Row[][] = [];
   for (const dao of DAOS.filter((d) => !ONLY || ONLY.includes(d))) perDao.push(await (async () => {
       const rows: Row[] = [];
@@ -193,8 +204,9 @@ async function realRows(): Promise<Row[]> {
                 const t = await blockTime(b);
                 row.changed_at = new Date(t).toISOString();
                 row.window_s = Math.round((t - p.submitted_at_ms) / 1000);
-                if (!pendingBytes) pendingBytes = (await arch.viewCode(p.target, b)).code;
-                if (before && before !== "11111111111111111111111111111111") row.live = analyzeWasm((await arch.viewCode(p.target, b - 1)).code);
+                if (!pendingBytes) pendingBytes = await codeBytesAt(p.target, b, 1);
+                // `a` is the last height that still had the old code (heights with no block are skipped backwards).
+                if (before && before !== "11111111111111111111111111111111") row.live = analyzeWasm(await codeBytesAt(p.target, a, -1));
               } else row.note = `the first code change after submission was to ${after}, not the proposal hash (another upgrade landed first, or this one was never applied)`;
             }
           } else if (p.state === "pending") {

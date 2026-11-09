@@ -187,6 +187,7 @@ export function mountReplay(el: HTMLElement) {
 
 type RadarProp = {
   dao: string; id: number; proposer: string; description: string; kind: string; target: string; method: string | null;
+  via?: string | null; registers_release?: boolean;
   code_hash: string | null; status: string; state: string; submitted_at_ms: number; expires_at_ms: number;
   votes: { approve: number; reject: number; remove: number }; required: number | null;
   window_s?: number | null; changed_at_height?: number | null; bytes?: number | null; blob_tx?: string | null;
@@ -212,17 +213,34 @@ function propCard(p: RadarProp) {
   return `<article class="prop" data-dao="${esc(p.dao)}" data-id="${p.id}">
     <header><span class="prop-dao">${esc(daoName(p.dao))} #${p.id}</span>${stateChip(p.state)}</header>
     <h4 class="mono" title="${esc(p.target)}">${esc(p.target)}</h4>
-    <p class="prop-kind">${esc(p.kind)}${p.method ? ` · <code>${esc(p.method)}</code>` : ""} · ${votesMeter(p)}</p>
+    <p class="prop-kind">${esc(p.kind)}${p.method ? ` · <code>${esc(p.method)}</code>` : ""}${p.via ? ` via <span class="mono">${esc(p.via)}</span>` : ""} · ${votesMeter(p)}</p>
     <dl class="prop-facts">
       <div><dt>new code</dt><dd class="mono" title="${esc(p.code_hash ?? "")}">${esc(short(p.code_hash, 10))}</dd></div>
-      <div><dt>${p.state === "executed" ? "proposal → live" : "submitted"}</dt><dd>${p.state === "executed" ? (p.window_s != null ? `<strong>${fmtWindow(p.window_s)}</strong>` : "—") : `${fmtWindow(Math.round(age / 1000))} ago`}</dd></div>
+      ${p.registers_release ? `<div><dt>effect</dt><dd>registers a release; deployed to managed contracts by a later call</dd></div>` : `<div><dt>${p.state === "executed" ? "proposal → live" : "submitted"}</dt><dd>${p.state === "executed" ? (p.window_s != null ? `<strong>${fmtWindow(p.window_s)}</strong>` : "—") : `${fmtWindow(Math.round(age / 1000))} ago`}</dd></div>`}
       ${exp ? `<div><dt>window</dt><dd>${esc(exp)}</dd></div>` : ""}
       ${p.blob_tx ? `<div><dt>bytes</dt><dd><a href="${nearTx("mainnet", p.blob_tx)}">${p.bytes ? `${(p.bytes / 1024).toFixed(0)} KB` : "store_blob"} public before the vote ↗</a></dd></div>` : ""}
     </dl>
     ${g ? `<div class="prop-grade">${verdictBadge(g.verdict)} <span class="small">${esc(g.flags.slice(0, 3).join(" · "))}</span></div>` : ""}
     <div class="prop-live" hidden></div>
-    ${p.code_hash ? `<button class="secondary small grade-btn" type="button">Grade it in your browser</button>` : ""}
+    ${canGrade(p) ? `<button class="secondary small grade-btn" type="button">Grade it in your browser</button>` : ""}
   </article>`;
+}
+
+/** Gradeable here: the code is still to be voted on (compare with today's code), or it executed and
+ *  the snapshot knows the block where it went live (compare with the code just before). A release
+ *  registration does not change the receiver's code, so there is nothing to diff. */
+const canGrade = (p: RadarProp) => Boolean(p.code_hash) && !p.registers_release && (p.state === "pending" || (p.state === "executed" && Boolean(p.changed_at_height)));
+
+/** Code at height h; heights with no block step backwards. */
+async function codeBefore(arch: Rpc, account: string, h: number): Promise<Uint8Array> {
+  for (let i = 0; i < 20; i++) {
+    try {
+      return (await arch.viewCode(account, h - i)).code;
+    } catch (e) {
+      if (!/UNKNOWN_BLOCK/.test(String((e as Error).message))) throw e;
+    }
+  }
+  throw new Error(`no block near ${h}`);
 }
 
 async function gradeInBrowser(p: RadarProp, out: HTMLElement) {
@@ -242,7 +260,7 @@ async function gradeInBrowser(p: RadarProp, out: HTMLElement) {
     let live: Uint8Array | null = null;
     if (p.state === "executed" && p.changed_at_height) {
       out.innerHTML = `<p class="small muted">Reading the code it replaced from archival RPC (block ${p.changed_at_height - 1})…</p>`;
-      live = (await arch.viewCode(p.target, p.changed_at_height - 1)).code;
+      live = await codeBefore(arch, p.target, p.changed_at_height - 1);
       if (!pending) {
         pending = (await arch.viewCode(p.target, p.changed_at_height)).code;
         from = `the code at block ${p.changed_at_height}`;
