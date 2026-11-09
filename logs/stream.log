@@ -18,3 +18,4 @@
 [watch] mainnet at block 223,816,459 (head 223,816,652, lag 193); scanned 4405, skipped 4761 blocks; 7 event(s); neardata 5371 req, 944 rate-limited
 [watch] block 223,816,708  nks.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,816,965 (head 223,817,061, lag 96); scanned 4911, skipped 4761 blocks; 8 event(s); neardata 5978 req, 1044 rate-limited
+[watch] mainnet at block 223,817,422 (head 223,817,890, lag 468); scanned 5368, skipped 4761 blocks; 8 event(s); neardata 6537 req, 1145 rate-limited
