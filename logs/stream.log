@@ -37,3 +37,6 @@
 [watch] block 223,825,996  32e3a97463193414add251390434f809cbdc2d34.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] block 223,826,010  65fa2d5960fbaeae2574b2f53641d50ebbd4664e.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] block 223,826,252  arsoncoin.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,826,350 (head 223,827,308, lag 958); scanned 10078, skipped 8979 blocks; 16 event(s); neardata 12342 req, 2228 rate-limited
+[watch] block 223,826,570  dabi.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] block 223,826,609  85abfced7309.user0.tmplr.near  UseGlobalContract (contract-receipt)
