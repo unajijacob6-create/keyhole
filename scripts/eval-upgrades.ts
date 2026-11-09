@@ -34,9 +34,15 @@ import {
 } from "../packages/core/src/index.ts";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+// --daos a,b: only these DAOs. --out file: write rows there. --merge a.json,b.json: combine partial
+// runs (no network) into eval/upgrades.json and the report.
 const OUT = path.join(ROOT, "eval/upgrades.json");
 const argv = process.argv.slice(2);
 const offline = argv.includes("--offline");
+const opt = (f: string) => (argv.includes(f) ? argv[argv.indexOf(f) + 1] : undefined);
+const ONLY = opt("--daos")?.split(",").filter(Boolean);
+const OUT_FILE = opt("--out") ? path.resolve(opt("--out")!) : OUT;
+const MERGE = opt("--merge")?.split(",").filter(Boolean).map((f) => path.resolve(f));
 const LAST = Number(argv.includes("--last") ? argv[argv.indexOf("--last") + 1] : 30);
 import { DAOS } from "./lib/daos.ts";
 
@@ -90,8 +96,9 @@ function throttled(perSec: number): Transport {
 }
 
 async function realRows(): Promise<Row[]> {
-  const rpc = new Rpc({ network: "mainnet", transport: throttled(6), retries: 8 });
-  const arch = new Rpc({ network: "mainnet", url: ARCHIVAL_RPC.mainnet, transport: throttled(6), retries: 8 });
+  const RPS = Number(opt("--rps") ?? 6);
+  const rpc = new Rpc({ network: "mainnet", transport: throttled(RPS), retries: 8 });
+  const arch = new Rpc({ network: "mainnet", url: ARCHIVAL_RPC.mainnet, transport: throttled(RPS), retries: 8 });
   const api = txApi("mainnet");
   const head = (await rpc.block()).header;
   const headMs = Number(BigInt(head.timestamp) / 1_000_000n);
@@ -128,7 +135,7 @@ async function realRows(): Promise<Row[]> {
     }
   };
   const perDao: Row[][] = [];
-  for (const dao of DAOS) perDao.push(await (async () => {
+  for (const dao of DAOS.filter((d) => !ONLY || ONLY.includes(d))) perDao.push(await (async () => {
       const rows: Row[] = [];
       const props: UpgradeProposal[] = await listUpgradeProposals(rpc, dao, { last: LAST, nowMs: headMs });
       console.log(`${dao}: ${props.length} upgrade-related proposals taken (latest ${LAST})`);
@@ -188,6 +195,7 @@ async function realRows(): Promise<Row[]> {
           row.note = `error: ${String((e as Error).message).slice(0, 160)}`;
         }
         rows.push(row);
+        fs.appendFileSync(`${OUT_FILE}.partial.jsonl`, JSON.stringify(row) + "\n"); // checkpoint
         console.log(`  ${dao.split(".")[0]} #${p.id} ${p.kind} ${p.target} ${p.state} window=${row.window_s ?? "-"}s bytes=${row.bytes ?? "-"}${row.blob_tx ? " (store_blob found)" : ""} ${row.note ?? ""}`);
       }
       return rows;
@@ -227,9 +235,12 @@ function grade<R extends Row>(r: R): R {
   return { ...r, verdict: g.verdict, flags: g.flags, summary: summarize(g) };
 }
 
-const cached = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf8")) : null;
-const real = offline ? (cached?.real ?? []) : await realRows();
-const seeded = offline ? (cached?.seeded ?? []) : await seededRows();
+const cached = MERGE
+  ? { real: MERGE.flatMap((f) => JSON.parse(fs.readFileSync(f, "utf8")).real), seeded: JSON.parse(fs.readFileSync(MERGE[0], "utf8")).seeded }
+  : fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf8")) : null;
+const fromCache = offline || Boolean(MERGE);
+const real = fromCache ? (cached?.real ?? []) : await realRows();
+const seeded = MERGE ? await seededRows() : fromCache ? (cached?.seeded ?? []) : await seededRows();
 const R = real.map(grade);
 const S = seeded.map(grade);
 
@@ -261,7 +272,7 @@ const report = {
   real: R,
   seeded: S,
 };
-if (!offline) fs.writeFileSync(OUT, JSON.stringify(report));
+if (!offline) fs.writeFileSync(MERGE ? OUT : OUT_FILE, JSON.stringify(report));
 
 const md = [
   "# Upgrade eval: real mainnet proposals and seeded attacks",
