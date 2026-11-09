@@ -1,0 +1,10 @@
+[watch] testnet from block 276,956,086; watching vault.keyhole.testnet, registry.keyhole.testnet
+/home/runner/work/keyhole/keyhole/watcher/src/follow.ts:41
+      throw new Error(`HTTP ${r.status}`);
+            ^
+
+Error: HTTP 429
+    at getJson (/home/runner/work/keyhole/keyhole/watcher/src/follow.ts:41:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.4
