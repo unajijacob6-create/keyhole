@@ -26,7 +26,11 @@
     "eval": "tsx scripts/eval.ts",
     "judge": "tsx scripts/judge.ts",
     "gen:images": "tsx scripts/gen-images.ts",
-    "setup:guardian": "tsx scripts/setup-guardian.ts"
+    "setup:guardian": "tsx scripts/setup-guardian.ts",
+    "demo:guardian": "tsx scripts/demo-guardian.ts",
+    "guardian": "tsx guardian/src/cli.ts",
+    "eval:upgrades": "tsx scripts/eval-upgrades.ts",
+    "radar": "tsx scripts/radar.ts"
   },
   "engines": {
     "node": ">=22"

@@ -9,8 +9,25 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "lib": ["ES2022", "DOM"],
-    "types": ["node"]
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ]
   },
-  "include": ["scripts", "packages/*/src", "packages/*/test", "watcher/src", "watcher/test", "verifier/src", "reviewer/src", "reviewer/test", "reviewer/eval"]
+  "include": [
+    "scripts",
+    "packages/*/src",
+    "packages/*/test",
+    "watcher/src",
+    "watcher/test",
+    "verifier/src",
+    "reviewer/src",
+    "reviewer/test",
+    "reviewer/eval",
+    "guardian/src",
+    "guardian/test"
+  ]
 }
