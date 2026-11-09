@@ -80,10 +80,11 @@ async function loadCode(ref: string, network: Network): Promise<{ label: string;
 }
 
 export async function main(argv = process.argv.slice(2)) {
-  const [cmd, a, b] = argv.filter((x, i, arr) => !x.startsWith("--") && !(i > 0 && arr[i - 1] === "--network"));
+  const [cmd, a, b] = argv.filter((x, i, arr) => !x.startsWith("--") && !(i > 0 && ["--network", "--registry"].includes(arr[i - 1])));
   const network = arg("--network") as Network | undefined;
   if (cmd === "inspect" && a) {
-    const r = await inspect(a, { network, history: !has("--no-history") });
+    const reg = arg("--registry");
+    const r = await inspect(a, { network, history: !has("--no-history"), ...(reg ? { registry: { account: reg } } : {}) });
     console.log(has("--json") ? JSON.stringify(r, null, 2) : formatReport(r, { evidence: has("--evidence") }));
     return r.grade.verdict === "STOP" ? 2 : 0;
   }
@@ -104,6 +105,6 @@ export async function main(argv = process.argv.slice(2)) {
     }
     return 0;
   }
-  console.log("usage:\n  keyhole inspect <account> [--json] [--evidence] [--network mainnet|testnet] [--no-history]\n  keyhole diff <account[@block]|file.wasm> <account[@block]|file.wasm> [--json]");
+  console.log("usage:\n  keyhole inspect <account> [--json] [--evidence] [--network mainnet|testnet] [--no-history] [--registry <account>]\n  keyhole diff <account[@block]|file.wasm> <account[@block]|file.wasm> [--json]");
   return 1;
 }

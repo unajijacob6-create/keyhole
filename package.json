@@ -18,7 +18,9 @@
     "setup:testnet": "tsx scripts/setup-testnet.ts",
     "watch": "tsx watcher/src/index.ts",
     "build:web": "npm run -w @keyhole/web build",
-    "test:web": "npm run build:web && node web/tests/run-smoke.mjs"
+    "test:web": "npm run build:web && node web/tests/run-smoke.mjs",
+    "attest:builds": "tsx scripts/attest-builds.ts",
+    "demo:attack": "tsx scripts/demo-attack.ts"
   },
   "engines": {
     "node": ">=22"

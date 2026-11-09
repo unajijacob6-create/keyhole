@@ -14,6 +14,7 @@ export async function registryPoster(opts: { attester?: string; registry?: strin
     return { id: Number(JSON.parse(Buffer.from(ok, "base64").toString() || "0")), tx: res.transaction.hash as string };
   };
   return {
+    attest: send,
     changeObserved: (e) => send(e.new_hash, { kind: "ChangeObserved", ...e }),
     keyAdded: ({ code_hash, ...e }) => send(code_hash, { kind: "KeyAdded", ...e }),
   };

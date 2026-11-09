@@ -8,6 +8,7 @@ import { Rpc, effectiveHash, type Network } from "../../packages/core/src/index.
 import { extractEvents, summarizeTransactions, type TxSummary, type WatchEvent } from "./extract.ts";
 
 export interface Poster {
+  attest?(code_hash: string, attestation: Record<string, unknown>): Promise<{ id: number; tx: string }>;
   changeObserved(e: { account: string; old_hash: string; new_hash: string; block_height: number }): Promise<{ id: number; tx: string }>;
   keyAdded(e: { account: string; public_key: string; block_height: number; code_hash: string }): Promise<{ id: number; tx: string }>;
 }

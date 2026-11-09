@@ -12,7 +12,7 @@ export const RPC_URL = process.env.NEAR_RPC_URL ?? "https://test.rpc.fastnear.co
 export const provider = new JsonRpcProvider({ url: RPC_URL });
 
 export const cfg = {
-  master: process.env.KH_MASTER ?? "keyhole.testnet",
+  get master() { return process.env.KH_MASTER ?? "keyhole.testnet"; },
   get registry() { return process.env.KH_REGISTRY ?? `registry.${this.master}`; },
   get attester() { return process.env.KH_ATTESTER ?? `watcher.${this.master}`; },
   get vault() { return process.env.KH_VAULT ?? `vault.${this.master}`; },

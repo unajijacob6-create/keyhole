@@ -1,1 +1,105 @@
-{ "recordedAt": "", "vault": "vault.keyhole.testnet", "steps": [], "links": {} }
+{
+ "recordedAt": "2026-11-09T17:58:45.555Z",
+ "vault": "vault.keyhole.testnet",
+ "steps": [
+  {
+   "t": 15,
+   "step": 0,
+   "title": "setup",
+   "lines": [
+    "+  0.0s  v1 E1arxbbpY645mRqub4aNTGw6bGLzznfEcSsL84VKdaKi (reproducible CI build)",
+    "+  0.0s  v2 BJU8rR1MjywGrqRxGnDeu8EenKyUfQEeAXjGPKmJTrKA",
+    "+  3.4s  reset: vault was BJU8rR1M…, redeployed v1 (tx 3XcKKqK1WM…)"
+   ]
+  },
+  {
+   "t": 16757,
+   "step": 1,
+   "title": "Keyhole inspects vault.keyhole.testnet",
+   "lines": [
+    "+ 17.3s  [watch] testnet from block 276,953,965; watching vault.keyhole.testnet",
+    "+ 18.7s  [!!] CAUTION · CUSTODIAL\n           Code can be replaced by a single key. Current code is source-verified.",
+    "+ 18.7s     [!!] 1 full-access key on vault.keyhole.testnet. Any one of them can deploy new code.",
+    "+ 18.7s     [ok] A reproducible rebuild matches the deployed code hash."
+   ],
+   "state": {
+    "verdict": "CAUTION",
+    "class": "CUSTODIAL",
+    "flags": [],
+    "headline": "Code can be replaced by a single key. Current code is source-verified.",
+    "reasons": [
+     "[!!] 1 full-access key on vault.keyhole.testnet. Any one of them can deploy new code.",
+     "[ok] A reproducible rebuild matches the deployed code hash."
+    ]
+   }
+  },
+  {
+   "t": 18670,
+   "step": 2,
+   "title": "agent deposits through guardCall (policy: proceed on CAUTION with a warning)",
+   "lines": [
+    "+ 20.0s  [guard] [!!] CAUTION allowed vault.keyhole.testnet.deposit(): Code can be replaced by a single key. Current code is source-verified. (policy: allow on CAUTION)",
+    "+ 24.0s  deposit 0.1 NEAR ok: https://testnet.nearblocks.io/txns/JCKxZP5aTa5Duh8gpySGzPEscqCLmyUSm5cq52fbFxG7",
+    "+ 24.3s  vault total: 0.3000 NEAR"
+   ]
+  },
+  {
+   "t": 24271,
+   "step": 3,
+   "title": "the owner key silently redeploys the vault with v2",
+   "lines": [
+    "+ 26.5s  DeployContract v2: https://testnet.nearblocks.io/txns/GoxKNQySAz9duTfuKS2jD4xxJBi4fUxgW7eWumiQNEYv"
+   ]
+  },
+  {
+   "t": 26549,
+   "step": 4,
+   "title": "watcher: block stream → registry",
+   "lines": [
+    "+ 31.4s  [watch] block 276,953,984  vault.keyhole.testnet  DeployContract (transaction)  E1arxb… → BJU8rR…  → registry ChangeObserved #10 (tx F2q6Vvsk…)",
+    "+ 33.4s  registry registry.keyhole.testnet record #10: ChangeObserved E1arxbbp… → BJU8rR1M… at block 276953984",
+    "+ 33.5s  export diff v1 → v2: + sweep"
+   ]
+  },
+  {
+   "t": 33453,
+   "step": 5,
+   "title": "Keyhole inspects vault.keyhole.testnet again",
+   "lines": [
+    "+ 35.0s  [XX] STOP · CUSTODIAL · UNVERIFIED_CODE CHANGED_24H\n           Code can be replaced by a single key. Current code is not source-verified. Code changed in the last 24 h.",
+    "+ 35.0s     [XX] The code changed less than a minute ago (observed by watcher.keyhole.testnet at block 276953984).",
+    "+ 35.0s     [!!] 1 full-access key on vault.keyhole.testnet. Any one of them can deploy new code.",
+    "+ 35.0s     [!!] The code running now is not source-verified (no SourceScan entry or matching reproducible build for this hash)."
+   ],
+   "state": {
+    "verdict": "STOP",
+    "class": "CUSTODIAL",
+    "flags": [
+     "UNVERIFIED_CODE",
+     "CHANGED_24H"
+    ],
+    "headline": "Code can be replaced by a single key. Current code is not source-verified. Code changed in the last 24 h.",
+    "reasons": [
+     "[XX] The code changed less than a minute ago (observed by watcher.keyhole.testnet at block 276953984).",
+     "[!!] 1 full-access key on vault.keyhole.testnet. Any one of them can deploy new code.",
+     "[!!] The code running now is not source-verified (no SourceScan entry or matching reproducible build for this hash)."
+    ]
+   }
+  },
+  {
+   "t": 35018,
+   "step": 6,
+   "title": "agent tries to deposit again",
+   "lines": [
+    "+ 36.3s  [guard] [XX] STOP refused vault.keyhole.testnet.deposit(): The code changed less than a minute ago (observed by watcher.keyhole.testnet at block 276953984).",
+    "+ 36.3s  deposit NOT sent: GuardRefusal thrown before signing; no transaction was created"
+   ]
+  }
+ ],
+ "links": {
+  "agent deposit (v1)": "https://testnet.nearblocks.io/txns/JCKxZP5aTa5Duh8gpySGzPEscqCLmyUSm5cq52fbFxG7",
+  "silent redeploy (v2)": "https://testnet.nearblocks.io/txns/GoxKNQySAz9duTfuKS2jD4xxJBi4fUxgW7eWumiQNEYv",
+  "vault on explorer": "https://testnet.nearblocks.io/address/vault.keyhole.testnet",
+  "registry history": "https://testnet.nearblocks.io/address/registry.keyhole.testnet"
+ }
+}

@@ -163,6 +163,7 @@ function headline(cls: ControlClass, live: UpgradePath[], verified: boolean, cha
 }
 
 function ago(ms: number) {
+  if (ms < 60000) return "less than a minute";
   const m = Math.round(ms / 60000);
   if (m < 60) return `${m} min`;
   const h = Math.round(m / 60);
