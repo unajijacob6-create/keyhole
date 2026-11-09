@@ -1,0 +1,8 @@
+{
+  "note": "Accounts the CI verifier rebuilds from their NEP-330 build_info. Editing this file and pushing triggers .github/workflows/verify.yml.",
+  "requests": [
+    { "account": "token.sweat", "network": "mainnet" },
+    { "account": "lst.rhealab.near", "network": "mainnet" },
+    { "account": "intents.near", "network": "mainnet" }
+  ]
+}

@@ -1,0 +1,67 @@
+name: verify reproducible builds
+
+# Rebuilds deployed contracts from their on-chain NEP-330 build_info and compares the result with
+# the on-chain code hash. Public runner, not a TEE. Results are pushed to the `verifications` branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["verifier/**", ".github/workflows/verify.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: echo "matrix=$(node -e 'console.log(JSON.stringify(require("./verifier/requests.json").requests))')" >> "$GITHUB_OUTPUT"
+
+  rebuild:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        req: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-near 0.23.0
+        run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/near/cargo-near/releases/download/cargo-near-v0.23.0/cargo-near-installer.sh | sh
+      - name: Rebuild ${{ matrix.req.account }}
+        run: npx tsx verifier/src/rebuild.ts ${{ matrix.req.account }} --network ${{ matrix.req.network }} --out verifications
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verification-${{ matrix.req.account }}
+          path: verifications
+
+  publish:
+    needs: rebuild
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: incoming
+          merge-multiple: true
+      - name: Push results to the verifications branch
+        run: |
+          set -euo pipefail
+          git config user.name "keyhole-ci"; git config user.email "keyhole-ci@users.noreply.github.com"
+          git fetch origin verifications || true
+          git worktree add -B verifications /tmp/v origin/verifications 2>/dev/null || git worktree add --orphan -b verifications /tmp/v
+          cp -r incoming/. /tmp/v/
+          cd /tmp/v && git add -A && (git commit -m "verification results from run $GITHUB_RUN_ID" && git push origin verifications) || echo "nothing new"
