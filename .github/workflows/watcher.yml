@@ -9,6 +9,9 @@ name: watcher
 # writes the public feed.
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [".github/workflows/watcher.yml"]
   schedule:
     - cron: "41 */3 * * *"
 
