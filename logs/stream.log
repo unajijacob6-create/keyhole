@@ -1,2 +1,4 @@
 [watch] mainnet from block 223,807,293; watching (none); network-wide deploy feed on
 [watch] block 223,807,462  sinu.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,807,780 (head 223,808,181, lag 401); scanned 487, skipped 0 blocks; 1 event(s); neardata 604 req, 105 rate-limited
+[watch] block 223,807,884  guard.nearcarta.near  DeployContract (transaction)  new code 7uEdU1…
