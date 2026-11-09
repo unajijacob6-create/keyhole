@@ -1,0 +1,28 @@
+{
+  "rev": "7120e59b69b4fdf3e949c7ecda0e4ed72665f524",
+  "run": "https://github.com/unajijacob6-create/keyhole/actions/runs/42723452164",
+  "image": "sourcescan/cargo-near:0.23.0-rust-1.99.1@sha256:8013f039e8005627f10ae66b5519d1a6eeeed7d7aef4b5067d5e9a86c4302fcc",
+  "builtAt": "2026-11-09T23:52:18.121Z",
+  "wasm": {
+    "demo_vault_v1.wasm": {
+      "size": 111052,
+      "sha256": "0e65040ef325179466bcbd8f200a2edd8c6ad2661a5958b776c3d89ef436fc95",
+      "code_hash": "yC3i6yQNvmH4h464UVPGU47xvKsSSEVVTKpHhx5k7Ba"
+    },
+    "demo_vault_v2.wasm": {
+      "size": 113021,
+      "sha256": "e0c00a72029ad6e01070a6eb0138fbfbe2cf5e3092db8969b9170c0d83e94675",
+      "code_hash": "G8LAdxKQR7YznWE8XUH297HjiEpSDjdsYvD3HniyvbJk"
+    },
+    "guarded_vault.wasm": {
+      "size": 111228,
+      "sha256": "e2a725b1672a7d329ef57767087a1cfd3b336bdfcf881ded67bbdeec56d0053f",
+      "code_hash": "GFky197nhqG9vSjXccEsbFLgALoSRPJ5iqM5weiPorT8"
+    },
+    "keyhole_registry.wasm": {
+      "size": 220258,
+      "sha256": "1793a2430d6c9190ef19e6daa14dee001cd112ef57cb8a032ec73765cc8d1697",
+      "code_hash": "2b2wpXHV7XrPgoSnF2wMrkSoWFjWM2Dapu5pRizQMgCn"
+    }
+  }
+}
