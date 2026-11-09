@@ -1090,6 +1090,10 @@ name = "guarded-vault"
 version = "1.0.0"
 dependencies = [
  "anyhow",
+ "near-crypto",
+ "near-jsonrpc-client",
+ "near-jsonrpc-primitives",
+ "near-primitives",
  "near-sdk",
  "near-workspaces",
  "serde_json",
