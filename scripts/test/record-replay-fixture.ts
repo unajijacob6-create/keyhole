@@ -14,6 +14,9 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 const run = JSON.parse(fs.readFileSync(path.join(ROOT, "data/guardian-run.json"), "utf8"));
 const store: Record<string, { result?: unknown; error?: unknown }> = {};
 const recording: Transport = async (url, body) => {
+  // Archival answers pinned to a block or a tx never change: answer a repeat from what was recorded.
+  const seen = store[fixtureKey(body)];
+  if (seen) return { status: 200, json: seen.error ? { jsonrpc: "2.0", id: "keyhole", error: seen.error } : { jsonrpc: "2.0", id: "keyhole", result: seen.result } };
   const res = await fetchTransport(url, body);
   const j = res.json as any;
   if (j && res.status === 200) store[fixtureKey(body)] = j.error ? { error: j.error } : { result: j.result };

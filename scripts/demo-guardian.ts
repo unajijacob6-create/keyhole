@@ -263,16 +263,23 @@ if (tee) {
   say(`private review ran on ${t.model} in a NEAR AI Cloud TEE`);
   say(`receipt: signed by ${t.receipt.signed_by} ${t.receipt.recovered_signer}, re-verified offline: ${v.ok}`);
   run.review = { risk: t.risk, summary: t.summary, model: t.model, receipt: t.receipt };
-  try {
-    const poster = await registryPoster({ registry: cfg.registry });
-    const posted = await poster.attest!(run.code.evil, { kind: "AiReview", model: t.model, request_sha256: t.receipt.request_hash, response_sha256: t.receipt.response_hash, signer: t.receipt.recovered_signer, chat_id: t.receipt.chat_id.slice(0, 200), verdict_summary: `${t.risk}: ${t.summary}`.slice(0, 280) });
-    run.review.registry_id = posted.id;
-    run.tx.ai_review = posted.tx;
-    run.signers.ai_review = cfg.attester;
-    say(`registry ${cfg.registry} AiReview #${posted.id} for the pending hash (posted before the deciding vote): ${txLink(posted.tx)}`);
-  } catch (e) {
-    say(`AiReview not posted to the registry: ${String((e as Error).message).slice(0, 100)}`);
+  // The replay requires the registry transaction for any review the recording shows (the review
+  // changed the grade), so try a few times before recording a review that cannot be re-checked.
+  let lastErr: unknown = null;
+  for (let attempt = 0; attempt < 3 && !run.tx.ai_review; attempt++) {
+    try {
+      const poster = await registryPoster({ registry: cfg.registry });
+      const posted = await poster.attest!(run.code.evil, { kind: "AiReview", model: t.model, request_sha256: t.receipt.request_hash, response_sha256: t.receipt.response_hash, signer: t.receipt.recovered_signer, chat_id: t.receipt.chat_id.slice(0, 200), verdict_summary: `${t.risk}: ${t.summary}`.slice(0, 280) });
+      run.review.registry_id = posted.id;
+      run.tx.ai_review = posted.tx;
+      run.signers.ai_review = cfg.attester;
+      say(`registry ${cfg.registry} AiReview #${posted.id} for the pending hash (posted before the deciding vote): ${txLink(posted.tx)}`);
+    } catch (e) {
+      lastErr = e;
+      await new Promise((r) => setTimeout(r, 1500));
+    }
   }
+  if (!run.tx.ai_review) say(`AiReview not posted to the registry (${String((lastErr as Error)?.message ?? lastErr).slice(0, 100)}): this recording will FAIL the replay, which requires an on-chain AiReview for the review it shows`);
 } else say("private TEE review: not available in this run (the deterministic grade stands on its own)");
 const d = exportDiff(analyzeWasm(HONEST), analyzeWasm(EVIL));
 say(`independent check from repo builds: + ${d.addedMethods.join(", ") || "(none)"}`);
