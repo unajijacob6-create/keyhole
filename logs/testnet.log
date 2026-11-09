@@ -1,10 +1,22 @@
-[watch] testnet from block 276,956,086; watching vault.keyhole.testnet, registry.keyhole.testnet
-/home/runner/work/keyhole/keyhole/watcher/src/follow.ts:41
-      throw new Error(`HTTP ${r.status}`);
-            ^
-
-Error: HTTP 429
-    at getJson (/home/runner/work/keyhole/keyhole/watcher/src/follow.ts:41:13)
-    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
-
-Node.js v22.23.4
+[watch] testnet from block 276,957,560; watching vault.keyhole.testnet, registry.keyhole.testnet
+[watch] testnet block 276957569: HTTP 429; retry in 4s
+[watch] testnet block 276957569: HTTP 429; retry in 8s
+[watch] testnet block 276957572: HTTP 429; retry in 4s
+[watch] testnet block 276957572: HTTP 429; retry in 8s
+[watch] testnet block 276957573: HTTP 429; retry in 4s
+[watch] testnet block 276957575: HTTP 429; retry in 4s
+[watch] testnet block 276957576: HTTP 429; retry in 4s
+[watch] testnet block 276957576: HTTP 429; retry in 8s
+[watch] testnet block 276957577: HTTP 429; retry in 4s
+[watch] testnet block 276957578: HTTP 429; retry in 4s
+[watch] testnet block 276957578: HTTP 429; retry in 8s
+[watch] testnet block 276957578: HTTP 429; retry in 16s
+[watch] testnet block 276957579: HTTP 429; retry in 4s
+[watch] testnet block 276957580: HTTP 429; retry in 4s
+[watch] testnet block 276957580: HTTP 429; retry in 8s
+[watch] testnet block 276957581: HTTP 429; retry in 4s
+[watch] testnet block 276957583: HTTP 429; retry in 4s
+[watch] testnet block 276957583: HTTP 429; retry in 8s
+[watch] testnet block 276957584: HTTP 429; retry in 4s
+[watch] testnet block 276957584: HTTP 429; retry in 8s
+[watch] testnet block 276957584: HTTP 429; retry in 16s
