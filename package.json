@@ -13,7 +13,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "survey": "tsx scripts/survey.ts",
     "inspect": "keyhole inspect",
-    "fixtures:record": "tsx scripts/record-fixtures.ts"
+    "fixtures:record": "tsx scripts/record-fixtures.ts",
+    "setup:testnet": "tsx scripts/setup-testnet.ts",
+    "watch": "tsx watcher/src/index.ts"
   },
   "engines": {
     "node": ">=22"

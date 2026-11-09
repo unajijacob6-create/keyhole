@@ -136,6 +136,23 @@ export async function resolveActor(rpc: Rpc, account: string): Promise<ActorInfo
       summary: `multisig ${account}: ${req ?? "?"} of ${members?.length ?? "?"} members must confirm`,
     };
   }
+  if (exports.includes("acl_get_super_admins")) {
+    // A near-plugins super admin can grant itself any role, so it controls this contract.
+    const args = { skip: 0, limit: 20 };
+    const admins = ((await rpc.tryView<string[]>(account, "acl_get_super_admins", args)) ?? []).filter((a) => a !== account);
+    evidence.push(ev.view(n, account, "acl_get_super_admins", args));
+    const withKeys: string[] = [];
+    for (const a of admins) {
+      try {
+        const k = await rpc.viewAccessKeys(a);
+        if (k.some((x) => x.access_key.permission === "FullAccess")) withKeys.push(a);
+      } catch {
+        /* missing account: ignore */
+      }
+    }
+    if (withKeys.length) return { ...base, singleKey: true, summary: `${account} is a near-plugins contract whose super admin ${withKeys.join(", ")} holds full-access keys` };
+    return { ...base, singleKey: null, summary: `${account} is a near-plugins contract (super admins: ${admins.join(", ") || "none"}); its other roles were not resolved` };
+  }
   return { ...base, singleKey: null, summary: `${account} is a contract with no full-access keys; who controls it was not resolved` };
 }
 
@@ -143,6 +160,9 @@ export async function resolveActor(rpc: Rpc, account: string): Promise<ActorInfo
 const DIRECT_OWNER_VIEWS = ["get_owner", "get_owner_id", "owner_id", "owner", "get_owner_account_id", "owner_get", "get_admin", "admin"];
 const OBJECT_VIEWS = ["get_config", "get_metadata", "get_contract_state", "get_contract_info", "get_info", "metadata", "get_state", "contract_metadata", "get_contract_metadata"];
 const OWNER_KEY = /^(owner|owner_id|owner_account_id|admin|admin_id|admin_account_id|governance|governance_id|governance_account_id|dao|dao_id|dao_account_id|super_admin|manager|manager_id|operator_account_id)$/i;
+/** near-plugins Upgradable deployer role names seen on mainnet (UpgradableCodeDeployer: Near-One,
+ *  Rhea; Upgrader: intents.near). Other role names are ignored; super admins are always counted. */
+export const SELF_DEPLOY_ROLES = ["UpgradableCodeDeployer", "Upgrader", "CodeDeployer"];
 const ACCOUNT_ID = /^(?=.{2,64}$)(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
 
 export interface OwnerCandidate {
@@ -180,7 +200,9 @@ export async function discoverOwners(rpc: Rpc, account: string, exports: string[
     for (const a of v ?? []) add(a, "acl_get_super_admins() (near-plugins ACL super admin)", ev.view(n, account, "acl_get_super_admins", args));
     if (exports.includes("acl_role_variants") && exports.includes("acl_get_grantees")) {
       const roles = (await rpc.tryView<string[]>(account, "acl_role_variants")) ?? [];
-      for (const role of roles.filter((r) => /deploy|upgrad|code/i.test(r) && !/stager/i.test(r))) {
+      // Only roles that deploy *this* contract's code. Names like TokenDeployer/TokenUpgrader (e.g.
+      // on omni.bridge.near) manage other contracts and are deliberately not matched.
+      for (const role of roles.filter((r) => SELF_DEPLOY_ROLES.includes(r))) {
         const gArgs = { role, skip: 0, limit: 20 };
         const g = await rpc.tryView<string[]>(account, "acl_get_grantees", gArgs);
         for (const a of g ?? []) add(a, `acl_get_grantees(${role}) (near-plugins ACL role)`, ev.view(n, account, "acl_get_grantees", gArgs));
