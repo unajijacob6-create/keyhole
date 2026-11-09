@@ -120,6 +120,102 @@ export const TAMPERS: Tamper[] = [
       r.code.honest = "11111111111111111111111111111111";
     },
   },
+  // ── the TEE review (R1) ──
+  {
+    name: "ai_review dropped while the recording still shows the TEE review",
+    expect: [/^recording has every required step .*MISSING ai_review \(the recording has a TEE review\)/, /^ai_review: MISSING from the recording, which shows a TEE review \(high\) and registry AiReview #16/, /^TEE review .* · no ai_review transaction on chain/],
+    apply: (r) => {
+      delete r.tx.ai_review;
+      delete r.signers.ai_review;
+      delete r.heights.ai_review;
+    },
+  },
+  {
+    name: "review.risk edited (high → low)",
+    expect: [/^TEE review .* · .*on-chain verdict_summary "high: New 'sweep'.*" != recorded "low: New 'sweep'/, /an alert was graded with a different review \(high: /],
+    apply: (r) => {
+      r.review.risk = "low";
+    },
+  },
+  {
+    name: "review.summary edited",
+    expect: [/^TEE review .* · .*on-chain verdict_summary "high: New 'sweep'.*" != recorded "high: Looks fine/],
+    apply: (r) => {
+      r.review.summary = "Looks fine.";
+    },
+  },
+  {
+    name: "review.model edited",
+    expect: [/^TEE review \(some-other-model\).* · .*on-chain model deepseek-ai\/DeepSeek-V4\.1-Flash-1017 \/ receipt model deepseek-ai\/DeepSeek-V4\.1-Flash-1017 != recorded some-other-model/],
+    apply: (r) => {
+      r.review.model = "some-other-model";
+    },
+  },
+  {
+    name: "review.registry_id edited",
+    expect: [/^TEE review .* · attest\(\) returned registry id 16 != recorded 15/],
+    apply: (r) => {
+      r.review.registry_id = 15;
+    },
+  },
+  // ── when the hatch was armed (R2) ──
+  {
+    name: "hatch.created_height moved after the deciding vote",
+    expect: [/^hatch armed at block 276976600: .*created_height 276976600 is not before the hatch fired \(block 276976501\)/, /is not before add_proposal \(block 276976482\)/],
+    apply: (r) => {
+      r.hatch.created_height = 276976600;
+    },
+  },
+  {
+    name: "hatch.created_height moved between the proposal and the fire (the recording says it was armed first)",
+    expect: [/^hatch armed at block 276976490: .*the recording says the hatch was armed before the proposal, but created_height 276976490 is not before add_proposal \(block 276976482\)/],
+    apply: (r) => {
+      r.hatch.created_height = 276976490;
+    },
+  },
+  {
+    name: "hatch.created_height moved before its key was added",
+    expect: [/^hatch armed at block 276976450: .*no key ed25519:qknUneCNzDGocmGbx2huFJYBUfqfwZXrh8RaKViYWfP on alice\.keyhole\.testnet at created_height 276976450/, /AddKey at 276976457 is after created_height 276976450/],
+    apply: (r) => {
+      r.hatch.created_height = 276976450;
+    },
+  },
+  // ── the guardian's verdict, re-derived (R3) ──
+  {
+    name: "alerts emptied",
+    expect: [/^guardian grade re-derived .* · the recording has no alerts; no alert records firing the hatch_fired transaction; nothing to compare verdicts\.pending with/],
+    apply: (r) => {
+      r.alerts = [];
+    },
+  },
+  {
+    name: "verdicts.pending flipped to OK",
+    expect: [/^guardian grade re-derived .* · verdicts\.pending OK \[\] != re-derived STOP \[UNVERIFIED_PENDING_CODE NEW_MONEY_PATH AI_REVIEW_HIGH\]/],
+    apply: (r) => {
+      r.verdicts.pending = { verdict: "OK", flags: [], headline: "OK: nothing to see." };
+    },
+  },
+  {
+    name: "an alert's recorded grade loses a flag",
+    expect: [/^guardian grade re-derived .* · alert 0: recorded grade STOP \[UNVERIFIED_PENDING_CODE NEW_MONEY_PATH\] != re-derived STOP \[UNVERIFIED_PENDING_CODE NEW_MONEY_PATH AI_REVIEW_HIGH\]/],
+    apply: (r) => {
+      r.alerts[0].assessment.grade.flags = ["UNVERIFIED_PENDING_CODE", "NEW_MONEY_PATH"];
+    },
+  },
+  {
+    name: "an alert's review removed while its STOP grade is kept",
+    expect: [/^guardian grade re-derived .* · alert 0: recorded grade STOP \[UNVERIFIED_PENDING_CODE NEW_MONEY_PATH AI_REVIEW_HIGH\] != re-derived STOP \[UNVERIFIED_PENDING_CODE NEW_MONEY_PATH\]/],
+    apply: (r) => {
+      r.alerts[0].assessment.review = null;
+    },
+  },
+  {
+    name: "an alert claims different code was graded",
+    expect: [/^guardian grade re-derived .* · alert 1: graded .* \(1 bytes\), not .* \(113387 bytes\)/],
+    apply: (r) => {
+      r.alerts[1].assessment.pending_size = 1;
+    },
+  },
   {
     name: "recorded outcome says Alice still had funds in the vault after the hatch",
     expect: [/^recorded balances, outcome and alerts match the chain.* · balances\.alice_in_vault_after_fire 1 != 0/],
