@@ -24,7 +24,7 @@ bash contracts/test.sh
 The script:
 
 1. builds each crate with `cargo near build non-reproducible-wasm --locked` (cargo-near 0.23.0; it runs `wasm-opt`, embeds the ABI and the NEP-330 metadata) and copies the result to `out/`. The guarded vault is built once per variant (`--no-default-features [--features <f>]`) into its six named wasm;
-2. inspects each wasm in node, and fails if `contract_source_metadata` is missing. For the registry and demo vaults it also fails on any import of a host function that deploys or switches code (`promise_batch_action_deploy_contract`, `*_deploy_global_contract*`, `*_use_global_contract*`). The guarded-vault wasm legitimately import the deploy host call (their `upgrade` deploys), so for those the check instead decodes the code section, builds the call graph, and asserts that `upgrade` is the **only** export that can reach the deploy host call (and that `upgrade` is exported and deploy is imported). The decoder fails closed on any opcode it does not understand, so it cannot silently miss a path;
+2. inspects each wasm in node, and fails if `contract_source_metadata` is missing. For the registry and demo vaults it also fails on any import of a host function that deploys or switches code (`promise_batch_action_deploy_contract`, `*_deploy_global_contract*`, `*_use_global_contract*`). The guarded-vault wasm legitimately import the deploy host call (their `upgrade` deploys), so for those the check instead decodes the code section, builds the call graph, and asserts that `upgrade` is the **only** export that can reach the deploy host call, that no export reaches any other code-changing import, and that `upgrade` is exported and deploy is imported. The analyzer is `wasm-reach.cjs` (plain node, no npm install; its tests in `wasm-reach.test.cjs` run first with `node --test`). It computes reachability as the backward closure from the import, treats a `call_indirect` as a possible call to every table / `ref.func` function of the same signature, reports a `start` function as `(start)`, and throws on any opcode, valtype or section encoding it does not understand. Those choices only ever add paths, so a "nothing else reaches deploy" answer holds for the code as built;
 3. runs the unit tests (`cargo test --workspace --lib`), then the guarded-vault variant unit tests (one `--features` build each);
 4. runs the near-workspaces sandbox tests (`registry/tests/sandbox.rs`, `demo-vault-v2/tests/silent_upgrade.rs`, `guarded-vault/tests/upgrade.rs`).
 
@@ -166,7 +166,8 @@ Methods:
 - `deposit()` (payable): credits the attached deposit to the caller; returns the new balance.
 - `withdraw_all()` (payable): requires exactly 1 yoctoNEAR (`near_sdk::assert_one_yocto`), sends the
   caller's whole balance back to `predecessor_account_id`, clears the record, and returns the amount.
-  A private `on_withdraw` callback restores the full recorded balance if the transfer fails. The
+  A private `on_withdraw` callback restores the full recorded balance if the transfer fails (the
+  transfer runs in a later receipt, so the returned amount is what it tried to send). The
   1-yoctoNEAR gate is the standard full-access-key check: a function-call access key cannot attach a
   deposit, so only a full-access signature — or a relayed NEP-366 delegate action the user signed with
   a full-access key — can call it. Under a relayed delegate action `predecessor_account_id` is the
@@ -191,21 +192,34 @@ enabling two makes the build fail with a `compile_error!`. The honest default is
 | `benign-v2` | `guarded_vault_benign_v2.wasm` | `1.1.0` | view `get_stats() -> (U128, u32)` | a benign upgrade Keyhole should pass |
 | `evil-sweep` | `guarded_vault_evil_sweep.wasm` | `1.1.0` | `sweep()`, callable by anyone, sends `total` to a compiled-in beneficiary | a new money path |
 | `evil-addkey` | `guarded_vault_evil_addkey.wasm` | `1.1.0` | `add_owner_key(public_key)`, no access check, adds a full-access key | a new key path |
-| `evil-owner` | `guarded_vault_evil_owner.wasm` | `1.1.0` | `set_owner(owner_id)`, no access check | a new code path one hop away (seize owner, then `upgrade`) |
+| `evil-owner` | `guarded_vault_evil_owner.wasm` | `1.1.0` | `set_owner(owner_id)`, no access check | a code path one hop away (seize owner, then `upgrade`); statically only a new method name |
 | `evil-fee` | `guarded_vault_evil_fee.wasm` | `1.1.0` | none | `withdraw_all` skims half; a pure logic change a wasm export/host-call diff cannot see |
 
 `evil-sweep`'s beneficiary is fixed at compile time with `option_env!("SWEEP_TO")`, defaulting to
-`keyhole-attacker.testnet`. `evil-fee` exists to measure, honestly, what a static wasm diff misses:
-its exports and host imports are identical to the honest build (the import/reachability check reports
-the same surface), yet it steals half of every withdrawal.
+`keyhole-attacker.testnet`. Two variants exist to measure, honestly, what a static wasm diff misses.
+`evil-fee`'s exports and host imports are identical to the honest build, yet it steals half of every
+withdrawal. `evil-owner` adds one export, but `set_owner` only writes state: it reaches no host call
+the honest build lacks, so a capability diff sees a new method name and nothing more (the danger is
+that the new owner can then call `upgrade`). What `exportDiff` in `packages/core/src/wasm.ts` reports
+for each variant against `guarded_vault.wasm` (run 2026-11-09 on the wasm in `out/`):
+
+| Variant | Added methods | Added capabilities | Newly reachable |
+|---|---|---|---|
+| `benign-v2` | `get_stats` | — | — |
+| `evil-sweep` | `sweep` | — | `transfer` from `sweep` |
+| `evil-addkey` | `add_owner_key` | `add_full_access_key` | — |
+| `evil-owner` | `set_owner` | — | — |
+| `evil-fee` | — | — | — |
 
 ### Why `upgrade` is the only export that reaches deploy
 
 Like the demo vaults, the guarded vault moves value with the low-level `env::promise_batch_*` host
 calls, not near-sdk's high-level `Promise` (which would link every action host function and blur which
 capabilities the code uses). The one deploy capability it imports is reached only by `upgrade`. The
-build (step 2 above) proves this by call-graph reachability rather than a bare export list, so a hidden
-deploy from any other method would fail the build.
+build (step 2 above) checks this by call-graph reachability rather than a bare export list, so a
+deploy reachable from any other method, directly, through a table, or from a start function, fails
+the build. (Reachability says a path exists in the code; the access check inside `upgrade` is not
+something it can see, which is why `upgrade_is_owner_only` is a unit test.)
 
 ### Sandbox tests (`guarded-vault/tests/upgrade.rs`)
 
@@ -216,9 +230,23 @@ deploy from any other method would fail the build.
    as the call args (no JSON). The code is replaced in place, state carries over with no migration, the
    new `sweep` export appears, and `sweep` moves the whole `total` to the compiled-in beneficiary
    (the test creates `keyhole-attacker.testnet` in the sandbox so the transfer lands).
-3. **NEP-366 delegate action** (relayer submits the user's signed `withdraw_all`): skipped. near-workspaces
-   0.24 has no `SignedDelegate` / meta-transaction builder, so it cannot be exercised in the sandbox. The
-   `@keyhole/hatch` package verifies the relayed-delegate path live on testnet instead.
+3. **Real Sputnik DAO upgrade**: the vault's owner is a Sputnik v2 DAO running the testnet factory's
+   default code (`guarded-vault/tests/fixtures/sputnikdao2_testnet.wasm`; provenance in the fixtures
+   README) with a two-member council. A member stores the evil-sweep blob (`store_blob` returns its
+   hash), proposes `UpgradeRemote { receiver_id: vault, method_name: "upgrade", hash }`, and the council
+   votes. After the first approval nothing has changed; the second approval executes the proposal in the
+   same transaction, Sputnik passes the stored blob to `upgrade` as raw input, and the vault's code hash
+   becomes exactly the proposal hash. The DAO does not wait on its call into the vault, so the test
+   checks every receipt for failure rather than trusting the vote transaction's status.
+4. **NEP-366 delegate action**: alice signs `withdraw_all` + 1 yoctoNEAR as a `SignedDelegateAction`
+   with her full-access key and a separate relayer submits it. The vault logs alice as the predecessor,
+   her NEAR rises by exactly her 5 NEAR deposit (the relayer pays the gas and the 1 yoctoNEAR), her
+   key nonce moves to the signed nonce, and resubmitting the same signed delegate fails with
+   `DelegateActionInvalidNonce`. near-workspaces 0.24 has no delegate-action builder, so the test signs
+   the delegate and the relayer's transaction with `near-primitives` and sends them over JSON-RPC.
+5. **Function-call key**: a function-call access key limited to `withdraw_all` cannot withdraw: with the
+   1 yoctoNEAR the transaction is rejected (`DepositWithFunctionCall`), without it `assert_one_yocto`
+   rejects the call, and a delegate action signed by that key fails with `DepositWithFunctionCall`.
 
 ## Eval fixtures (`fixtures/`): testnet only
 

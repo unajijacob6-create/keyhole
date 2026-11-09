@@ -41,3 +41,10 @@ near-workspaces = { workspace = true }
 tokio = { workspace = true }
 serde_json = { workspace = true }
 anyhow = { workspace = true }
+# For the NEP-366 sandbox test only: near-workspaces 0.24 has no delegate-action builder, so the test
+# builds and signs the SignedDelegateAction and the relayer's transaction itself and sends it over
+# JSON-RPC. Same versions near-workspaces 0.24 already pulls in (no new crates in Cargo.lock).
+near-primitives = "0.38"
+near-crypto = "0.38"
+near-jsonrpc-client = "0.23"
+near-jsonrpc-primitives = "0.38"
