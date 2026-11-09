@@ -3,7 +3,6 @@
 // deterministic upgrade rules. Optional: a private TEE review of the diff summary.
 import {
   analyzeWasm,
-  base64ToBytes,
   codeHash,
   effectiveHash,
   fetchPendingCode,
@@ -11,6 +10,7 @@ import {
   registryLookup,
   RpcAnswerError,
   sourcescan,
+  stagedCode,
   type Rpc,
   type StagedUpgrade,
   type TxApi,
@@ -56,19 +56,6 @@ export interface AssessDeps {
   now?: () => Date;
 }
 
-/** Fetch near-plugins staged code. The view returns Option<Vec<u8>> as a JSON byte array or base64. */
-async function stagedCode(rpc: Rpc, target: string): Promise<Uint8Array | null> {
-  try {
-    const v = await rpc.view<unknown>(target, "up_staged_code");
-    if (Array.isArray(v)) return new Uint8Array(v as number[]);
-    if (typeof v === "string") return base64ToBytes(v);
-    return null;
-  } catch (e) {
-    if (e instanceof RpcAnswerError) return null;
-    throw e;
-  }
-}
-
 export function describeDiff(g: UpgradeGrade): string[] {
   const d = g.diff;
   if (!d) return [];
@@ -111,8 +98,8 @@ export async function assessPending(
       }
     }
     if (!pendingBytes) {
-      const staged = await stagedCode(rpc, o.target);
-      if (staged && (await codeHash(staged)) === o.hash) {
+      const staged = await stagedCode(rpc, o.target, o.hash);
+      if (staged) {
         pendingBytes = staged;
         source = { kind: "up_staged_code" };
       }

@@ -18,6 +18,7 @@ import {
   RpcAnswerError,
   sourceMetadataFromWasm,
   sourcescan,
+  stagedCode,
   stagedUpgrade,
   txApi,
 } from "../packages/core/src/index.ts";
@@ -58,17 +59,7 @@ for (const dao of DAOS) {
         const blob = await fetchPendingCode({ api, dao, hash: p.code_hash, maxPages: 20 });
         const live = (await rpc.viewCode(p.target)).code;
         let bytes = blob?.code ?? null;
-        if (!bytes) {
-          try {
-            const staged = await rpc.view<number[] | null>(p.target, "up_staged_code");
-            if (Array.isArray(staged)) {
-              const b = new Uint8Array(staged);
-              if ((await codeHash(b)) === p.code_hash) bytes = b;
-            }
-          } catch (e) {
-            if (!(e instanceof RpcAnswerError)) throw e;
-          }
-        }
+        if (!bytes) bytes = await stagedCode(rpc, p.target, p.code_hash);
         const ss = await sourcescan(rpc, p.target, p.code_hash);
         const g = gradeUpgrade({ target: p.target, live_hash: await codeHash(live), pending_hash: p.code_hash, live: analyzeWasm(live), pending: bytes ? analyzeWasm(bytes) : null, verified: { reproducible: null, sourcescan: ss.status === "verified" ? true : ss.status === "unknown" ? null : false }, review: null });
         row.grade = { verdict: g.verdict, flags: g.flags, headline: g.headline, reasons: g.reasons };
