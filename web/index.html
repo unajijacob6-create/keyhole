@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Keyhole — who can change this NEAR contract?</title>
+    <meta name="description" content="Keyhole shows who can change a NEAR contract's code, whether the running code is the verified code, and when it last changed. From public RPC, in your browser." />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      try { const t = localStorage.getItem("kh-theme"); if (t) document.documentElement.dataset.theme = t; } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="top">
+      <div class="wrap top-inner">
+        <a class="brand" href="#/" aria-label="Keyhole home"><span aria-hidden="true">⌐o</span> keyhole</a>
+        <nav aria-label="Primary">
+          <a href="#table">Trust table</a>
+          <a href="#attack">Attack replay</a>
+          <a href="#sign">Before you sign</a>
+          <a href="https://github.com/unajijacob6-create/keyhole">GitHub</a>
+          <button id="theme" class="ghost" type="button" aria-label="Toggle colour theme">Theme</button>
+        </nav>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero wrap" aria-labelledby="h1">
+        <div class="hero-copy">
+          <h1 id="h1">Who can change the contract you're about to trust?</h1>
+          <p class="lede" id="lede">On NEAR, a contract with no keys can still replace its own code. Keyhole shows who holds that power, and whether the code is verified.</p>
+          <form id="inspect-form" class="search" role="search" autocomplete="off">
+            <label for="q" class="sr-only">Paste a NEAR account or transaction</label>
+            <input id="q" name="q" type="text" inputmode="text" spellcheck="false" placeholder="Paste a NEAR account or transaction" />
+            <button type="submit" class="primary">Inspect</button>
+          </form>
+          <p class="quiet-links"><a href="#attack">Watch the upgrade attack</a><a href="#table">Trust table</a></p>
+        </div>
+        <div class="hero-art">
+          <p class="sr-only">Decorative: a keyhole drawn with the characters of a live contract code hash, with a feed of recent contract changes inside it.</p>
+          <pre id="art" aria-hidden="true"></pre>
+          <p class="art-caption" id="art-caption">Characters: a live mainnet code hash.</p>
+        </div>
+      </section>
+      <section id="result" class="wrap result" aria-live="polite" hidden></section>
+      <section id="table" class="wrap section" aria-labelledby="table-h"></section>
+      <section id="how" class="wrap section" aria-labelledby="how-h"></section>
+      <section id="attack" class="wrap section" aria-labelledby="attack-h"></section>
+      <section id="sign" class="wrap section" aria-labelledby="sign-h"></section>
+      <section id="api" class="wrap section" aria-labelledby="api-h"></section>
+    </main>
+    <footer class="wrap foot">
+      <p>Keyhole describes trust assumptions from public on-chain data. It is not a security audit, and owner resolution is heuristic and marked as inferred. <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/GRADING.md">How grades work</a> · <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/SECURITY.md">Trust model</a> · Built at NEAR HACKATHON.</p>
+    </footer>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

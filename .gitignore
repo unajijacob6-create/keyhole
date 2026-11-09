@@ -9,3 +9,5 @@ web/playwright-report/
 .keyhole-cache/
 scratch/
 data/feed-*.jsonl
+web/test-results/
+web/dist/

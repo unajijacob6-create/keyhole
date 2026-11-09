@@ -1,0 +1,534 @@
+{
+ "schema": "keyhole.survey/1",
+ "generatedAt": "2026-11-09T17:41:39.184Z",
+ "atBlock": 223799538,
+ "network": "mainnet",
+ "rows": [
+  {
+   "account": "intents.near",
+   "verdict": "CAUTION",
+   "class": "UNRESOLVED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "STALE_VERIFICATION"
+   ],
+   "headline": "Code can be replaced; who controls that was not resolved. Current code is not source-verified.",
+   "codeHash": "BtA1BEFNS619KkvXFsgcpQ21Tb5yMm32aaUkn7xNothk",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO intents.sputnik-dao.near: 3 of 5; ctl-intents.near (unresolved)",
+   "sourcescan": "stale",
+   "nep330": "build_info",
+   "lastChange": {
+    "status": "found",
+    "height": 218982375,
+    "date": "2026-10-07"
+   },
+   "explorer": "https://nearblocks.io/address/intents.near",
+   "recheck": "npx keyhole inspect intents.near --evidence"
+  },
+  {
+   "account": "v1.signer",
+   "verdict": "CAUTION",
+   "class": "UNRESOLVED",
+   "flags": [],
+   "headline": "Code can be replaced; who controls that was not resolved. Current code is source-verified.",
+   "codeHash": "DAE5ng4ZFR2ctMx9SizQBqmGkVbKUutgZ4ZECD4R8Sm9",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "deploy capability, no method found",
+   "sourcescan": "verified",
+   "nep330": "build_info",
+   "lastChange": {
+    "status": "found",
+    "height": 220203254,
+    "date": "2026-10-16"
+   },
+   "explorer": "https://nearblocks.io/address/v1.signer",
+   "recheck": "npx keyhole inspect v1.signer --evidence"
+  },
+  {
+   "account": "wrap.near",
+   "verdict": "CAUTION",
+   "class": "UNRESOLVED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced; who controls that was not resolved. Current code is not source-verified.",
+   "codeHash": "DL2f5xmZ44cQRP6vBMt94rvseH5d5KKnAGis2WkTAsh1",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "deploy capability, no method found",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/wrap.near",
+   "recheck": "npx keyhole inspect wrap.near --evidence"
+  },
+  {
+   "account": "usdt.tether-token.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (2 of 3). Current code is not source-verified.",
+   "codeHash": "51tHbmQkA8qAi8c6MoUor5mCx6CnL6tZyC2sqQifKPZC",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "multisig tether.multisafe.near: 2 of 3",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/usdt.tether-token.near",
+   "recheck": "npx keyhole inspect usdt.tether-token.near --evidence"
+  },
+  {
+   "account": "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+   "verdict": "CAUTION",
+   "class": "CUSTODIAL",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced by a single key. Current code is not source-verified.",
+   "codeHash": "DVJx7F3dHEHJYwpYPwXHu8K9Uo7h4kXFcALucY5oNX8q",
+   "codeSource": "local",
+   "fullAccessKeys": 1,
+   "controller": "1 full-access key on the account",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
+   "recheck": "npx keyhole inspect 17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1 --evidence"
+  },
+  {
+   "account": "v2.ref-finance.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is not source-verified.",
+   "codeHash": "GZmkbfVLcN7ErxU9RDxP24YTaKmoVixhM6XyycP15Qvi",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO ref-finance.sputnik-dao.near: 3 of 5",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "found",
+    "height": 222301528,
+    "date": "2026-10-30"
+   },
+   "explorer": "https://nearblocks.io/address/v2.ref-finance.near",
+   "recheck": "npx keyhole inspect v2.ref-finance.near --evidence"
+  },
+  {
+   "account": "dclv2.ref-labs.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is not source-verified.",
+   "codeHash": "3G34Nhjmir5JPYPtijaA9iCNnHDPR7h3wfC9H77woEGo",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO ref-finance.sputnik-dao.near: 3 of 5",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "found",
+    "height": 223137957,
+    "date": "2026-11-05"
+   },
+   "explorer": "https://nearblocks.io/address/dclv2.ref-labs.near",
+   "recheck": "npx keyhole inspect dclv2.ref-labs.near --evidence"
+  },
+  {
+   "account": "token.v2.ref-finance.near",
+   "verdict": "CAUTION",
+   "class": "UNRESOLVED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced; who controls that was not resolved. Current code is not source-verified.",
+   "codeHash": "HagtKcVnSk6eJrg9e4X4Rpvw4ACCrpJjkrdWavLNtggZ",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "deploy capability, no method found",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/token.v2.ref-finance.near",
+   "recheck": "npx keyhole inspect token.v2.ref-finance.near --evidence"
+  },
+  {
+   "account": "contract.main.burrow.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is not source-verified.",
+   "codeHash": "6Nek1MZ8cwJJ2xMQAUWup9V5AToYS9rkTxJfwo6BCpFa",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO burrow.sputnik-dao.near: 3 of 5",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/contract.main.burrow.near",
+   "recheck": "npx keyhole inspect contract.main.burrow.near --evidence"
+  },
+  {
+   "account": "meta-pool.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 4). Current code is not source-verified.",
+   "codeHash": "J6pS9R23vzbwxGB8eMq4qrn8UhciEYHsVbR9UJPyLNxh",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO stnear.sputnik-dao.near: 3 of 4",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/meta-pool.near",
+   "recheck": "npx keyhole inspect meta-pool.near --evidence"
+  },
+  {
+   "account": "linear-protocol.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_BUILD_INFO"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is not source-verified.",
+   "codeHash": "5LiDVDd1gh7ofVNbiA9VXrWwkv2m8tw46jZqYeuoC3SG",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO linear.sputnik-dao.near: 3 of 5",
+   "sourcescan": "none",
+   "nep330": "metadata",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/linear-protocol.near",
+   "recheck": "npx keyhole inspect linear-protocol.near --evidence"
+  },
+  {
+   "account": "v2-nearx.stader-labs.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_BUILD_INFO"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is not source-verified.",
+   "codeHash": "CRcNFqDvf1zwhZ9NXzgs5kNPZ1QFxz71TQrbdCVqP2ni",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO stader-nearx.sputnik-dao.near: 3 of 5",
+   "sourcescan": "none",
+   "nep330": "metadata",
+   "lastChange": {
+    "status": "found",
+    "height": 221981748,
+    "date": "2026-10-28"
+   },
+   "explorer": "https://nearblocks.io/address/v2-nearx.stader-labs.near",
+   "recheck": "npx keyhole inspect v2-nearx.stader-labs.near --evidence"
+  },
+  {
+   "account": "lst.rhealab.near",
+   "verdict": "CAUTION",
+   "class": "UNRESOLVED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "STALE_VERIFICATION"
+   ],
+   "headline": "Code can be replaced; who controls that was not resolved. Current code is not source-verified.",
+   "codeHash": "EPLT4C61pkVYf5Km6dC4X9x5PMo6rfBwuEwo7vgKpmuv",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO ref-finance.sputnik-dao.near: 3 of 5; rhealab.near (1 full-access key)",
+   "sourcescan": "stale",
+   "nep330": "build_info",
+   "lastChange": {
+    "status": "found",
+    "height": 222206525,
+    "date": "2026-10-30"
+   },
+   "explorer": "https://nearblocks.io/address/lst.rhealab.near",
+   "recheck": "npx keyhole inspect lst.rhealab.near --evidence"
+  },
+  {
+   "account": "omni.bridge.near",
+   "verdict": "OK",
+   "class": "GOVERNED",
+   "flags": [],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is source-verified.",
+   "codeHash": "F2no3vqrFxm2c34mZqoMNawhRYYHbp22WuRqN6vEd3KP",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO rainbowbridge.sputnik-dao.near: 3 of 5",
+   "sourcescan": "verified",
+   "nep330": "build_info",
+   "lastChange": {
+    "status": "found",
+    "height": 222041233,
+    "date": "2026-10-28"
+   },
+   "explorer": "https://nearblocks.io/address/omni.bridge.near",
+   "recheck": "npx keyhole inspect omni.bridge.near --evidence"
+  },
+  {
+   "account": "factory.bridge.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is not source-verified.",
+   "codeHash": "CC9dZfmmnYtYCtPzwEdgBmT1wpWYTAL5nNvK4RHEUgAg",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO rainbowbridge.sputnik-dao.near: 3 of 5",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/factory.bridge.near",
+   "recheck": "npx keyhole inspect factory.bridge.near --evidence"
+  },
+  {
+   "account": "priceoracle.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is not source-verified.",
+   "codeHash": "4sUttxKK4gJpWr1mhfNddBt497ZiXsRMbTYvCeQQbjR2",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO priceoracle.sputnik-dao.near: 3 of 5",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/priceoracle.near",
+   "recheck": "npx keyhole inspect priceoracle.near --evidence"
+  },
+  {
+   "account": "sputnik-dao.near",
+   "verdict": "CAUTION",
+   "class": "CUSTODIAL",
+   "flags": [],
+   "headline": "Code can be replaced by a single key. Current code is source-verified.",
+   "codeHash": "BXd5idTXSnC7WRfxHmi7z4crw2F5WXQJ6MZUEv8DfnnY",
+   "codeSource": "local",
+   "fullAccessKeys": 3,
+   "controller": "3 full-access keys on the account",
+   "sourcescan": "verified",
+   "nep330": "build_info",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/sputnik-dao.near",
+   "recheck": "npx keyhole inspect sputnik-dao.near --evidence"
+  },
+  {
+   "account": "social.near",
+   "verdict": "CAUTION",
+   "class": "CUSTODIAL",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced by a single key. Current code is not source-verified.",
+   "codeHash": "B5Yf5EquM36fGu3JNAD2K83fT6L4dpzcx8mYLnkjJJbS",
+   "codeSource": "local",
+   "fullAccessKeys": 1,
+   "controller": "1 full-access key on the account",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/social.near",
+   "recheck": "npx keyhole inspect social.near --evidence"
+  },
+  {
+   "account": "aurora",
+   "verdict": "CAUTION",
+   "class": "CUSTODIAL",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced by a single key. Current code is not source-verified.",
+   "codeHash": "HrtBWvCMmVXRLG9vsYAFT7LfJ6mZtCSNTvYnXMF6fwzT",
+   "codeSource": "local",
+   "fullAccessKeys": 1,
+   "controller": "1 full-access key on the account",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "found",
+    "height": 218961590,
+    "date": "2026-10-07"
+   },
+   "explorer": "https://nearblocks.io/address/aurora",
+   "recheck": "npx keyhole inspect aurora --evidence"
+  },
+  {
+   "account": "token.sweat",
+   "verdict": "OK",
+   "class": "GOVERNED",
+   "flags": [],
+   "headline": "Code can be replaced only with multiple approvals (3 of 5). Current code is source-verified.",
+   "codeHash": "9EUtV11wgCZ4N16xa24ETnn8E78GjeSit1r7gMyQZ6Zi",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO sweat-multisig.sputnik-dao.near: 3 of 5",
+   "sourcescan": "verified",
+   "nep330": "build_info",
+   "lastChange": {
+    "status": "found",
+    "height": 219143902,
+    "date": "2026-10-08"
+   },
+   "explorer": "https://nearblocks.io/address/token.sweat",
+   "recheck": "npx keyhole inspect token.sweat --evidence"
+  },
+  {
+   "account": "game.hot.tg",
+   "verdict": "CAUTION",
+   "class": "CUSTODIAL",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_BUILD_INFO"
+   ],
+   "headline": "Code can be replaced by a single key. Current code is not source-verified.",
+   "codeHash": "GH7Zs8zab1YHiTkdveDj18Uu2je6fpiXcHmXkqYNCuew",
+   "codeSource": "local",
+   "fullAccessKeys": 66,
+   "controller": "66 full-access keys on the account",
+   "sourcescan": "none",
+   "nep330": "metadata",
+   "lastChange": {
+    "status": "found",
+    "height": 215754995,
+    "date": "2026-09-15"
+   },
+   "explorer": "https://nearblocks.io/address/game.hot.tg",
+   "recheck": "npx keyhole inspect game.hot.tg --evidence"
+  },
+  {
+   "account": "x.paras.near",
+   "verdict": "CAUTION",
+   "class": "CUSTODIAL",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced by a single key. Current code is not source-verified.",
+   "codeHash": "J34Q5DybRqaTbzSnCtEtm6oSP2cCvDvAHBA831TLUZ4E",
+   "codeSource": "local",
+   "fullAccessKeys": 1,
+   "controller": "1 full-access key on the account",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "found",
+    "height": 220909693,
+    "date": "2026-10-21"
+   },
+   "explorer": "https://nearblocks.io/address/x.paras.near",
+   "recheck": "npx keyhole inspect x.paras.near --evidence"
+  },
+  {
+   "account": "tkn.near",
+   "verdict": "CAUTION",
+   "class": "CUSTODIAL",
+   "flags": [
+    "UNVERIFIED_CODE",
+    "NO_SOURCE_METADATA"
+   ],
+   "headline": "Code can be replaced by a single key. Current code is not source-verified.",
+   "codeHash": "GqJ8R7fWXGvPQYTUcVBNbbTiMs3fZTdZAJVbQGvJCq9N",
+   "codeSource": "local",
+   "fullAccessKeys": 1,
+   "controller": "1 full-access key on the account",
+   "sourcescan": "none",
+   "nep330": "none",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/tkn.near",
+   "recheck": "npx keyhole inspect tkn.near --evidence"
+  },
+  {
+   "account": "npro.nearmobile.near",
+   "verdict": "CAUTION",
+   "class": "GOVERNED",
+   "flags": [
+    "UNVERIFIED_CODE"
+   ],
+   "headline": "Code can be replaced only with multiple approvals (2 of 2). Current code is not source-verified.",
+   "codeHash": "9tpkUuPKwzFwFqX2drUMPQXKNEqsLBBytEtT2CKzTV4W",
+   "codeSource": "local",
+   "fullAccessKeys": 0,
+   "controller": "DAO npro-admin.sputnik-dao.near: 2 of 2",
+   "sourcescan": "none",
+   "nep330": "build_info",
+   "lastChange": {
+    "status": "unchanged-since",
+    "sinceDate": "2026-07-17"
+   },
+   "explorer": "https://nearblocks.io/address/npro.nearmobile.near",
+   "recheck": "npx keyhole inspect npro.nearmobile.near --evidence"
+  }
+ ]
+}

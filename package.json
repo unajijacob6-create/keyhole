@@ -5,7 +5,8 @@
   "description": "See who can change the contract you're about to trust (NEAR).",
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "web"
   ],
   "scripts": {
     "factcheck": "tsx scripts/factcheck.ts",
@@ -15,7 +16,9 @@
     "inspect": "keyhole inspect",
     "fixtures:record": "tsx scripts/record-fixtures.ts",
     "setup:testnet": "tsx scripts/setup-testnet.ts",
-    "watch": "tsx watcher/src/index.ts"
+    "watch": "tsx watcher/src/index.ts",
+    "build:web": "npm run -w @keyhole/web build",
+    "test:web": "npm run build:web && node web/tests/run-smoke.mjs"
   },
   "engines": {
     "node": ">=22"
@@ -26,7 +29,8 @@
     "bs58": "^6.0.0",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "playwright": "1.63.0"
   },
   "dependencies": {
     "near-api-js": "^7.4.0"
