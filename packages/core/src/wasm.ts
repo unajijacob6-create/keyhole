@@ -36,6 +36,9 @@ export const HOST_CAPABILITIES: Record<string, Capability> = {
   promise_batch_action_delete_key: "delete_key",
   promise_batch_action_delete_account: "delete_account",
   promise_batch_action_transfer: "transfer",
+  // TransferToGasKey moves NEAR from this account into a gas key's balance (nearcore
+  // core/primitives/src/action/mod.rs, TransferToGasKeyAction { public_key, deposit }).
+  promise_batch_action_transfer_to_gas_key: "transfer",
   promise_batch_action_function_call: "function_call",
   promise_batch_action_function_call_weight: "function_call",
   promise_create: "function_call",
