@@ -298,3 +298,55 @@ pre.code { background: #15122a; color: #e6e2ff; border-radius: var(--r-sm); padd
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .js .reveal { opacity: 1; transform: none; }
 }
+
+/* ── trust board ── */
+.board-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: var(--s4); margin-bottom: var(--s5); }
+.board-head > div { max-width: 720px; }
+.board-head p { margin: 0; }
+.board-meta { text-align: right; line-height: 1.5; }
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s3); margin-bottom: var(--s4); }
+@media (min-width: 900px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.tile { text-align: left; display: grid; grid-template-columns: auto 1fr; column-gap: var(--s3); align-items: baseline; padding: var(--s4); border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); color: var(--ink); box-shadow: var(--shadow); transition: transform .3s var(--ease), border-color .3s, background .3s; min-height: 44px; }
+.tile:hover { transform: translateY(-3px); border-color: var(--lav-300); }
+.tile.on { background: linear-gradient(135deg, var(--night-2), var(--night)); color: #fff; border-color: transparent; }
+.tile-n { grid-row: span 2; font: 400 2.6rem/1 var(--serif); }
+.tile-k { font: 700 .74rem var(--mono); letter-spacing: .04em; }
+.tile-l { font-size: .86rem; color: var(--muted); }
+.tile.on .tile-l { color: #cdc7ee; }
+.tile-bar { grid-column: 1 / -1; height: 4px; border-radius: 999px; background: var(--surface-2); margin-top: var(--s3); overflow: hidden; }
+.tile.on .tile-bar { background: rgba(255, 255, 255, .15); }
+.tile-bar > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--lav-500), var(--lav-700)); }
+.board-tools { display: flex; flex-wrap: wrap; gap: var(--s2); margin-bottom: var(--s4); }
+.board-tools input[type="search"] { flex: 1 1 260px; min-height: 48px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 var(--s5); font: 500 15px var(--sans); }
+.board-tools select { min-height: 48px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 0 var(--s4); font: 600 14px var(--sans); }
+.board { list-style: none; margin: 0 0 var(--s3); padding: 0; display: grid; gap: var(--s2); }
+.board .empty { padding: var(--s5); text-align: center; }
+.row { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; grid-template-areas: "tile main verdict" "tile chips time"; column-gap: var(--s4); row-gap: var(--s2); align-items: center; padding: var(--s3) var(--s4); border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); color: var(--ink); text-decoration: none; position: relative; transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s; }
+.row:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--lav-300); }
+.mono-tile { grid-area: tile; width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; font: 700 .9rem var(--mono); color: #fff; background: linear-gradient(135deg, hsl(var(--h) 55% 62%), hsl(calc(var(--h) + 40) 50% 42%)); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); }
+.row-main { grid-area: main; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.row-name { font: 650 .98rem var(--mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row-ctl { display: flex; align-items: center; gap: 6px; font-size: .88rem; color: var(--muted); min-width: 0; }
+.ctl-ico { flex: none; width: 18px; height: 18px; display: inline-grid; color: var(--lav-500); }
+.ctl-ico svg { width: 18px; height: 18px; }
+.ctl-ico.key { color: var(--caution); } .ctl-ico.unknown { color: var(--soft); } .ctl-ico.lock { color: var(--ok); }
+.row-verdict { grid-area: verdict; display: flex; gap: var(--s2); align-items: center; justify-self: end; flex-wrap: wrap; justify-content: flex-end; }
+.row-chips { grid-area: chips; display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { font: 600 .74rem var(--sans); padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+.chip.yes { color: var(--ok); border-color: color-mix(in oklab, var(--ok) 35%, transparent); background: var(--ok-bg); }
+.chip.meh { color: var(--caution); border-color: color-mix(in oklab, var(--caution) 35%, transparent); background: var(--caution-bg); }
+.row-time { grid-area: time; justify-self: end; font-size: .82rem; color: var(--muted); white-space: nowrap; }
+.row-go { position: absolute; right: var(--s4); bottom: -1px; transform: translateY(100%); opacity: 0; }
+@media (min-width: 1024px) {
+  .row { grid-template-columns: 48px minmax(0, 1.7fr) 230px minmax(0, 1fr) 110px 84px; grid-template-areas: "tile main verdict chips time go"; }
+  .row-verdict { justify-self: start; justify-content: flex-start; }
+  .row-chips { justify-content: flex-start; }
+  .row-go { position: static; transform: translateX(-6px); opacity: 0; font: 650 .85rem var(--sans); color: var(--accent); transition: opacity .3s, transform .3s var(--ease); justify-self: end; grid-area: go; }
+  .row:hover .row-go, .row:focus-visible .row-go { opacity: 1; transform: none; }
+}
+@media (max-width: 560px) {
+  .row { grid-template-columns: 40px minmax(0, 1fr); grid-template-areas: "tile main" "verdict verdict" "chips time"; }
+  .mono-tile { width: 40px; height: 40px; border-radius: 12px; font-size: .8rem; }
+  .row-verdict { justify-self: start; justify-content: flex-start; }
+  .board-meta { text-align: left; }
+}

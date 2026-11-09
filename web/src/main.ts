@@ -196,48 +196,110 @@ $("#inspect-form").addEventListener("submit", (e) => {
 });
 addEventListener("hashchange", route);
 
-// ── trust table ──
+// ── trust board ──
 const tableEl = $("#table");
-let sortKey: keyof Row | "verdictRank" = "verdictRank";
-let sortDir = 1;
-const rank: Record<string, number> = { STOP: 0, CAUTION: 1, OK: 2 };
 const live = new Map<string, Partial<Row>>();
+const rank: Record<string, number> = { STOP: 0, CAUTION: 1, OK: 2 };
+const CLASS_ORDER = ["CUSTODIAL", "UNRESOLVED", "GOVERNED", "IMMUTABLE", "NO_CODE"];
+const CLASS_LABEL: Record<string, string> = { CUSTODIAL: "One key can change it", UNRESOLVED: "Controller unresolved", GOVERNED: "Needs several approvals", IMMUTABLE: "Cannot change", NO_CODE: "No code" };
+let boardFilter = "ALL";
+let boardQuery = "";
+let boardSort: "risk" | "name" | "change" = "risk";
+const hue = (s: string) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+const monogram = (a: string) => (/^[0-9a-f]{64}$/.test(a) ? "0x" : a.replace(/[^a-z0-9]/gi, "").slice(0, 2).toUpperCase());
+const ctlKind = (r: Row) => (r.class === "CUSTODIAL" && r.fullAccessKeys ? "key" : /^DAO/.test(r.controller) ? "dao" : /^multisig/.test(r.controller) ? "msig" : r.class === "UNRESOLVED" ? "unknown" : r.class === "IMMUTABLE" ? "lock" : "key");
+const ICON: Record<string, string> = {
+  key: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12h9M18 12v3M21 12v2" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',
+  dao: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="9" r="2.6" fill="currentColor"/><circle cx="17" cy="9" r="2.6" fill="currentColor"/><circle cx="12" cy="6.5" r="2.6" fill="currentColor"/><path d="M3 19c0-3 2-4.6 4-4.6s4 1.6 4 4.6M13 19c0-3 2-4.6 4-4.6s4 1.6 4 4.6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>',
+  msig: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="5" width="8" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 12h2M16 12h2" stroke="currentColor" stroke-width="2"/></svg>',
+  unknown: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.8.3-1 .8-1 1.6M12 16.8v.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+};
+function relTime(r: Row): { text: string; title: string; ts: number } {
+  const lc = r.lastChange;
+  if (lc?.status === "found" && lc.date) {
+    const days = Math.max(0, Math.round((Date.now() - Date.parse(lc.date)) / 86_400_000));
+    return { text: days === 0 ? "today" : days === 1 ? "1 day ago" : `${days} days ago`, title: `Code changed ${lc.date} (block ${lc.height?.toLocaleString("en-US")})`, ts: Date.parse(lc.date) };
+  }
+  if (lc?.status === "unchanged-since" && lc.sinceDate) return { text: `before ${lc.sinceDate.slice(5)}`, title: `Unchanged since at least ${lc.sinceDate}`, ts: Date.parse(lc.sinceDate) - 1 };
+  return { text: "unknown", title: "Last change not determined", ts: 0 };
+}
 function renderTable() {
-  const rows = survey.rows.map((r) => ({ ...r, ...live.get(r.account) }));
-  rows.sort((a, b) => {
-    const va = sortKey === "verdictRank" ? rank[a.verdict] * 10 + ["CUSTODIAL", "UNRESOLVED", "GOVERNED", "IMMUTABLE", "NO_CODE"].indexOf(a.class) : String(a[sortKey] ?? "");
-    const vb = sortKey === "verdictRank" ? rank[b.verdict] * 10 + ["CUSTODIAL", "UNRESOLVED", "GOVERNED", "IMMUTABLE", "NO_CODE"].indexOf(b.class) : String(b[sortKey] ?? "");
-    return (va < vb ? -1 : va > vb ? 1 : 0) * sortDir;
-  });
-  const th = (k: string, label: string) => `<th scope="col" aria-sort="${sortKey === k ? (sortDir > 0 ? "ascending" : "descending") : "none"}"><button type="button" data-sort="${k}">${label}${sortKey === k ? (sortDir > 0 ? " ↑" : " ↓") : ""}</button></th>`;
-  const lc = (r: Row) => (r.lastChange?.status === "found" ? `${r.lastChange.date}` : r.lastChange?.status === "unchanged-since" ? `before ${r.lastChange.sinceDate}` : "unknown");
-  const liveCount = live.size;
+  const all = survey.rows.map((r) => ({ ...r, ...live.get(r.account) }) as Row);
+  const counts: Record<string, number> = {};
+  for (const r of all) counts[r.class] = (counts[r.class] ?? 0) + 1;
+  const q = boardQuery.trim().toLowerCase();
+  const rows = all
+    .filter((r) => (boardFilter === "ALL" || r.class === boardFilter) && (!q || r.account.includes(q) || r.controller.toLowerCase().includes(q)))
+    .sort((a, b) =>
+      boardSort === "name"
+        ? a.account.localeCompare(b.account)
+        : boardSort === "change"
+          ? relTime(b).ts - relTime(a).ts
+          : rank[a.verdict] * 10 + CLASS_ORDER.indexOf(a.class) - (rank[b.verdict] * 10 + CLASS_ORDER.indexOf(b.class)) || a.account.localeCompare(b.account),
+    );
+  const tile = (c: string) => {
+    const n = counts[c] ?? 0;
+    return `<button type="button" class="tile ${boardFilter === c ? "on" : ""}" data-filter="${c}" aria-pressed="${boardFilter === c}">
+      <span class="tile-n">${n}</span><span class="tile-k">${esc(c.replace("_", " "))}</span><span class="tile-l">${esc(CLASS_LABEL[c])}</span>
+      <span class="tile-bar" aria-hidden="true"><span style="width:${(100 * n) / all.length}%"></span></span></button>`;
+  };
+  const chip = (ok: boolean | null, label: string, title: string) => `<span class="chip ${ok === true ? "yes" : ok === false ? "no" : "meh"}" title="${esc(title)}">${ok === true ? "✓" : ok === false ? "✕" : "~"} ${esc(label)}</span>`;
   tableEl.innerHTML = `
-    <h2 id="table-h">Trust table: ${survey.rows.length} NEAR contracts</h2>
-    <p class="muted">Who can replace the code, and whether the code running now is source-verified. Neutral description, not an audit or a judgement of the teams. Owner resolution is inferred from each contract's own view methods.</p>
-    <div class="table-meta"><span>Snapshot ${esc(survey.generatedAt.slice(0, 16).replace("T", " "))} UTC, block ${survey.atBlock.toLocaleString("en-US")}.</span><span role="status">${liveCount ? `Re-checked live in your browser: ${liveCount}/${survey.rows.length}.` : "Live re-check starts after load."}</span></div>
-    <div class="table-wrap"><table>
-      <thead><tr>${th("account", "Contract")}${th("verdictRank", "Verdict")}${th("controller", "Who can change the code")}${th("sourcescan", "Verified source")}${th("nep330", "NEP-330")}<th scope="col">Last code change</th></tr></thead>
-      <tbody>${rows
-        .map(
-          (r) => `<tr>
-        <td class="acct" data-label="Contract"><a href="#/inspect/${encodeURIComponent(r.account)}">${esc(short(r.account, 34))}</a></td>
-        <td data-label="Verdict">${verdictBadge(r.verdict)} <span class="class-tag">${esc(r.class)}</span></td>
-        <td class="ctl" data-label="Who">${esc(r.controller)}</td>
-        <td data-label="Verified">${esc(r.sourcescan ?? "-")}</td>
-        <td data-label="NEP-330">${esc(r.nep330 ?? "-")}</td>
-        <td data-label="Last change">${esc(lc(r))}</td></tr>`,
-        )
-        .join("")}</tbody></table></div>
+    <div class="board-head">
+      <div>
+        <h2 id="table-h" class="display">The trust board</h2>
+        <p class="muted">${all.length} of NEAR's most-used contracts: who can replace the code, and whether the code running now is source-verified. A neutral description, not an audit or a judgement of the teams.</p>
+      </div>
+      <p class="board-meta small muted">Snapshot ${esc(survey.generatedAt.slice(0, 16).replace("T", " "))} UTC · block ${survey.atBlock.toLocaleString("en-US")}<br /><span role="status">${live.size ? `Re-checked live in your browser: ${live.size}/${all.length}` : "Live re-check starts when this section is visible"}</span></p>
+    </div>
+    <div class="tiles" role="group" aria-label="Filter by who can change the code">${["CUSTODIAL", "UNRESOLVED", "GOVERNED", "IMMUTABLE"].map(tile).join("")}</div>
+    <div class="board-tools">
+      <label class="sr-only" for="board-q">Search contracts</label>
+      <input id="board-q" type="search" placeholder="Search a contract or controller…" value="${esc(boardQuery)}" />
+      <label class="sr-only" for="board-sort">Sort</label>
+      <select id="board-sort"><option value="risk" ${boardSort === "risk" ? "selected" : ""}>Sort: riskiest first</option><option value="change" ${boardSort === "change" ? "selected" : ""}>Sort: most recently changed</option><option value="name" ${boardSort === "name" ? "selected" : ""}>Sort: name</option></select>
+      ${boardFilter !== "ALL" ? `<button type="button" class="secondary" data-filter="ALL">Show all ${all.length}</button>` : ""}
+    </div>
+    <ul class="board" aria-label="Contracts">${
+      rows
+        .map((r) => {
+          const t = relTime(r);
+          const kind = ctlKind(r);
+          return `<li><a class="row" href="#/inspect/${encodeURIComponent(r.account)}" aria-label="Inspect ${esc(r.account)}: ${esc(r.verdict)}, ${esc(r.class)}">
+            <span class="mono-tile" style="--h:${hue(r.account)}" aria-hidden="true">${esc(monogram(r.account))}</span>
+            <span class="row-main">
+              <span class="row-name" title="${esc(r.account)}">${esc(r.account)}</span>
+              <span class="row-ctl"><span class="ctl-ico ${kind}">${ICON[kind]}</span>${esc(r.controller)}</span>
+            </span>
+            <span class="row-verdict">${verdictBadge(r.verdict)}<span class="class-tag">${esc(r.class)}</span></span>
+            <span class="row-chips">${chip(r.sourcescan === "verified" ? true : r.sourcescan === "stale" ? null : false, r.sourcescan === "stale" ? "stale source" : "source", `SourceScan: ${r.sourcescan ?? "unknown"}`)}${chip(r.nep330 === "build_info" ? true : r.nep330 === "metadata" ? null : false, "build info", `NEP-330: ${r.nep330 ?? "none"}`)}</span>
+            <span class="row-time" title="${esc(t.title)}">${esc(t.text)}</span>
+            <span class="row-go" aria-hidden="true">Inspect →</span>
+          </a></li>`;
+        })
+        .join("") || `<li class="empty muted">No contract matches. Try “dao”, “intents” or clear the filter.</li>`
+    }</ul>
     <p class="small muted">Verdict rules: <a href="https://github.com/unajijacob6-create/keyhole/blob/main/docs/GRADING.md">GRADING.md</a>. Re-run with <code>npm run survey</code>; each row: <code>npx keyhole inspect &lt;account&gt; --evidence</code>.</p>`;
-  tableEl.querySelectorAll<HTMLButtonElement>("button[data-sort]").forEach((b) =>
+  tableEl.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((b) =>
     b.addEventListener("click", () => {
-      const k = b.dataset.sort as typeof sortKey;
-      sortDir = sortKey === k ? -sortDir : 1;
-      sortKey = k;
+      boardFilter = boardFilter === b.dataset.filter ? "ALL" : b.dataset.filter!;
       renderTable();
     }),
   );
+  const qEl = tableEl.querySelector<HTMLInputElement>("#board-q")!;
+  qEl.addEventListener("input", () => {
+    boardQuery = qEl.value;
+    const pos = qEl.selectionStart;
+    renderTable();
+    const again = tableEl.querySelector<HTMLInputElement>("#board-q")!;
+    again.focus();
+    again.setSelectionRange(pos, pos);
+  });
+  tableEl.querySelector<HTMLSelectElement>("#board-sort")!.addEventListener("change", (e) => {
+    boardSort = (e.target as HTMLSelectElement).value as typeof boardSort;
+    renderTable();
+  });
 }
 renderTable();
 async function liveRecheck() {
