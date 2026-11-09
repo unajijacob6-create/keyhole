@@ -70,6 +70,7 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
     if (e instanceof RpcAnswerError) {
       const g = grade({ hasCode: false, paths: [], immutabilityFacts: [], verification: { sourcescan: "none", reproducibleBuildMatch: null, aiReviewed: false, evidence: [] }, nep330: { present: false, hasBuildInfo: false, repoStatus: "none", evidence: [] }, globalByAccount: null, lastChange: null, fullAccessKeyAdded: [], nowMs });
       g.headline = "Account does not exist.";
+      g.verdict = "CAUTION";
       g.reasons = [{ code: "NO_ACCOUNT", severity: "info", text: `${accountId} does not exist on ${network}.`, evidence: [ev.account(network, accountId)] }];
       return { schema: "keyhole.report/1", account: accountId, network, at, exists: false, code: null, keys: { fullAccess: [], functionCall: [] }, wasm: null, owners: [], globalPublisher: null, paths: [], nep330: null, sourcescan: null, registry: null, lastChange: null, grade: g, rpcCalls: rpc.calls, disclaimer: DISCLAIMER };
     }
@@ -155,8 +156,15 @@ export async function inspect(accountId: string, opts: InspectOptions = {}): Pro
         evidence: [codeEv],
       });
     } else {
-      const ctl = external.map((o) => o.actor!.singleKey);
-      const control = ctl.some((x) => x === true) ? "single-key" : ctl.some((x) => x === null || x === undefined) ? "unresolved" : external.every((o) => !o.actor!.exists) ? "unresolved" : "governed";
+      // Weakest link over candidates that provably gate the upgrade; a single-key candidate whose
+      // gating is uncertain makes the path "unresolved", never "single-key".
+      const certain = external.filter((o) => !o.uncertain);
+      const uncertain = external.filter((o) => o.uncertain);
+      const control: UpgradePath["control"] = certain.some((o) => o.actor!.singleKey === true)
+        ? "single-key"
+        : certain.some((o) => o.actor!.singleKey == null || !o.actor!.exists) || uncertain.some((o) => o.actor!.singleKey !== false) || !certain.length
+          ? "unresolved"
+          : "governed";
       const ownerText = external.map((o) => `${o.account} via ${o.source} — ${o.actor!.summary}`).join("; ");
       paths.push({ via: "contract-method", control, methods, text: `The contract can ${capText} through ${methodText}, gated by its owner (inferred): ${ownerText}.`, evidence: [codeEv, ...external.flatMap((o) => [o.evidence, ...o.actor!.evidence])] });
     }

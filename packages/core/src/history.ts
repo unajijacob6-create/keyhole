@@ -37,7 +37,7 @@ export interface HistoryOptions {
 }
 
 export async function lastCodeChange(rpc: Rpc, account: string, currentHash: string, headHeight: number, opts: HistoryOptions = {}): Promise<CodeChange> {
-  const arch = new Rpc({ network: rpc.network, url: opts.archivalUrl ?? ARCHIVAL_RPC[rpc.network], transport: opts.transport, retries: 4 });
+  const arch = new Rpc({ network: rpc.network, url: opts.archivalUrl ?? ARCHIVAL_RPC[rpc.network], transport: opts.transport, retries: 7 });
   const maxLookback = opts.maxLookback ?? 10_000_000;
   const hashAt = async (h: number): Promise<string | null> => {
     try {

@@ -200,3 +200,18 @@ export function fixtureTransport(fixtures: Record<string, { result?: unknown; er
     return { status: 200, json: f.error ? { jsonrpc: "2.0", id: "keyhole", error: f.error } : { jsonrpc: "2.0", id: "keyhole", result: f.result } };
   };
 }
+
+/** Wraps a transport and stores every answered request, for writing fixtures. */
+export function recordingTransport(store: Record<string, { result?: unknown; error?: unknown }>, inner: Transport = fetchTransport): Transport {
+  return async (url, body) => {
+    const res = await inner(url, body);
+    const { method, params } = JSON.parse(body);
+    const j = res.json as any;
+    if (j && res.status === 200) {
+      if (j.error) store[requestKey(method, params)] = { error: j.error };
+      else if (j.result && typeof j.result === "object" && "error" in j.result && method === "query") store[requestKey(method, params)] = { error: { result_error: j.result.error } };
+      else store[requestKey(method, params)] = { result: j.result };
+    }
+    return res;
+  };
+}

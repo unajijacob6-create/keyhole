@@ -68,7 +68,7 @@ export interface WasmAnalysis {
 }
 
 const DISPATCH_DEPTH = Number((globalThis as any).process?.env?.KEYHOLE_DISPATCH_DEPTH ?? 4);
-export const UPGRADE_NAME = /upgrade|migrate|deploy|up_deploy_code|update_contract|set_code/i;
+export const UPGRADE_NAME = /upgrade|migrate|deploy|up_deploy_code|update_contract|set_code|propose_update|vote_update|stage_code/i;
 
 class Reader {
   pos = 0;

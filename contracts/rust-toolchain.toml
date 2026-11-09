@@ -1,0 +1,4 @@
+# near-sdk 5.30 needs rustc >= 1.95; pinned to the release the contracts are tested with.
+[toolchain]
+channel = "1.97.0"
+targets = ["wasm32-unknown-unknown"]

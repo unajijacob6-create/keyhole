@@ -15,6 +15,7 @@ export interface DaoInfo {
   roleName: string | null;
   proposalKind: string | null;
   tokenWeighted: boolean;
+  /** Kept for display only: Sputnik v2 does not count Everyone-role votes towards approval. */
   everyoneCanApprove: boolean;
   roles: { name: string; members: number | "everyone" | "token-holders"; canApprove: string[] }[];
 }
@@ -61,10 +62,10 @@ export function analyzeSputnikPolicy(policy: any): DaoInfo {
     const members = k === "Everyone" ? "everyone" : k?.Group ? k.Group.length : k?.Member !== undefined ? "token-holders" : 0;
     info.roles.push({ name: role.name, members, canApprove });
     if (!canApprove.length) continue;
-    if (members === "everyone") {
-      info.everyoneCanApprove = true;
-      continue;
-    }
+    if (members === "everyone") info.everyoneCanApprove = true;
+    // sputnikdao2 policy.rs proposal_status(): `RoleKind::Everyone => continue` — votes cast
+    // under an Everyone role never approve a proposal on their own, so it is not a control path.
+    if (members === "everyone") continue;
     for (const kind of canApprove) {
       const vp = role.vote_policy?.[kind] ?? policy.default_vote_policy;
       if (vp?.weight_kind === "TokenWeight" || members === "token-holders") {
@@ -113,10 +114,7 @@ export async function resolveActor(rpc: Rpc, account: string): Promise<ActorInfo
     const dao = analyzeSputnikPolicy(policy);
     let singleKey: boolean | null = null;
     let summary: string;
-    if (dao.everyoneCanApprove) {
-      singleKey = true;
-      summary = `Sputnik DAO ${account}: the "Everyone" role can approve proposals`;
-    } else if (dao.requiredApprovals !== null) {
+    if (dao.requiredApprovals !== null) {
       singleKey = dao.requiredApprovals <= 1;
       summary = `Sputnik DAO ${account}: ${dao.requiredApprovals} of ${dao.roleSize} "${dao.roleName}" members can pass a "${dao.proposalKind}" proposal`;
       if (dao.tokenWeighted) summary += " (some roles are token-weighted)";
@@ -151,6 +149,9 @@ export interface OwnerCandidate {
   account: string;
   source: string; // e.g. "get_config().owner_id"
   evidence: Evidence;
+  /** true when the source does not prove this account can trigger the upgrade (e.g. an Ownable
+   *  owner on a contract whose upgrade method is gated by near-plugins ACL roles). */
+  uncertain?: boolean;
 }
 
 function findOwnerFields(obj: unknown, prefix: string, out: { path: string; value: string }[], depth = 0) {
@@ -165,17 +166,31 @@ function findOwnerFields(obj: unknown, prefix: string, out: { path: string; valu
 export async function discoverOwners(rpc: Rpc, account: string, exports: string[]): Promise<OwnerCandidate[]> {
   const n = rpc.network;
   const found: OwnerCandidate[] = [];
-  const add = (acc: string, source: string, evidence: Evidence) => {
-    if (!found.some((f) => f.account === acc)) found.push({ account: acc, source, evidence });
+  const add = (acc: string, source: string, evidence: Evidence, uncertain = false) => {
+    const prev = found.find((f) => f.account === acc);
+    if (!prev) found.push({ account: acc, source, evidence, uncertain });
+    else if (prev.uncertain && !uncertain) Object.assign(prev, { source, evidence, uncertain: false });
   };
-  for (const m of DIRECT_OWNER_VIEWS.filter((m) => exports.includes(m))) {
-    const v = await rpc.tryView<unknown>(account, m);
-    if (typeof v === "string" && ACCOUNT_ID.test(v)) add(v, `${m}()`, ev.view(n, account, m));
-  }
-  if (exports.includes("acl_get_super_admins")) {
-    const args = { skip: 0, limit: 10 };
+  // near-plugins ACL: super admins can grant themselves any role; holders of the Upgradable
+  // plugin's deployer role can call up_deploy_code directly. Both are read from the chain.
+  const acl = exports.includes("acl_get_super_admins");
+  if (acl) {
+    const args = { skip: 0, limit: 20 };
     const v = await rpc.tryView<string[]>(account, "acl_get_super_admins", args);
     for (const a of v ?? []) add(a, "acl_get_super_admins() (near-plugins ACL super admin)", ev.view(n, account, "acl_get_super_admins", args));
+    if (exports.includes("acl_role_variants") && exports.includes("acl_get_grantees")) {
+      const roles = (await rpc.tryView<string[]>(account, "acl_role_variants")) ?? [];
+      for (const role of roles.filter((r) => /deploy|upgrad|code/i.test(r) && !/stager/i.test(r))) {
+        const gArgs = { role, skip: 0, limit: 20 };
+        const g = await rpc.tryView<string[]>(account, "acl_get_grantees", gArgs);
+        for (const a of g ?? []) add(a, `acl_get_grantees(${role}) (near-plugins ACL role)`, ev.view(n, account, "acl_get_grantees", gArgs));
+      }
+    }
+  }
+  for (const m of DIRECT_OWNER_VIEWS.filter((m) => exports.includes(m))) {
+    const v = await rpc.tryView<unknown>(account, m);
+    // With ACL present, an Ownable owner gates upgrades only in older near-plugins versions.
+    if (typeof v === "string" && ACCOUNT_ID.test(v)) add(v, acl ? `${m}() (Ownable owner; upgrade rights depend on ACL config)` : `${m}()`, ev.view(n, account, m), acl);
   }
   if (!found.length) {
     for (const m of OBJECT_VIEWS.filter((m) => exports.includes(m))) {

@@ -19,3 +19,19 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+
+  contracts:
+    name: contracts (cargo-near build + unit + near-workspaces sandbox)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.97.0
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts
+      - name: Install cargo-near
+        run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/near/cargo-near/releases/download/cargo-near-v0.23.0/cargo-near-installer.sh | sh
+      - run: bash contracts/test.sh
