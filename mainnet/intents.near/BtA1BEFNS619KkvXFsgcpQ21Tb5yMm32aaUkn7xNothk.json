@@ -1,0 +1,38 @@
+{
+  "schema": "keyhole.verification/1",
+  "account": "intents.near",
+  "network": "mainnet",
+  "onchain_code_hash": "BtA1BEFNS619KkvXFsgcpQ21Tb5yMm32aaUkn7xNothk",
+  "at_block": 223799438,
+  "checked_at": "2026-11-09T17:43:04.141Z",
+  "run": "https://github.com/unajijacob6-create/keyhole/actions/runs/42667269073",
+  "build_info": {
+    "build_environment": "sourcescan/cargo-near:0.22.0-rust-1.97.1@sha256:7467038bdddc86484b73b416eeadce926ff59013e128e53dec5a19e1cb4b2234",
+    "build_command": [
+      "cargo",
+      "near",
+      "build",
+      "non-reproducible-wasm",
+      "--locked",
+      "--features=contract",
+      "--abi-features=abi,contract"
+    ],
+    "contract_path": "contracts/defuse",
+    "source_code_snapshot": "git+https://github.com/near/intents?rev=16d04f6ec4401263f8914638710260da50bb46b0",
+    "output_wasm_path": "/home/near/code/target/near/defuse/defuse.wasm"
+  },
+  "repo": "https://github.com/near/intents",
+  "rev": "16d04f6ec4401263f8914638710260da50bb46b0",
+  "image": "sourcescan/cargo-near:0.22.0-rust-1.97.1@sha256:7467038bdddc86484b73b416eeadce926ff59013e128e53dec5a19e1cb4b2234",
+  "build_seconds": 157,
+  "rebuilt": [
+    {
+      "file": "src/target/near/defuse/defuse.wasm",
+      "code_hash": "BtA1BEFNS619KkvXFsgcpQ21Tb5yMm32aaUkn7xNothk",
+      "sha256": "a1afab98916d9f213746544dcf8e4e6bdb22c0be6bc5dfbd8ea8814c9922b547",
+      "size": 1297551
+    }
+  ],
+  "rebuilt_code_hash": "BtA1BEFNS619KkvXFsgcpQ21Tb5yMm32aaUkn7xNothk",
+  "matches": true
+}

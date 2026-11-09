@@ -1,0 +1,27 @@
+{
+  "schema": "keyhole.verification/1",
+  "account": "lst.rhealab.near",
+  "network": "mainnet",
+  "onchain_code_hash": "EPLT4C61pkVYf5Km6dC4X9x5PMo6rfBwuEwo7vgKpmuv",
+  "at_block": 223799432,
+  "checked_at": "2026-11-09T17:43:01.180Z",
+  "run": "https://github.com/unajijacob6-create/keyhole/actions/runs/42667269073",
+  "build_info": {
+    "build_environment": "sourcescan/cargo-near:0.16.0-rust-1.86.0@sha256:3220302ebb7036c1942e772810f21edd9381edf9a339983da43487c77fbad488",
+    "build_command": [
+      "cargo",
+      "near",
+      "build",
+      "non-reproducible-wasm",
+      "--locked"
+    ],
+    "contract_path": "contracts/lst",
+    "source_code_snapshot": "git+https://github.com/rhea-finance/rnear-contract.git?rev=c04e9008bfbf7a44d99c8f66179deb715a7357f9",
+    "output_wasm_path": "/home/near/code/target/near/lst/lst.wasm"
+  },
+  "repo": "https://github.com/rhea-finance/rnear-contract.git",
+  "rev": "c04e9008bfbf7a44d99c8f66179deb715a7357f9",
+  "image": "sourcescan/cargo-near:0.16.0-rust-1.86.0@sha256:3220302ebb7036c1942e772810f21edd9381edf9a339983da43487c77fbad488",
+  "reason": "rebuild failed: Command failed: git clone --quiet https://github.com/rhea-finance/rnear-contract.git /tmp/kh-verify-FgsM83/src",
+  "matches": null
+}
