@@ -15,6 +15,7 @@ import {
   hashFromArgs,
   normaliseHash,
   isLive,
+  proposalArgsCode,
   stagedUpgrade,
   stagedCode,
   fetchPendingCode,
@@ -417,5 +418,25 @@ describe("keyhole pending --fetch-code (offline)", () => {
     expect(parseLast(undefined)).toBeUndefined();
     expect(parseLast("10")).toBe(10);
     for (const bad of ["ten", "0", "-3", "2.5", ""]) expect(() => parseLast(bad)).toThrow(/--last/);
+  });
+});
+
+describe("proposalArgsCode: the wasm a FunctionCall proposal carries inline (args-code)", () => {
+  const raw = (args: string, method = "upgrade") => ({ id: 3, proposer: "a.near", description: "", kind: { FunctionCall: { receiver_id: "c.near", actions: [{ method_name: method, args, deposit: "0", gas: "1" }] } }, status: "InProgress", vote_counts: {}, votes: {}, submission_time: String(BigInt(NOW) * 1_000_000n) });
+  const H = manifest.wasm["demo_vault_v1.wasm"].code_hash;
+  it("returns the bytes of the upgrade action when they hash to the proposal's code hash", async () => {
+    const r = rpc({ [viewKey("d.near", "get_proposal", { id: 3 })]: viewResult(raw(bytesToBase64(v1))) });
+    const code = await proposalArgsCode(r, "d.near", 3, H, "upgrade");
+    expect(code).not.toBeNull();
+    expect(await codeHash(code!)).toBe(H);
+  });
+  it("null when the hash does not match, the method differs, or the proposal is gone", async () => {
+    const r = rpc({
+      [viewKey("d.near", "get_proposal", { id: 3 })]: viewResult(raw(bytesToBase64(v1))),
+      [viewKey("d.near", "get_proposal", { id: 4 })]: { error: { name: "HANDLER_ERROR", cause: { name: "UNKNOWN_ACCOUNT" } } },
+    });
+    expect(await proposalArgsCode(r, "d.near", 3, "11111111111111111111111111111111", "upgrade")).toBeNull();
+    expect(await proposalArgsCode(r, "d.near", 3, H, "up_stage_code")).toBeNull();
+    expect(await proposalArgsCode(r, "d.near", 4, H)).toBeNull();
   });
 });

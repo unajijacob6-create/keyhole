@@ -258,6 +258,26 @@ async function fillArgsCode(p: UpgradeProposal, raw: any): Promise<UpgradePropos
   return p;
 }
 
+/** The wasm a FunctionCall proposal carries inline (hash_from "args-code"): re-read the proposal
+ *  with get_proposal and return the args of its upgrade action, only if they hash to `hash`.
+ *  listUpgradeProposals keeps only the hash, so a proposal list stays small. null if the proposal
+ *  is gone (removed) or carries no matching wasm. */
+export async function proposalArgsCode(rpc: Rpc, dao: string, id: number, hash: string, method?: string | null): Promise<Uint8Array | null> {
+  let raw: any;
+  try {
+    raw = await rpc.view<any>(dao, "get_proposal", { id });
+  } catch (e) {
+    if (e instanceof RpcAnswerError || e instanceof SyntaxError) return null;
+    throw e;
+  }
+  for (const a of raw?.kind?.FunctionCall?.actions ?? []) {
+    if ((method && a?.method_name !== method) || typeof a?.args !== "string") continue;
+    const code = codeInArgs(safeB64(a.args));
+    if (code && (await codeHash(code)) === hash) return new Uint8Array(code);
+  }
+  return null;
+}
+
 const PAGE = 50;
 
 /** Upgrade proposals of a Sputnik DAO, newest first. `last`: stop after this many upgrade

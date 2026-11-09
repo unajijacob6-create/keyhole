@@ -1,9 +1,12 @@
 // npm run guardian -- <command>
 //
 //   run     [--network testnet|mainnet] [--hatches file.json] [--watch a,b] [--interval 3] [--duration s]
-//           [--feed data/alerts-<network>.jsonl] [--relayer <account>] [--review]
+//           [--feed data/alerts-<network>.jsonl] [--relayer <account>] [--review] [--max-deposit 1]
 //           Watch the venues of every hatch (and --watch targets), grade pending upgrades, fire
-//           hatches whose trigger matches. Without --relayer it only alerts (read-only).
+//           hatches whose trigger matches. Without --relayer it only alerts (read-only). Before
+//           relaying, every hatch is checked offline (verifyHatch, signed receiver = venue, signed
+//           sender = account) and its attached deposit, which the relayer pays, must be at most
+//           --max-deposit yoctoNEAR (default 1).
 //   arm     --account <id> --venue <contract> --method <name> [--args '{}'] [--deposit 1] [--gas 50]
 //           [--ttl-blocks 604800] [--trigger stop|any-upgrade|manual] [--hatches file.json]
 //           Adds a dedicated full-access key to <account> (signed with its key from
@@ -16,7 +19,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { Rpc, txApi, KEYHOLE_REGISTRY, type Network } from "../../packages/core/src/index.ts";
+import { Rpc, txApi, ARCHIVAL_RPC, KEYHOLE_REGISTRY, type Network } from "../../packages/core/src/index.ts";
 import { armDelegateHatch, fireHatch, hatchHealth, decodeHatch, type Hatch } from "../../packages/hatch/src/index.ts";
 import { Guardian, type Alert } from "./guardian.ts";
 import { Radar } from "./radar.ts";
@@ -61,19 +64,23 @@ if (cmd === "arm") {
   const feed = arg("--feed", `data/alerts-${network}.jsonl`)!;
   const relayerId = arg("--relayer");
   const relayer = relayerId ? (await import("../../scripts/lib/near.ts")).account(relayerId) : null;
+  const maxDeposit = BigInt(arg("--max-deposit", "1")!);
+  if (maxDeposit < 0n) throw new Error("--max-deposit must be a non-negative yoctoNEAR amount");
   const radar = new Radar(rpc, network, undefined, { last: 20 });
   for (const t of arg("--watch", "")!.split(",").filter(Boolean)) await radar.watch(t);
   const guardian = new Guardian({
     rpc,
-    assess: { rpc, api: txApi(network), registry: { rpc: network === KEYHOLE_REGISTRY.network ? rpc : new Rpc({ network: KEYHOLE_REGISTRY.network }), account: KEYHOLE_REGISTRY.account }, reviewer: argv.includes("--review") ? teeReviewer() : null },
+    assess: { rpc, api: txApi(network), archival: new Rpc({ network, url: ARCHIVAL_RPC[network], cache: false }), registry: { rpc: network === KEYHOLE_REGISTRY.network ? rpc : new Rpc({ network: KEYHOLE_REGISTRY.network }), account: KEYHOLE_REGISTRY.account }, reviewer: argv.includes("--review") ? teeReviewer() : null },
     radar,
     hatches: load,
     driver: relayer ? { health: (h) => hatchHealth(rpc, h), fire: (h) => fireHatch(h, relayer) } : null,
+    maxDeposit,
+    onError: (e, ev) => console.error(`[guardian] ${ev ? `${ev.kind} ${ev.target}` : "watch"} failed (reported again next tick): ${String((e as Error).message).slice(0, 200)}`),
     onAlert: (a: Alert) => {
       fs.mkdirSync(path.dirname(feed), { recursive: true });
       fs.appendFileSync(feed, JSON.stringify(a) + "\n");
       const g = a.assessment?.grade;
-      console.log(`[guardian] ${a.at} ${a.event} ${a.target}${a.proposal_id !== null ? ` #${a.proposal_id}` : ""}${g ? ` ${g.verdict}: ${g.headline}` : ""}${a.fired.map((f) => ` | ${f.ok ? "fired" : "not fired"} ${f.hatch}${f.tx ? " " + f.tx : ""}`).join("")}`);
+      console.log(`[guardian] ${a.at} ${a.event} ${a.target}${a.proposal_id !== null ? ` #${a.proposal_id}` : ""}${g ? ` ${g.verdict}: ${g.headline}` : ""}${a.error ? ` (${a.error.slice(0, 200)})` : ""}${a.fired.map((f) => ` | ${f.ok ? "fired" : "not fired"} ${f.hatch}${f.tx ? " " + f.tx : ""}`).join("")}`);
     },
   });
   const interval = Number(arg("--interval", "3")) * 1000;
@@ -81,7 +88,7 @@ if (cmd === "arm") {
   let stop = false;
   process.on("SIGINT", () => (stop = true));
   process.on("SIGTERM", () => (stop = true));
-  console.log(`[guardian] ${network}: ${load().length} hatch(es), ${radar.controllers.size} extra target(s), every ${interval / 1000}s${relayer ? `, relayer ${relayerId}` : ", alert-only"}`);
+  console.log(`[guardian] ${network}: ${load().length} hatch(es), ${radar.controllers.size} extra target(s), every ${interval / 1000}s${relayer ? `, relayer ${relayerId} (deposit cap ${maxDeposit} yoctoNEAR)` : ", alert-only"}`);
   while (!stop && Date.now() < until) {
     try {
       await guardian.tick();
