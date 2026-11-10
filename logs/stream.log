@@ -21,3 +21,7 @@
 [watch] block 223,966,299  91e0e128471dd3633637fd82850489b14c84cf9d41f45e83f33e74e8e52880be  DeployContract (transaction)  new code GtNy1c…
 [watch] mainnet at block 223,966,566 (head 223,966,993, lag 427); scanned 4755, skipped 3164 blocks; 5 event(s); neardata 5935 req, 1161 rate-limited
 [watch] mainnet: head refresh failed (HTTP 429); keeping 223966993
+[watch] mainnet: 4129 blocks behind; skipping to head 223,971,123 (blocks 223966994–223971122 not scanned)
+[watch] mainnet at block 223,971,125 (head 223,971,144, lag 19); scanned 5185, skipped 7293 blocks; 5 event(s); neardata 6465 req, 1259 rate-limited
+[watch] block 223,971,171  3hak9bhww8gxzwizk2jbbaz82oigxbykcnglmygbvedm.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
+[watch] mainnet: head refresh failed (HTTP 429); keeping 223971419
