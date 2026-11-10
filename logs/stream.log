@@ -75,3 +75,4 @@
 [watch] block 223,980,135  nearusd.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 223,980,222  9ac73f7111648d91f9057e705e1ab8d524a508eb.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,980,292 (head 223,981,253, lag 961); scanned 10890, skipped 10755 blocks; 33 event(s); neardata 13666 req, 2742 rate-limited
+[watch] mainnet at block 223,980,560 (head 223,981,253, lag 693); scanned 11158, skipped 10755 blocks; 33 event(s); neardata 14061 req, 2869 rate-limited
