@@ -41,3 +41,7 @@
 [watch] block 223,915,544  emmanuelhaanks-3.kitevaults.near  DeployContract (contract-receipt)  new code 5sGjGQ…
 [watch] mainnet at block 223,915,563 (head 223,915,585, lag 22); scanned 5855, skipped 11907 blocks; 11 event(s); neardata 8260 req, 2378 rate-limited
 [watch] mainnet: 3332 blocks behind; skipping to head 223,918,918 (blocks 223915586–223918917 not scanned)
+[watch] mainnet block 223919415: HTTP 429; retry in 4s
+[watch] mainnet at block 223,919,416 (head 223,919,485, lag 69); scanned 6376, skipped 15239 blocks; 11 event(s); neardata 8864 req, 2454 rate-limited
+[watch] mainnet block 223919719: HTTP 429; retry in 4s
+[watch] mainnet block 223919721: HTTP 429; retry in 4s
