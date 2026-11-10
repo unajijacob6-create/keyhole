@@ -28,3 +28,4 @@
 [watch] block 223,940,094  my-company.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,940,315 (head 223,940,475, lag 160); scanned 4220, skipped 7899 blocks; 7 event(s); neardata 6104 req, 1861 rate-limited
 [watch] mainnet: 4297 blocks behind; skipping to head 223,944,773 (blocks 223940476–223944772 not scanned)
+[watch] mainnet at block 223,944,887 (head 223,945,203, lag 316); scanned 4495, skipped 12196 blocks; 7 event(s); neardata 6507 req, 1984 rate-limited
