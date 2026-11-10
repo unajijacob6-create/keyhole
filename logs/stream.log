@@ -28,3 +28,7 @@
 [watch] mainnet block 223910458: HTTP 429; retry in 4s
 [watch] mainnet block 223910459: HTTP 429; retry in 4s
 [watch] mainnet: 3715 blocks behind; skipping to head 223,914,195 (blocks 223910480–223914194 not scanned)
+[watch] mainnet at block 223,914,293 (head 223,914,300, lag 7); scanned 4585, skipped 11907 blocks; 6 event(s); neardata 6546 req, 1936 rate-limited
+[watch] block 223,914,496  sinu-2.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet block 223914508: HTTP 429; retry in 4s
+[watch] mainnet block 223914510: HTTP 429; retry in 4s
