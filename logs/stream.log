@@ -24,3 +24,6 @@
 [watch] mainnet at block 223,883,910 (head 223,884,899, lag 989); scanned 4685, skipped 11822 blocks; 3 event(s); neardata 6813 req, 2102 rate-limited
 [watch] mainnet at block 223,884,184 (head 223,884,899, lag 715); scanned 4959, skipped 11822 blocks; 3 event(s); neardata 7211 req, 2225 rate-limited
 [watch] mainnet at block 223,884,455 (head 223,884,899, lag 444); scanned 5230, skipped 11822 blocks; 3 event(s); neardata 7615 req, 2358 rate-limited
+[watch] mainnet at block 223,884,743 (head 223,884,899, lag 156); scanned 5518, skipped 11822 blocks; 3 event(s); neardata 8024 req, 2479 rate-limited
+[watch] block 223,884,802  world.adfontes.near  DeployContract (transaction)  new code AwLEfg…
+[watch] mainnet: 4238 blocks behind; skipping to head 223,889,138 (blocks 223884900–223889137 not scanned)
