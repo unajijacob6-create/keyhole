@@ -11,3 +11,5 @@
 [watch] mainnet at block 223,964,753 (head 223,964,753, lag 0); scanned 2942, skipped 3164 blocks; 1 event(s); neardata 3547 req, 590 rate-limited
 [watch] block 223,964,763  rahulwin.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,965,035 (head 223,965,320, lag 285); scanned 3224, skipped 3164 blocks; 2 event(s); neardata 3952 req, 710 rate-limited
+[watch] mainnet at block 223,965,310 (head 223,965,320, lag 10); scanned 3499, skipped 3164 blocks; 2 event(s); neardata 4352 req, 836 rate-limited
+[watch] block 223,965,618  escrow.sphinxescrow.near  DeployContract (transaction)  new code 7u2BeM…
