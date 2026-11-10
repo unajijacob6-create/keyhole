@@ -8,3 +8,5 @@
 [watch] mainnet at block 223,960,759 (head 223,961,534, lag 775); scanned 2112, skipped 0 blocks; 1 event(s); neardata 2656 req, 533 rate-limited
 [watch] mainnet: head refresh failed (HTTP 429); keeping 223961534
 [watch] mainnet: 3164 blocks behind; skipping to head 223,964,699 (blocks 223961535–223964698 not scanned)
+[watch] mainnet at block 223,964,753 (head 223,964,753, lag 0); scanned 2942, skipped 3164 blocks; 1 event(s); neardata 3547 req, 590 rate-limited
+[watch] block 223,964,763  rahulwin.sputnik-dao.near  UseGlobalContract (contract-receipt)
