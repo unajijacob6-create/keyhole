@@ -61,3 +61,6 @@
 [watch] mainnet at block 223,974,226 (head 223,974,303, lag 77); scanned 8286, skipped 7293 blocks; 28 event(s); neardata 10125 req, 1812 rate-limited
 [watch] mainnet: 3462 blocks behind; skipping to head 223,977,766 (blocks 223974304–223977765 not scanned)
 [watch] block 223,977,885  bankai.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,977,958 (head 223,978,216, lag 258); scanned 8556, skipped 10755 blocks; 29 event(s); neardata 10522 req, 1934 rate-limited
+[watch] mainnet: head refresh failed (HTTP 429); keeping 223978216
+[watch] block 223,978,320  last.nearlytrade.near  UseGlobalContract (contract-receipt)
