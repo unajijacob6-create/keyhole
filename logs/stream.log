@@ -7,3 +7,5 @@
 [watch] mainnet at block 223,902,672 (head 223,903,003, lag 331); scanned 1365, skipped 3506 blocks; 0 event(s); neardata 1993 req, 612 rate-limited
 [watch] mainnet at block 223,902,956 (head 223,903,003, lag 47); scanned 1649, skipped 3506 blocks; 0 event(s); neardata 2403 req, 737 rate-limited
 [watch] mainnet at block 223,903,228 (head 223,904,244, lag 1016); scanned 1921, skipped 3506 blocks; 0 event(s); neardata 2802 req, 864 rate-limited
+[watch] mainnet at block 223,903,503 (head 223,904,244, lag 741); scanned 2196, skipped 3506 blocks; 0 event(s); neardata 3203 req, 989 rate-limited
+[watch] block 223,903,729  rules.sithunyein.near  DeployContract (transaction)  new code 9S1DZH…
