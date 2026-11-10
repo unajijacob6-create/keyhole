@@ -38,3 +38,6 @@
 [watch] mainnet at block 223,890,643 (head 223,890,837, lag 194); scanned 7180, skipped 16060 blocks; 7 event(s); neardata 10441 req, 3229 rate-limited
 [watch] mainnet: 4698 blocks behind; skipping to head 223,895,536 (blocks 223890838–223895535 not scanned)
 [watch] mainnet at block 223,895,623 (head 223,895,637, lag 14); scanned 7462, skipped 20758 blocks; 7 event(s); neardata 10846 req, 3348 rate-limited
+[watch] mainnet at block 223,895,892 (head 223,895,902, lag 10); scanned 7731, skipped 20758 blocks; 7 event(s); neardata 11241 req, 3474 rate-limited
+[watch] mainnet stopped after 17401s; 7 event(s) reported
+stream watcher exited with code 0 after 17436s
