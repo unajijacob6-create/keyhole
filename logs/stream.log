@@ -17,3 +17,7 @@
 [watch] mainnet at block 223,935,125 (head 223,935,441, lag 316); scanned 2515, skipped 4414 blocks; 3 event(s); neardata 3662 req, 1129 rate-limited
 [watch] block 223,935,204  4nbm3.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 223,935,251  4nbm3.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet block 223935398: HTTP 429; retry in 4s
+[watch] mainnet at block 223,935,405 (head 223,935,441, lag 36); scanned 2795, skipped 4414 blocks; 5 event(s); neardata 4069 req, 1256 rate-limited
+[watch] mainnet: 3485 blocks behind; skipping to head 223,938,927 (blocks 223935442–223938926 not scanned)
+[watch] block 223,939,110  8dfutwsfwowhequaj9ew1e9wegep3xh7bxlfb9fv5wcs.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
