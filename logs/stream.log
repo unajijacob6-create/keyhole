@@ -14,3 +14,6 @@
 [watch] mainnet at block 223,934,559 (head 223,935,441, lag 882); scanned 1949, skipped 4414 blocks; 2 event(s); neardata 2849 req, 882 rate-limited
 [watch] mainnet at block 223,934,842 (head 223,935,441, lag 599); scanned 2232, skipped 4414 blocks; 2 event(s); neardata 3259 req, 1009 rate-limited
 [watch] block 223,934,986  46a0a522cb3f844fe731e79b5e9e556a6dec479b.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,935,125 (head 223,935,441, lag 316); scanned 2515, skipped 4414 blocks; 3 event(s); neardata 3662 req, 1129 rate-limited
+[watch] block 223,935,204  4nbm3.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 223,935,251  4nbm3.bulkpayment.near  UseGlobalContract (contract-receipt)
