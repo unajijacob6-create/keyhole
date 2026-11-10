@@ -64,3 +64,5 @@
 [watch] mainnet at block 223,977,958 (head 223,978,216, lag 258); scanned 8556, skipped 10755 blocks; 29 event(s); neardata 10522 req, 1934 rate-limited
 [watch] mainnet: head refresh failed (HTTP 429); keeping 223978216
 [watch] block 223,978,320  last.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,978,377 (head 223,979,035, lag 658); scanned 8975, skipped 10755 blocks; 30 event(s); neardata 11037 req, 2028 rate-limited
+[watch] block 223,978,514  nearstar.nearlytrade.near  UseGlobalContract (contract-receipt)
