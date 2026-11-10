@@ -13,3 +13,7 @@
 [watch] mainnet at block 223,965,035 (head 223,965,320, lag 285); scanned 3224, skipped 3164 blocks; 2 event(s); neardata 3952 req, 710 rate-limited
 [watch] mainnet at block 223,965,310 (head 223,965,320, lag 10); scanned 3499, skipped 3164 blocks; 2 event(s); neardata 4352 req, 836 rate-limited
 [watch] block 223,965,618  escrow.sphinxescrow.near  DeployContract (transaction)  new code 7u2BeM…
+[watch] mainnet at block 223,965,828 (head 223,966,993, lag 1165); scanned 4017, skipped 3164 blocks; 3 event(s); neardata 4964 req, 929 rate-limited
+[watch] block 223,965,972  gta.grandtheftapes.near  UseGlobalContract (transaction)
+[watch] mainnet block 223966055: HTTP 429; retry in 4s
+[watch] mainnet block 223966057: HTTP 429; retry in 4s
