@@ -60,3 +60,8 @@
 [watch] block 223,921,179  bursar-reports.near  DeployContract (transaction)  new code CEcgA2…
 [watch] mainnet at block 223,921,334 (head 223,921,825, lag 491); scanned 8294, skipped 15239 blocks; 13 event(s); neardata 11289 req, 2961 rate-limited
 [watch] block 223,921,549  lunc.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,921,772 (head 223,921,825, lag 53); scanned 8732, skipped 15239 blocks; 14 event(s); neardata 11837 req, 3071 rate-limited
+[watch] block 223,921,803  v1.sig-net.near  DeployContract (transaction)  new code 52ycKg…
+[watch] mainnet: head refresh failed (HTTP 429); keeping 223921825
+[watch] mainnet: 4549 blocks behind; skipping to head 223,926,375 (blocks 223921826–223926374 not scanned)
+[watch] mainnet: head refresh failed (HTTP 429); keeping 223926470
