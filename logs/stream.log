@@ -1,3 +1,5 @@
 [watch] mainnet from block 223,958,647; watching (none); network-wide deploy feed on
 [watch] mainnet at block 223,958,926 (head 223,959,414, lag 488); scanned 279, skipped 0 blocks; 0 event(s); neardata 404 req, 114 rate-limited
 [watch] mainnet at block 223,959,212 (head 223,959,414, lag 202); scanned 565, skipped 0 blocks; 0 event(s); neardata 815 req, 239 rate-limited
+[watch] mainnet at block 223,959,479 (head 223,961,534, lag 2055); scanned 832, skipped 0 blocks; 0 event(s); neardata 1206 req, 363 rate-limited
+[watch] block 223,959,537  zolva.nearlytrade.near  UseGlobalContract (contract-receipt)
