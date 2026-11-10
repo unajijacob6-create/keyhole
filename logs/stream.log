@@ -17,3 +17,4 @@
 [watch] mainnet at block 223,878,794 (head 223,879,700, lag 906); scanned 3295, skipped 8096 blocks; 2 event(s); neardata 4798 req, 1482 rate-limited
 [watch] mainnet at block 223,879,078 (head 223,879,700, lag 622); scanned 3579, skipped 8096 blocks; 2 event(s); neardata 5207 req, 1607 rate-limited
 [watch] block 223,879,193  a1bbbb72cf6b56df.trade.unrlzd.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,879,356 (head 223,879,700, lag 344); scanned 3857, skipped 8096 blocks; 3 event(s); neardata 5610 req, 1732 rate-limited
