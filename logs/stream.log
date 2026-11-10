@@ -25,3 +25,4 @@
 [watch] mainnet at block 223,971,125 (head 223,971,144, lag 19); scanned 5185, skipped 7293 blocks; 5 event(s); neardata 6465 req, 1259 rate-limited
 [watch] block 223,971,171  3hak9bhww8gxzwizk2jbbaz82oigxbykcnglmygbvedm.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
 [watch] mainnet: head refresh failed (HTTP 429); keeping 223971419
+[watch] mainnet at block 223,971,579 (head 223,971,586, lag 7); scanned 5639, skipped 7293 blocks; 6 event(s); neardata 7014 req, 1350 rate-limited
