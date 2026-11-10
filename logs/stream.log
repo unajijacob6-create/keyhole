@@ -3,3 +3,5 @@
 [watch] mainnet at block 223,959,212 (head 223,959,414, lag 202); scanned 565, skipped 0 blocks; 0 event(s); neardata 815 req, 239 rate-limited
 [watch] mainnet at block 223,959,479 (head 223,961,534, lag 2055); scanned 832, skipped 0 blocks; 0 event(s); neardata 1206 req, 363 rate-limited
 [watch] block 223,959,537  zolva.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,959,766 (head 223,961,534, lag 1768); scanned 1119, skipped 0 blocks; 1 event(s); neardata 1620 req, 490 rate-limited
+[watch] mainnet block 223960724: HTTP 429; retry in 4s
