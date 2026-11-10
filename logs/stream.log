@@ -35,3 +35,5 @@
 [watch] block 223,890,339  eb6dcf918cfef5feca6bb6ba7fbed6540a19b8d8a0112c69d6f996567f217d17  DeployContract (transaction)  new code 352F3Q…
 [watch] mainnet at block 223,890,372 (head 223,890,837, lag 465); scanned 6909, skipped 16060 blocks; 6 event(s); neardata 10038 req, 3096 rate-limited
 [watch] block 223,890,599  68ef56a3aa1897fcd0b00050d5a80427f87b2bbd.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,890,643 (head 223,890,837, lag 194); scanned 7180, skipped 16060 blocks; 7 event(s); neardata 10441 req, 3229 rate-limited
+[watch] mainnet: 4698 blocks behind; skipping to head 223,895,536 (blocks 223890838–223895535 not scanned)
