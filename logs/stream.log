@@ -8,3 +8,5 @@
 [watch] mainnet at block 223,929,024 (head 223,929,764, lag 740); scanned 828, skipped 0 blocks; 1 event(s); neardata 1212 req, 372 rate-limited
 [watch] mainnet at block 223,929,305 (head 223,929,764, lag 459); scanned 1109, skipped 0 blocks; 1 event(s); neardata 1623 req, 503 rate-limited
 [watch] block 223,929,570  nuke.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,929,584 (head 223,929,764, lag 180); scanned 1388, skipped 0 blocks; 2 event(s); neardata 2033 req, 634 rate-limited
+[watch] mainnet: 4414 blocks behind; skipping to head 223,934,179 (blocks 223929765–223934178 not scanned)
