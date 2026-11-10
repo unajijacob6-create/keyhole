@@ -33,3 +33,6 @@
 [watch] mainnet block 223914508: HTTP 429; retry in 4s
 [watch] mainnet block 223914510: HTTP 429; retry in 4s
 [watch] mainnet at block 223,914,601 (head 223,915,585, lag 984); scanned 4893, skipped 11907 blocks; 7 event(s); neardata 6960 req, 2039 rate-limited
+[watch] mainnet at block 223,914,933 (head 223,915,585, lag 652); scanned 5225, skipped 11907 blocks; 7 event(s); neardata 7405 req, 2153 rate-limited
+[watch] block 223,915,005  elon-3.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] block 223,915,073  mmli-4.nearlytrade.near  UseGlobalContract (contract-receipt)
