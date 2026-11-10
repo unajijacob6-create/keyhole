@@ -29,3 +29,6 @@
 [watch] mainnet at block 223,940,315 (head 223,940,475, lag 160); scanned 4220, skipped 7899 blocks; 7 event(s); neardata 6104 req, 1861 rate-limited
 [watch] mainnet: 4297 blocks behind; skipping to head 223,944,773 (blocks 223940476–223944772 not scanned)
 [watch] mainnet at block 223,944,887 (head 223,945,203, lag 316); scanned 4495, skipped 12196 blocks; 7 event(s); neardata 6507 req, 1984 rate-limited
+[watch] block 223,945,129  we9n4qjhek3hxm7fefvaxr2drafx5gcz.craft.tg  UseGlobalContract (contract-receipt)
+[watch] block 223,945,167  keyhole-devmo.near  DeployContract (transaction)  new code 3kFeCR…
+[watch] mainnet at block 223,945,168 (head 223,945,203, lag 35); scanned 4776, skipped 12196 blocks; 9 event(s); neardata 6912 req, 2109 rate-limited
