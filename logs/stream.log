@@ -2,3 +2,6 @@
 [watch] mainnet at block 223,867,673 (head 223,867,690, lag 17); scanned 270, skipped 0 blocks; 0 event(s); neardata 392 req, 112 rate-limited
 [watch] mainnet at block 223,867,948 (head 223,868,532, lag 584); scanned 545, skipped 0 blocks; 0 event(s); neardata 791 req, 235 rate-limited
 [watch] mainnet at block 223,868,232 (head 223,868,532, lag 300); scanned 829, skipped 0 blocks; 0 event(s); neardata 1196 req, 357 rate-limited
+[watch] mainnet at block 223,868,501 (head 223,868,532, lag 31); scanned 1098, skipped 0 blocks; 0 event(s); neardata 1598 req, 490 rate-limited
+[watch] mainnet: 3244 blocks behind; skipping to head 223,871,777 (blocks 223868533–223871776 not scanned)
+[watch] block 223,871,898  petri-dish.near  DeployContract (transaction)  new code CFSKar…
