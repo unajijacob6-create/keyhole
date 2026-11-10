@@ -52,3 +52,9 @@
 [watch] block 223,920,781  nlunc.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
 [watch] mainnet block 223920844: HTTP 429; retry in 4s
 [watch] mainnet block 223920846: HTTP 429; retry in 4s
+[watch] mainnet block 223920955: HTTP 429; retry in 4s
+[watch] mainnet at block 223,920,956 (head 223,921,825, lag 869); scanned 7916, skipped 15239 blocks; 12 event(s); neardata 10810 req, 2858 rate-limited
+[watch] mainnet block 223921125: HTTP 429; retry in 4s
+[watch] mainnet block 223921126: HTTP 429; retry in 4s
+[watch] mainnet block 223921127: HTTP 429; retry in 4s
+[watch] block 223,921,179  bursar-reports.near  DeployContract (transaction)  new code CEcgA2…
