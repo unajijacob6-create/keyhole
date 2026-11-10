@@ -1,7 +1,2 @@
-[watch] mainnet from block 223,834,812; watching (none); network-wide deploy feed on
-[watch] mainnet: head refresh failed (HTTP 429); keeping 223834826
-[watch] mainnet at block 223,835,076 (head 223,835,168, lag 92); scanned 264, skipped 0 blocks; 0 event(s); neardata 392 req, 119 rate-limited
-[watch] block 223,835,076  annon-dev.payaion.near  DeployContract (transaction)  new code ny7LQ2…
-[watch] block 223,835,141  splus.nearlytrade.near  UseGlobalContract (contract-receipt)
-[watch] mainnet at block 223,835,357 (head 223,836,188, lag 831); scanned 545, skipped 0 blocks; 2 event(s); neardata 804 req, 248 rate-limited
-[watch] mainnet at block 223,835,627 (head 223,836,188, lag 561); scanned 815, skipped 0 blocks; 2 event(s); neardata 1207 req, 382 rate-limited
+[watch] mainnet from block 223,837,381; watching (none); network-wide deploy feed on
+[watch] mainnet at block 223,837,661 (head 223,838,045, lag 384); scanned 280, skipped 0 blocks; 0 event(s); neardata 407 req, 116 rate-limited
