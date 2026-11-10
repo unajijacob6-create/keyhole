@@ -65,3 +65,6 @@
 [watch] mainnet: head refresh failed (HTTP 429); keeping 223921825
 [watch] mainnet: 4549 blocks behind; skipping to head 223,926,375 (blocks 223921826–223926374 not scanned)
 [watch] mainnet: head refresh failed (HTTP 429); keeping 223926470
+[watch] mainnet at block 223,926,640 (head 223,926,676, lag 36); scanned 9051, skipped 19788 blocks; 15 event(s); neardata 12267 req, 3174 rate-limited
+[watch] mainnet stopped after 17400s; 15 event(s) reported
+stream watcher exited with code 0 after 17436s
