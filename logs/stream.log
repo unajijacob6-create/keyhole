@@ -58,3 +58,6 @@
 [watch] mainnet block 223973866: HTTP 429; retry in 4s
 [watch] mainnet at block 223,973,947 (head 223,974,303, lag 356); scanned 8007, skipped 7293 blocks; 27 event(s); neardata 9720 req, 1685 rate-limited
 [watch] block 223,974,173  bounty2.bountee.near  DeployContract (transaction)  new code 9iHeNY…
+[watch] mainnet at block 223,974,226 (head 223,974,303, lag 77); scanned 8286, skipped 7293 blocks; 28 event(s); neardata 10125 req, 1812 rate-limited
+[watch] mainnet: 3462 blocks behind; skipping to head 223,977,766 (blocks 223974304–223977765 not scanned)
+[watch] block 223,977,885  bankai.nearlytrade.near  UseGlobalContract (contract-receipt)
