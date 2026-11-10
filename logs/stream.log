@@ -5,3 +5,4 @@
 [watch] block 223,928,395  mop.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,928,464 (head 223,928,595, lag 131); scanned 268, skipped 0 blocks; 1 event(s); neardata 402 req, 123 rate-limited
 [watch] mainnet at block 223,928,750 (head 223,929,764, lag 1014); scanned 554, skipped 0 blocks; 1 event(s); neardata 810 req, 244 rate-limited
+[watch] mainnet at block 223,929,024 (head 223,929,764, lag 740); scanned 828, skipped 0 blocks; 1 event(s); neardata 1212 req, 372 rate-limited
