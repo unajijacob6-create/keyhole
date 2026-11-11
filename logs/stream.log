@@ -18,3 +18,5 @@
 [watch] mainnet at block 224,086,399 (head 224,087,288, lag 889); scanned 4435, skipped 3148 blocks; 5 event(s); neardata 5549 req, 1090 rate-limited
 [watch] block 224,086,630  vault.intatto.near  DeployContract (transaction)  new code 3z1W5S…
 [watch] block 224,086,763  nrwa.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,086,881 (head 224,087,288, lag 407); scanned 4917, skipped 3148 blocks; 7 event(s); neardata 6137 req, 1196 rate-limited
+[watch] mainnet: 3460 blocks behind; skipping to head 224,090,749 (blocks 224087289–224090748 not scanned)
