@@ -31,3 +31,4 @@
 [watch] mainnet at block 224,093,072 (head 224,095,300, lag 2228); scanned 7648, skipped 6608 blocks; 10 event(s); neardata 9529 req, 1848 rate-limited
 [watch] block 224,093,436  superinu-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,093,506 (head 224,095,300, lag 1794); scanned 8082, skipped 6608 blocks; 11 event(s); neardata 10079 req, 1965 rate-limited
+[watch] mainnet at block 224,093,940 (head 224,095,300, lag 1360); scanned 8516, skipped 6608 blocks; 11 event(s); neardata 10625 req, 2077 rate-limited
