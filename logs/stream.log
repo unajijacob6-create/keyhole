@@ -41,3 +41,5 @@
 [watch] mainnet at block 224,071,295 (head 224,071,608, lag 313); scanned 6057, skipped 16493 blocks; 14 event(s); neardata 8807 req, 2718 rate-limited
 [watch] mainnet at block 224,071,566 (head 224,071,608, lag 42); scanned 6328, skipped 16493 blocks; 14 event(s); neardata 9199 req, 2839 rate-limited
 [watch] mainnet at block 224,071,850 (head 224,073,010, lag 1160); scanned 6612, skipped 16493 blocks; 14 event(s); neardata 9611 req, 2966 rate-limited
+[watch] block 224,072,097  app.luckout.near  DeployContract (transaction)  new code 7iigfg…
+[watch] mainnet at block 224,072,124 (head 224,073,010, lag 886); scanned 6886, skipped 16493 blocks; 15 event(s); neardata 10014 req, 3094 rate-limited
