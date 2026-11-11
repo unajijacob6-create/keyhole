@@ -4,3 +4,4 @@
 [watch] block 224,109,454  eagle-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,109,482 (head 224,109,849, lag 367); scanned 1320, skipped 0 blocks; 1 event(s); neardata 1654 req, 322 rate-limited
 [watch] mainnet at block 224,109,979 (head 224,111,748, lag 1769); scanned 1817, skipped 0 blocks; 1 event(s); neardata 2257 req, 427 rate-limited
+[watch] mainnet at block 224,110,430 (head 224,111,748, lag 1318); scanned 2268, skipped 0 blocks; 1 event(s); neardata 2822 req, 541 rate-limited
