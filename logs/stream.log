@@ -42,3 +42,5 @@
 [watch] mainnet at block 224,013,820 (head 224,014,094, lag 274); scanned 7044, skipped 17698 blocks; 13 event(s); neardata 10006 req, 2934 rate-limited
 [watch] mainnet at block 224,014,106 (head 224,015,167, lag 1061); scanned 7330, skipped 17698 blocks; 13 event(s); neardata 10413 req, 3054 rate-limited
 [watch] mainnet at block 224,014,387 (head 224,015,167, lag 780); scanned 7611, skipped 17698 blocks; 13 event(s); neardata 10817 req, 3177 rate-limited
+[watch] mainnet at block 224,014,663 (head 224,015,167, lag 504); scanned 7887, skipped 17698 blocks; 13 event(s); neardata 11216 req, 3301 rate-limited
+[watch] block 224,014,756  escrow.statedforecast.near  DeployContract (transaction)  new code 6vSbm6…
