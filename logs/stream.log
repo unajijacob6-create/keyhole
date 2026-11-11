@@ -13,3 +13,5 @@
 [watch] block 224,022,031  qh2hv.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,022,077  qh2hv.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,022,221 (head 224,022,632, lag 411); scanned 3050, skipped 0 blocks; 3 event(s); neardata 4421 req, 1359 rate-limited
+[watch] mainnet at block 224,022,509 (head 224,022,632, lag 123); scanned 3338, skipped 0 blocks; 3 event(s); neardata 4833 req, 1482 rate-limited
+[watch] mainnet: 9241 blocks behind; skipping to head 224,031,874 (blocks 224022633–224031873 not scanned)
