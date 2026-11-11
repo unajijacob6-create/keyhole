@@ -46,3 +46,7 @@
 [watch] mainnet at block 224,072,425 (head 224,073,010, lag 585); scanned 7187, skipped 16493 blocks; 15 event(s); neardata 10429 req, 3208 rate-limited
 [watch] mainnet at block 224,072,695 (head 224,073,010, lag 315); scanned 7457, skipped 16493 blocks; 15 event(s); neardata 10830 req, 3340 rate-limited
 [watch] block 224,072,928  3d5b397547161675975da170b7e13750c4f16898.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,072,991 (head 224,073,010, lag 19); scanned 7753, skipped 16493 blocks; 16 event(s); neardata 11240 req, 3453 rate-limited
+[watch] mainnet: 5074 blocks behind; skipping to head 224,078,085 (blocks 224073011–224078084 not scanned)
+[watch] mainnet stopped after 17403s; 16 event(s) reported
+stream watcher exited with code 0 after 17445s
