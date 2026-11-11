@@ -23,3 +23,4 @@
 [watch] block 223,992,325  fvyymnhfmmge2w3xoxfnwvbwmc761hhihzbwpajuwhrl.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
 [watch] block 223,992,501  iamyoungjohn-near-172fc5bb6df1.openrail.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,992,530 (head 223,993,107, lag 577); scanned 3452, skipped 0 blocks; 12 event(s); neardata 4792 req, 1327 rate-limited
+[watch] mainnet at block 223,992,808 (head 223,993,107, lag 299); scanned 3730, skipped 0 blocks; 12 event(s); neardata 5193 req, 1451 rate-limited
