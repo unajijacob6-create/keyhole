@@ -47,3 +47,7 @@
 [watch] block 224,103,401  otterly.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 224,103,499  iamyoungjohn-near-6a3990e7bd89.openrail.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,103,544 (head 224,106,206, lag 2662); scanned 12357, skipped 12371 blocks; 14 event(s); neardata 15330 req, 2929 rate-limited
+[watch] mainnet at block 224,104,008 (head 224,106,206, lag 2198); scanned 12821, skipped 12371 blocks; 14 event(s); neardata 15905 req, 3039 rate-limited
+[watch] block 224,104,019  vault.house.maskwars.near  DeployContract (transaction)  new code GBcgJ4…
+[watch] mainnet stopped after 17410s; 15 event(s) reported
+stream watcher exited with code 0 after 17448s
