@@ -31,3 +31,5 @@
 [watch] block 224,061,198  rot.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 3950 blocks behind; skipping to head 224,065,223 (blocks 224061273–224065222 not scanned)
 [watch] mainnet at block 224,065,272 (head 224,065,318, lag 46); scanned 4399, skipped 12128 blocks; 13 event(s); neardata 6395 req, 1970 rate-limited
+[watch] mainnet at block 224,065,540 (head 224,065,623, lag 83); scanned 4667, skipped 12128 blocks; 13 event(s); neardata 6794 req, 2101 rate-limited
+[watch] block 224,065,686  keyhole-devmo.near  DeployContract (transaction)  new code 3cZsay…
