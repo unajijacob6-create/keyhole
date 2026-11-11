@@ -17,3 +17,5 @@
 [watch] block 224,054,074  ae7y4rjgxwd5gvxnfqqe8564bmngajqg.craft.tg  UseGlobalContract (contract-receipt)
 [watch] block 224,054,109  385b903259f194e235afa5022f7825d6812a6fb6.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,054,236 (head 224,055,244, lag 1008); scanned 1943, skipped 3548 blocks; 10 event(s); neardata 2814 req, 854 rate-limited
+[watch] mainnet at block 224,054,507 (head 224,055,244, lag 737); scanned 2214, skipped 3548 blocks; 10 event(s); neardata 3217 req, 986 rate-limited
+[watch] block 224,054,643  outlayer.near  DeployContract (transaction)  new code AsbxRW…
