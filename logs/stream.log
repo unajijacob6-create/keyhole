@@ -46,3 +46,4 @@
 [watch] mainnet at block 224,103,086 (head 224,103,533, lag 447); scanned 11899, skipped 12371 blocks; 12 event(s); neardata 14765 req, 2823 rate-limited
 [watch] block 224,103,401  otterly.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 224,103,499  iamyoungjohn-near-6a3990e7bd89.openrail.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,103,544 (head 224,106,206, lag 2662); scanned 12357, skipped 12371 blocks; 14 event(s); neardata 15330 req, 2929 rate-limited
