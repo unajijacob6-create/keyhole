@@ -15,3 +15,6 @@
 [watch] mainnet at block 224,085,525 (head 224,085,726, lag 201); scanned 3561, skipped 3148 blocks; 4 event(s); neardata 4456 req, 872 rate-limited
 [watch] mainnet at block 224,085,964 (head 224,087,288, lag 1324); scanned 4000, skipped 3148 blocks; 4 event(s); neardata 5007 req, 982 rate-limited
 [watch] block 224,086,097  superwoman.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,086,399 (head 224,087,288, lag 889); scanned 4435, skipped 3148 blocks; 5 event(s); neardata 5549 req, 1090 rate-limited
+[watch] block 224,086,630  vault.intatto.near  DeployContract (transaction)  new code 3z1W5S…
+[watch] block 224,086,763  nrwa.nearlytrade.near  UseGlobalContract (contract-receipt)
