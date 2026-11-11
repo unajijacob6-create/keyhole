@@ -21,3 +21,6 @@
 [watch] mainnet at block 224,086,881 (head 224,087,288, lag 407); scanned 4917, skipped 3148 blocks; 7 event(s); neardata 6137 req, 1196 rate-limited
 [watch] mainnet: 3460 blocks behind; skipping to head 224,090,749 (blocks 224087289–224090748 not scanned)
 [watch] mainnet at block 224,090,800 (head 224,090,875, lag 75); scanned 5376, skipped 6608 blocks; 7 event(s); neardata 6711 req, 1307 rate-limited
+[watch] block 224,091,244  sherrifcat.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,091,252 (head 224,091,535, lag 283); scanned 5828, skipped 6608 blocks; 8 event(s); neardata 7272 req, 1413 rate-limited
+[watch] block 224,091,619  rhea001604.multica.near  UseGlobalContract (contract-receipt)
