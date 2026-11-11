@@ -39,3 +39,5 @@
 [watch] mainnet at block 224,129,063 (head 224,129,251, lag 188); scanned 8638, skipped 12263 blocks; 14 event(s); neardata 11198 req, 2530 rate-limited
 [watch] mainnet at block 224,129,433 (head 224,131,141, lag 1708); scanned 9008, skipped 12263 blocks; 14 event(s); neardata 11680 req, 2640 rate-limited
 [watch] mainnet at block 224,129,721 (head 224,131,141, lag 1420); scanned 9296, skipped 12263 blocks; 14 event(s); neardata 12090 req, 2763 rate-limited
+[watch] mainnet at block 224,130,141 (head 224,131,141, lag 1000); scanned 9716, skipped 12263 blocks; 14 event(s); neardata 12626 req, 2879 rate-limited
+[watch] block 224,130,268  lumenia.near  DeployContract (transaction)  new code GDKwUN…
