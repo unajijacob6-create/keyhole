@@ -30,3 +30,4 @@
 [watch] mainnet at block 224,061,063 (head 224,061,272, lag 209); scanned 4140, skipped 8178 blocks; 12 event(s); neardata 6009 req, 1846 rate-limited
 [watch] block 224,061,198  rot.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 3950 blocks behind; skipping to head 224,065,223 (blocks 224061273–224065222 not scanned)
+[watch] mainnet at block 224,065,272 (head 224,065,318, lag 46); scanned 4399, skipped 12128 blocks; 13 event(s); neardata 6395 req, 1970 rate-limited
