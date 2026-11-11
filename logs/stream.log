@@ -30,3 +30,4 @@
 [watch] block 224,119,780  neardragons-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,119,854 (head 224,121,144, lag 1290); scanned 6644, skipped 5048 blocks; 13 event(s); neardata 8474 req, 1808 rate-limited
 [watch] mainnet at block 224,120,127 (head 224,121,144, lag 1017); scanned 6917, skipped 5048 blocks; 13 event(s); neardata 8873 req, 1933 rate-limited
+[watch] mainnet at block 224,120,488 (head 224,121,144, lag 656); scanned 7278, skipped 5048 blocks; 13 event(s); neardata 9350 req, 2050 rate-limited
