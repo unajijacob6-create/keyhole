@@ -43,3 +43,6 @@
 [watch] mainnet at block 224,102,147 (head 224,102,309, lag 162); scanned 10960, skipped 12371 blocks; 11 event(s); neardata 13611 req, 2609 rate-limited
 [watch] mainnet at block 224,102,625 (head 224,103,533, lag 908); scanned 11438, skipped 12371 blocks; 11 event(s); neardata 14197 req, 2716 rate-limited
 [watch] block 224,102,767  tamagotchi.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,103,086 (head 224,103,533, lag 447); scanned 11899, skipped 12371 blocks; 12 event(s); neardata 14765 req, 2823 rate-limited
+[watch] block 224,103,401  otterly.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] block 224,103,499  iamyoungjohn-near-6a3990e7bd89.openrail.near  UseGlobalContract (contract-receipt)
