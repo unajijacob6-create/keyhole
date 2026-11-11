@@ -20,3 +20,6 @@
 [watch] mainnet at block 224,054,507 (head 224,055,244, lag 737); scanned 2214, skipped 3548 blocks; 10 event(s); neardata 3217 req, 986 rate-limited
 [watch] block 224,054,643  outlayer.near  DeployContract (transaction)  new code AsbxRW…
 [watch] mainnet at block 224,054,796 (head 224,055,244, lag 448); scanned 2503, skipped 3548 blocks; 11 event(s); neardata 3630 req, 1109 rate-limited
+[watch] mainnet at block 224,055,072 (head 224,055,244, lag 172); scanned 2779, skipped 3548 blocks; 11 event(s); neardata 4033 req, 1237 rate-limited
+[watch] block 224,055,076  ripcord-registry.near  DeployContract (transaction)  new code 4KM6TW…
+[watch] mainnet: 4630 blocks behind; skipping to head 224,059,875 (blocks 224055245–224059874 not scanned)
