@@ -44,3 +44,5 @@
 [watch] block 224,072,097  app.luckout.near  DeployContract (transaction)  new code 7iigfg…
 [watch] mainnet at block 224,072,124 (head 224,073,010, lag 886); scanned 6886, skipped 16493 blocks; 15 event(s); neardata 10014 req, 3094 rate-limited
 [watch] mainnet at block 224,072,425 (head 224,073,010, lag 585); scanned 7187, skipped 16493 blocks; 15 event(s); neardata 10429 req, 3208 rate-limited
+[watch] mainnet at block 224,072,695 (head 224,073,010, lag 315); scanned 7457, skipped 16493 blocks; 15 event(s); neardata 10830 req, 3340 rate-limited
+[watch] block 224,072,928  3d5b397547161675975da170b7e13750c4f16898.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
