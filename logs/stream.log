@@ -5,3 +5,4 @@
 [watch] mainnet block 224079448: HTTP 429; retry in 4s
 [watch] mainnet at block 224,079,681 (head 224,080,056, lag 375); scanned 865, skipped 0 blocks; 2 event(s); neardata 1088 req, 210 rate-limited
 [watch] block 224,079,997  e66fe275f1791aff858e650be57ee5238178062a.venear.dao  DeployContract (contract-receipt)  new code EV4eXN…
+[watch] mainnet at block 224,080,121 (head 224,081,531, lag 1410); scanned 1305, skipped 0 blocks; 3 event(s); neardata 1638 req, 318 rate-limited
