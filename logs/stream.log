@@ -1,4 +1,3 @@
-[watch] mainnet from block 223,958,647; watching (none); network-wide deploy feed on
 [watch] mainnet at block 223,958,926 (head 223,959,414, lag 488); scanned 279, skipped 0 blocks; 0 event(s); neardata 404 req, 114 rate-limited
 [watch] mainnet at block 223,959,212 (head 223,959,414, lag 202); scanned 565, skipped 0 blocks; 0 event(s); neardata 815 req, 239 rate-limited
 [watch] mainnet at block 223,959,479 (head 223,961,534, lag 2055); scanned 832, skipped 0 blocks; 0 event(s); neardata 1206 req, 363 rate-limited
@@ -76,3 +75,6 @@
 [watch] block 223,980,222  9ac73f7111648d91f9057e705e1ab8d524a508eb.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 223,980,292 (head 223,981,253, lag 961); scanned 10890, skipped 10755 blocks; 33 event(s); neardata 13666 req, 2742 rate-limited
 [watch] mainnet at block 223,980,560 (head 223,981,253, lag 693); scanned 11158, skipped 10755 blocks; 33 event(s); neardata 14061 req, 2869 rate-limited
+[watch] mainnet at block 223,980,848 (head 223,981,253, lag 405); scanned 11446, skipped 10755 blocks; 33 event(s); neardata 14471 req, 2990 rate-limited
+[watch] mainnet stopped after 17408s; 33 event(s) reported
+stream watcher exited with code 0 after 17440s
