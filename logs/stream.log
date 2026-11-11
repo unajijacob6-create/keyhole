@@ -21,3 +21,5 @@
 [watch] mainnet at block 224,032,846 (head 224,033,399, lag 553); scanned 4434, skipped 9241 blocks; 3 event(s); neardata 6441 req, 1989 rate-limited
 [watch] mainnet at block 224,033,124 (head 224,033,399, lag 275); scanned 4712, skipped 9241 blocks; 3 event(s); neardata 6837 req, 2107 rate-limited
 [watch] block 224,033,180  10f816f5fbf84d7c6cb0c5bd5e79e02be90260e3d58f85ed8317c215439280bf  DeployContract (transaction)  new code DqUgbg…
+[watch] mainnet: 4014 blocks behind; skipping to head 224,037,414 (blocks 224033400–224037413 not scanned)
+[watch] mainnet at block 224,037,425 (head 224,037,432, lag 7); scanned 4999, skipped 13255 blocks; 4 event(s); neardata 7247 req, 2229 rate-limited
