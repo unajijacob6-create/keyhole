@@ -32,3 +32,7 @@
 [watch] block 224,093,436  superinu-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,093,506 (head 224,095,300, lag 1794); scanned 8082, skipped 6608 blocks; 11 event(s); neardata 10079 req, 1965 rate-limited
 [watch] mainnet at block 224,093,940 (head 224,095,300, lag 1360); scanned 8516, skipped 6608 blocks; 11 event(s); neardata 10625 req, 2077 rate-limited
+[watch] mainnet at block 224,094,362 (head 224,095,300, lag 938); scanned 8938, skipped 6608 blocks; 11 event(s); neardata 11167 req, 2196 rate-limited
+[watch] mainnet block 224094404: HTTP 429; retry in 4s
+[watch] mainnet block 224094405: HTTP 429; retry in 4s
+[watch] mainnet block 224094406: HTTP 429; retry in 4s
