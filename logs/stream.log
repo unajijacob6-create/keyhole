@@ -19,3 +19,6 @@
 [watch] mainnet at block 223,991,702 (head 223,993,107, lag 1405); scanned 2624, skipped 0 blocks; 9 event(s); neardata 3592 req, 956 rate-limited
 [watch] mainnet at block 223,991,992 (head 223,993,107, lag 1115); scanned 2914, skipped 0 blocks; 9 event(s); neardata 4003 req, 1076 rate-limited
 [watch] block 223,992,077  openjep.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 223,992,260 (head 223,993,107, lag 847); scanned 3182, skipped 0 blocks; 10 event(s); neardata 4398 req, 1204 rate-limited
+[watch] block 223,992,325  fvyymnhfmmge2w3xoxfnwvbwmc761hhihzbwpajuwhrl.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
+[watch] block 223,992,501  iamyoungjohn-near-172fc5bb6df1.openrail.near  UseGlobalContract (contract-receipt)
