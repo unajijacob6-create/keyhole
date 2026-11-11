@@ -23,3 +23,4 @@
 [watch] mainnet at block 224,055,072 (head 224,055,244, lag 172); scanned 2779, skipped 3548 blocks; 11 event(s); neardata 4033 req, 1237 rate-limited
 [watch] block 224,055,076  ripcord-registry.near  DeployContract (transaction)  new code 4KM6TW…
 [watch] mainnet: 4630 blocks behind; skipping to head 224,059,875 (blocks 224055245–224059874 not scanned)
+[watch] mainnet at block 224,059,962 (head 224,060,227, lag 265); scanned 3039, skipped 8178 blocks; 12 event(s); neardata 4419 req, 1359 rate-limited
