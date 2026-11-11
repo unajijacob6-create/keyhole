@@ -35,3 +35,4 @@
 [watch] block 224,065,686  keyhole-devmo.near  DeployContract (transaction)  new code 3cZsay…
 [watch] mainnet at block 224,065,819 (head 224,066,778, lag 959); scanned 4946, skipped 12128 blocks; 14 event(s); neardata 7200 req, 2227 rate-limited
 [watch] mainnet at block 224,066,100 (head 224,066,778, lag 678); scanned 5227, skipped 12128 blocks; 14 event(s); neardata 7609 req, 2355 rate-limited
+[watch] mainnet at block 224,066,379 (head 224,066,778, lag 399); scanned 5506, skipped 12128 blocks; 14 event(s); neardata 8017 req, 2484 rate-limited
