@@ -38,3 +38,4 @@
 [watch] block 224,192,782  x3zjb.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,192,831  x3zjb.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,192,932 (head 224,194,017, lag 1085); scanned 6681, skipped 17586 blocks; 11 event(s); neardata 9666 req, 2953 rate-limited
+[watch] mainnet at block 224,193,208 (head 224,194,017, lag 809); scanned 6957, skipped 17586 blocks; 11 event(s); neardata 10068 req, 3078 rate-limited
