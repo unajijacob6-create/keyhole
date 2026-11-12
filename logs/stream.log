@@ -28,3 +28,4 @@
 [watch] mainnet at block 224,274,073 (head 224,274,101, lag 28); scanned 4257, skipped 11501 blocks; 4 event(s); neardata 6097 req, 1821 rate-limited
 [watch] mainnet at block 224,274,344 (head 224,274,380, lag 36); scanned 4528, skipped 11501 blocks; 4 event(s); neardata 6493 req, 1944 rate-limited
 [watch] block 224,274,522  dacity.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,274,631 (head 224,275,472, lag 841); scanned 4815, skipped 11501 blocks; 5 event(s); neardata 6911 req, 2073 rate-limited
