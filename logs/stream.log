@@ -31,3 +31,6 @@
 [watch] mainnet at block 224,187,458 (head 224,188,088, lag 630); scanned 5583, skipped 13210 blocks; 7 event(s); neardata 8077 req, 2467 rate-limited
 [watch] mainnet at block 224,187,728 (head 224,188,088, lag 360); scanned 5853, skipped 13210 blocks; 7 event(s); neardata 8470 req, 2591 rate-limited
 [watch] block 224,187,829  inear.nearon-stg.near  DeployContract (contract-receipt)  new code FBnnFk…
+[watch] mainnet at block 224,188,000 (head 224,188,088, lag 88); scanned 6125, skipped 13210 blocks; 8 event(s); neardata 8866 req, 2715 rate-limited
+[watch] mainnet: 4376 blocks behind; skipping to head 224,192,465 (blocks 224188089–224192464 not scanned)
+[watch] block 224,192,482  nzhipu.rwa.assetize.near  DeployContract (transaction)  new code Ee4rSf…
