@@ -46,3 +46,5 @@
 [watch] mainnet at block 224,244,285 (head 224,245,461, lag 1176); scanned 9273, skipped 6226 blocks; 20 event(s); neardata 11472 req, 2152 rate-limited
 [watch] mainnet at block 224,244,767 (head 224,245,461, lag 694); scanned 9755, skipped 6226 blocks; 20 event(s); neardata 12059 req, 2257 rate-limited
 [watch] block 224,244,897  policy.nishanthb.near  DeployContract (transaction)  new code 52Midc…
+[watch] mainnet at block 224,245,206 (head 224,245,461, lag 255); scanned 10194, skipped 6226 blocks; 21 event(s); neardata 12609 req, 2367 rate-limited
+[watch] mainnet: 6079 blocks behind; skipping to head 224,251,541 (blocks 224245462–224251540 not scanned)
