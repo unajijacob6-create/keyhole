@@ -48,3 +48,7 @@
 [watch] block 224,225,855  pocketgotchi.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 224,225,997  4264408db52601b6a355164d08f7413b866575b1.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,226,132 (head 224,226,940, lag 808); scanned 8819, skipped 17910 blocks; 19 event(s); neardata 12111 req, 3245 rate-limited
+[watch] block 224,226,510  1f80f62c945eec98005dac38ab9db5f95c44ef1258cf5ca9606fb8c7dd4da36e  DeployContract (transaction)  new code 9S9R3a…
+[watch] mainnet at block 224,226,555 (head 224,226,940, lag 385); scanned 9242, skipped 17910 blocks; 20 event(s); neardata 12652 req, 3362 rate-limited
+[watch] mainnet stopped after 17400s; 20 event(s) reported
+stream watcher exited with code 0 after 17446s
