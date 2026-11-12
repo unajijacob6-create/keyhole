@@ -20,3 +20,5 @@
 [watch] block 224,235,651  1079b8a1b933e88a799e84718ebbfe714f017731.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,235,652 (head 224,235,685, lag 33); scanned 3667, skipped 3199 blocks; 8 event(s); neardata 4571 req, 872 rate-limited
 [watch] block 224,235,831  iamyoungjohn-near-7364c747ed71.openrail.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,236,128 (head 224,236,300, lag 172); scanned 4143, skipped 3199 blocks; 9 event(s); neardata 5153 req, 977 rate-limited
+[watch] block 224,236,525  keys.nearlyops.near  DeployContract (transaction)  new code 754WkR…
