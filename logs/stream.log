@@ -31,3 +31,7 @@
 [watch] mainnet at block 224,162,259 (head 224,162,821, lag 562); scanned 7235, skipped 17139 blocks; 1 event(s); neardata 10452 req, 3189 rate-limited
 [watch] mainnet at block 224,162,529 (head 224,162,821, lag 292); scanned 7505, skipped 17139 blocks; 1 event(s); neardata 10841 req, 3308 rate-limited
 [watch] block 224,162,646  1da9c606bb8e5c4976a2ef7e4b35147000f1bb081e456461fe28328390c89049  DeployContract (transaction)  new code 9EziMe…
+[watch] mainnet at block 224,162,800 (head 224,162,821, lag 21); scanned 7776, skipped 17139 blocks; 2 event(s); neardata 11232 req, 3429 rate-limited
+[watch] mainnet: 4979 blocks behind; skipping to head 224,167,801 (blocks 224162822–224167800 not scanned)
+[watch] mainnet stopped after 17409s; 2 event(s) reported
+stream watcher exited with code 0 after 17439s
