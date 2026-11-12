@@ -33,3 +33,5 @@
 [watch] mainnet at block 224,218,213 (head 224,218,225, lag 12); scanned 5200, skipped 13610 blocks; 12 event(s); neardata 7461 req, 2229 rate-limited
 [watch] mainnet at block 224,218,601 (head 224,218,616, lag 15); scanned 5588, skipped 13610 blocks; 12 event(s); neardata 7963 req, 2340 rate-limited
 [watch] mainnet at block 224,218,888 (head 224,219,114, lag 226); scanned 5875, skipped 13610 blocks; 12 event(s); neardata 8366 req, 2454 rate-limited
+[watch] mainnet at block 224,219,252 (head 224,220,781, lag 1529); scanned 6239, skipped 13610 blocks; 12 event(s); neardata 8849 req, 2572 rate-limited
+[watch] block 224,219,371  jensen.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
