@@ -9,3 +9,5 @@
 [watch] mainnet at block 224,201,084 (head 224,202,570, lag 1486); scanned 1681, skipped 0 blocks; 2 event(s); neardata 2438 req, 746 rate-limited
 [watch] block 224,201,294  liho.ringfence-wallet.near  UseGlobalContract (contract-receipt)
 [watch] block 224,201,305  rhea001610.multica.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,201,355 (head 224,202,570, lag 1215); scanned 1952, skipped 0 blocks; 4 event(s); neardata 2838 req, 875 rate-limited
+[watch] block 224,201,619  v1.annon.defdone.near  DeployContract (transaction)  new code FFuE8T…
