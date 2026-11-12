@@ -20,3 +20,6 @@
 [watch] mainnet at block 224,180,423 (head 224,181,467, lag 1044); scanned 3628, skipped 8130 blocks; 4 event(s); neardata 5243 req, 1593 rate-limited
 [watch] mainnet at block 224,180,703 (head 224,181,467, lag 764); scanned 3908, skipped 8130 blocks; 4 event(s); neardata 5644 req, 1715 rate-limited
 [watch] mainnet at block 224,180,974 (head 224,181,467, lag 493); scanned 4179, skipped 8130 blocks; 4 event(s); neardata 6047 req, 1846 rate-limited
+[watch] mainnet at block 224,181,260 (head 224,181,467, lag 207); scanned 4465, skipped 8130 blocks; 4 event(s); neardata 6458 req, 1971 rate-limited
+[watch] block 224,181,334  nightshift-4.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 5080 blocks behind; skipping to head 224,186,548 (blocks 224181468–224186547 not scanned)
