@@ -12,3 +12,6 @@
 [watch] mainnet at block 224,201,355 (head 224,202,570, lag 1215); scanned 1952, skipped 0 blocks; 4 event(s); neardata 2838 req, 875 rate-limited
 [watch] block 224,201,619  v1.annon.defdone.near  DeployContract (transaction)  new code FFuE8T…
 [watch] mainnet at block 224,201,640 (head 224,202,570, lag 930); scanned 2237, skipped 0 blocks; 5 event(s); neardata 3253 req, 1004 rate-limited
+[watch] mainnet at block 224,201,930 (head 224,202,570, lag 640); scanned 2527, skipped 0 blocks; 5 event(s); neardata 3661 req, 1122 rate-limited
+[watch] block 224,202,109  rvwe9hr5l4s.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,202,149  bp.sputnik-dao.near  UseGlobalContract (contract-receipt)
