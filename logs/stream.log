@@ -34,3 +34,5 @@
 [watch] mainnet: 4127 blocks behind; skipping to head 224,279,600 (blocks 224275473–224279599 not scanned)
 [watch] mainnet at block 224,279,606 (head 224,279,622, lag 16); scanned 5663, skipped 15628 blocks; 5 event(s); neardata 8139 req, 2452 rate-limited
 [watch] mainnet at block 224,279,877 (head 224,280,061, lag 184); scanned 5934, skipped 15628 blocks; 5 event(s); neardata 8540 req, 2579 rate-limited
+[watch] block 224,280,145  axon.ebukaa.near  DeployContract (transaction)  new code DQW5B9…
+[watch] mainnet at block 224,280,151 (head 224,281,369, lag 1218); scanned 6208, skipped 15628 blocks; 6 event(s); neardata 8928 req, 2691 rate-limited
