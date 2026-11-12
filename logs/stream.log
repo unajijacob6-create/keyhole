@@ -30,3 +30,4 @@
 [watch] mainnet at block 224,212,962 (head 224,213,187, lag 225); scanned 4788, skipped 8771 blocks; 11 event(s); neardata 6928 req, 2123 rate-limited
 [watch] block 224,213,155  iamyoungjohn-near-86c5cef189f2.openrail.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 4839 blocks behind; skipping to head 224,218,027 (blocks 224213188–224218026 not scanned)
+[watch] mainnet at block 224,218,213 (head 224,218,225, lag 12); scanned 5200, skipped 13610 blocks; 12 event(s); neardata 7461 req, 2229 rate-limited
