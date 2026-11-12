@@ -27,3 +27,6 @@
 [watch] mainnet at block 224,212,360 (head 224,213,187, lag 827); scanned 4186, skipped 8771 blocks; 10 event(s); neardata 6082 req, 1879 rate-limited
 [watch] mainnet at block 224,212,638 (head 224,213,187, lag 549); scanned 4464, skipped 8771 blocks; 10 event(s); neardata 6487 req, 2006 rate-limited
 [watch] block 224,212,832  rein-desk.near  DeployContract (transaction)  new code 5iV5aS…
+[watch] mainnet at block 224,212,962 (head 224,213,187, lag 225); scanned 4788, skipped 8771 blocks; 11 event(s); neardata 6928 req, 2123 rate-limited
+[watch] block 224,213,155  iamyoungjohn-near-86c5cef189f2.openrail.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 4839 blocks behind; skipping to head 224,218,027 (blocks 224213188–224218026 not scanned)
