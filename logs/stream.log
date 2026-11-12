@@ -23,3 +23,4 @@
 [watch] mainnet at block 224,236,128 (head 224,236,300, lag 172); scanned 4143, skipped 3199 blocks; 9 event(s); neardata 5153 req, 977 rate-limited
 [watch] block 224,236,525  keys.nearlyops.near  DeployContract (transaction)  new code 754WkR…
 [watch] mainnet at block 224,236,610 (head 224,237,692, lag 1082); scanned 4625, skipped 3199 blocks; 10 event(s); neardata 5739 req, 1080 rate-limited
+[watch] mainnet at block 224,237,111 (head 224,237,692, lag 581); scanned 5126, skipped 3199 blocks; 10 event(s); neardata 6342 req, 1182 rate-limited
