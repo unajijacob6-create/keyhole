@@ -6,3 +6,6 @@
 [watch] block 224,200,505  ringfence-wallet.near  DeployContract (transaction)  new code 9rGY4E…
 [watch] mainnet at block 224,200,512 (head 224,202,570, lag 2058); scanned 1109, skipped 0 blocks; 2 event(s); neardata 1611 req, 490 rate-limited
 [watch] mainnet at block 224,200,795 (head 224,202,570, lag 1775); scanned 1392, skipped 0 blocks; 2 event(s); neardata 2026 req, 622 rate-limited
+[watch] mainnet at block 224,201,084 (head 224,202,570, lag 1486); scanned 1681, skipped 0 blocks; 2 event(s); neardata 2438 req, 746 rate-limited
+[watch] block 224,201,294  liho.ringfence-wallet.near  UseGlobalContract (contract-receipt)
+[watch] block 224,201,305  rhea001610.multica.near  UseGlobalContract (contract-receipt)
