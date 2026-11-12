@@ -47,3 +47,4 @@
 [watch] mainnet at block 224,225,697 (head 224,225,959, lag 262); scanned 8384, skipped 17910 blocks; 17 event(s); neardata 11561 req, 3131 rate-limited
 [watch] block 224,225,855  pocketgotchi.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 224,225,997  4264408db52601b6a355164d08f7413b866575b1.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,226,132 (head 224,226,940, lag 808); scanned 8819, skipped 17910 blocks; 19 event(s); neardata 12111 req, 3245 rate-limited
