@@ -15,3 +15,4 @@
 [watch] mainnet at block 224,201,930 (head 224,202,570, lag 640); scanned 2527, skipped 0 blocks; 5 event(s); neardata 3661 req, 1122 rate-limited
 [watch] block 224,202,109  rvwe9hr5l4s.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,202,149  bp.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,202,205 (head 224,202,570, lag 365); scanned 2802, skipped 0 blocks; 7 event(s); neardata 4060 req, 1247 rate-limited
