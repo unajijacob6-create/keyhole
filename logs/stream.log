@@ -1,3 +1,4 @@
 [watch] mainnet from block 224,199,403; watching (none); network-wide deploy feed on
 [watch] block 224,199,573  vault2.dissentfinance.near  DeployContract (transaction)  new code CmzL9H…
 [watch] mainnet at block 224,199,677 (head 224,200,228, lag 551); scanned 274, skipped 0 blocks; 1 event(s); neardata 398 req, 114 rate-limited
+[watch] mainnet at block 224,199,957 (head 224,200,228, lag 271); scanned 554, skipped 0 blocks; 1 event(s); neardata 801 req, 237 rate-limited
