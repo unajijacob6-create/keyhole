@@ -25,3 +25,5 @@
 [watch] mainnet: 5080 blocks behind; skipping to head 224,186,548 (blocks 224181468–224186547 not scanned)
 [watch] block 224,186,590  a1244535da12d8fba504e9b92746e7243ce81a2f.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,186,609 (head 224,186,651, lag 42); scanned 4734, skipped 13210 blocks; 6 event(s); neardata 6859 req, 2101 rate-limited
+[watch] mainnet at block 224,186,902 (head 224,186,957, lag 55); scanned 5027, skipped 13210 blocks; 6 event(s); neardata 7269 req, 2217 rate-limited
+[watch] block 224,187,084  connector.infernear-ai.near  DeployContract (transaction)  new code 1yvttL…
