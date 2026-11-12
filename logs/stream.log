@@ -28,3 +28,4 @@
 [watch] block 224,237,589  jensen-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 3027 blocks behind; skipping to head 224,240,720 (blocks 224237693–224240719 not scanned)
 [watch] block 224,240,862  huang.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,241,143 (head 224,241,247, lag 104); scanned 6131, skipped 6226 blocks; 12 event(s); neardata 7561 req, 1385 rate-limited
