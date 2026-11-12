@@ -17,3 +17,6 @@
 [watch] mainnet at block 224,231,565 (head 224,232,044, lag 479); scanned 2779, skipped 0 blocks; 7 event(s); neardata 3453 req, 652 rate-limited
 [watch] mainnet at block 224,232,015 (head 224,232,044, lag 29); scanned 3229, skipped 0 blocks; 7 event(s); neardata 4012 req, 761 rate-limited
 [watch] mainnet: 3199 blocks behind; skipping to head 224,235,244 (blocks 224232045–224235243 not scanned)
+[watch] block 224,235,651  1079b8a1b933e88a799e84718ebbfe714f017731.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,235,652 (head 224,235,685, lag 33); scanned 3667, skipped 3199 blocks; 8 event(s); neardata 4571 req, 872 rate-limited
+[watch] block 224,235,831  iamyoungjohn-near-7364c747ed71.openrail.near  UseGlobalContract (contract-receipt)
