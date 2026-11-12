@@ -1,3 +1,5 @@
 [watch] mainnet from block 224,137,885; watching (none); network-wide deploy feed on
 [watch] mainnet at block 224,138,164 (head 224,138,656, lag 492); scanned 279, skipped 0 blocks; 0 event(s); neardata 393 req, 103 rate-limited
 [watch] mainnet at block 224,138,452 (head 224,138,656, lag 204); scanned 567, skipped 0 blocks; 0 event(s); neardata 806 req, 229 rate-limited
+[watch] mainnet at block 224,138,723 (head 224,140,837, lag 2114); scanned 838, skipped 0 blocks; 0 event(s); neardata 1201 req, 351 rate-limited
+[watch] block 224,138,908  near-sentinel-enzo-guardrail.near  DeployContract (transaction)  new code 9sKL22…
