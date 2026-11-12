@@ -26,3 +26,5 @@
 [watch] mainnet block 224269276: HTTP 429; retry in 4s
 [watch] mainnet: 4595 blocks behind; skipping to head 224,274,014 (blocks 224269419–224274013 not scanned)
 [watch] mainnet at block 224,274,073 (head 224,274,101, lag 28); scanned 4257, skipped 11501 blocks; 4 event(s); neardata 6097 req, 1821 rate-limited
+[watch] mainnet at block 224,274,344 (head 224,274,380, lag 36); scanned 4528, skipped 11501 blocks; 4 event(s); neardata 6493 req, 1944 rate-limited
+[watch] block 224,274,522  dacity.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
