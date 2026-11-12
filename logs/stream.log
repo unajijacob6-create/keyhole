@@ -37,3 +37,6 @@
 [watch] block 224,280,145  axon.ebukaa.near  DeployContract (transaction)  new code DQW5B9…
 [watch] mainnet at block 224,280,151 (head 224,281,369, lag 1218); scanned 6208, skipped 15628 blocks; 6 event(s); neardata 8928 req, 2691 rate-limited
 [watch] mainnet at block 224,280,441 (head 224,281,369, lag 928); scanned 6498, skipped 15628 blocks; 6 event(s); neardata 9341 req, 2815 rate-limited
+[watch] mainnet at block 224,280,725 (head 224,281,369, lag 644); scanned 6782, skipped 15628 blocks; 6 event(s); neardata 9743 req, 2933 rate-limited
+[watch] block 224,280,844  0x4e4542ee.c.aurora  DeployContract (transaction)  new code B6cUgy…
+[watch] block 224,280,851  dmytro.masks.maskwars.near  UseGlobalContract (contract-receipt)
