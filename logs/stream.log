@@ -18,3 +18,4 @@
 [watch] block 224,268,257  vault.a-identity.near  DeployContract (transaction)  new code N5JUw1…
 [watch] block 224,268,295  the-quants-sativa.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,268,332 (head 224,269,418, lag 1086); scanned 3111, skipped 6906 blocks; 4 event(s); neardata 4459 req, 1332 rate-limited
+[watch] mainnet at block 224,268,618 (head 224,269,418, lag 800); scanned 3397, skipped 6906 blocks; 4 event(s); neardata 4869 req, 1455 rate-limited
