@@ -42,3 +42,7 @@
 [watch] mainnet at block 224,193,487 (head 224,194,017, lag 530); scanned 7236, skipped 17586 blocks; 11 event(s); neardata 10472 req, 3203 rate-limited
 [watch] block 224,193,589  zqtest01.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,193,758 (head 224,194,017, lag 259); scanned 7507, skipped 17586 blocks; 12 event(s); neardata 10874 req, 3335 rate-limited
+[watch] mainnet: 4366 blocks behind; skipping to head 224,198,384 (blocks 224194018–224198383 not scanned)
+[watch] mainnet at block 224,198,405 (head 224,198,405, lag 0); scanned 7788, skipped 21952 blocks; 12 event(s); neardata 11279 req, 3456 rate-limited
+[watch] mainnet stopped after 17404s; 12 event(s) reported
+stream watcher exited with code 0 after 17448s
