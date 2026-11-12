@@ -7,3 +7,4 @@
 [watch] block 224,229,290  sdc.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 224,229,530  keys.nearlyops.near  DeployContract (transaction)  new code 4vQRqc…
 [watch] block 224,229,587  neargotchiai.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,229,657 (head 224,230,404, lag 747); scanned 871, skipped 0 blocks; 7 event(s); neardata 1102 req, 210 rate-limited
