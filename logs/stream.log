@@ -35,3 +35,5 @@
 [watch] mainnet at block 224,218,888 (head 224,219,114, lag 226); scanned 5875, skipped 13610 blocks; 12 event(s); neardata 8366 req, 2454 rate-limited
 [watch] mainnet at block 224,219,252 (head 224,220,781, lag 1529); scanned 6239, skipped 13610 blocks; 12 event(s); neardata 8849 req, 2572 rate-limited
 [watch] block 224,219,371  jensen.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,219,706 (head 224,220,781, lag 1075); scanned 6693, skipped 13610 blocks; 13 event(s); neardata 9417 req, 2687 rate-limited
+[watch] block 224,219,922  vault2.dissentfinance.near  DeployContract (transaction)  new code 5Pk3qk…
