@@ -2,3 +2,4 @@
 [watch] mainnet block 224319709: HTTP 429; retry in 4s
 [watch] mainnet block 224319710: HTTP 429; retry in 4s
 [watch] block 224,319,832  test015-near.usefloat.near  DeployContract (transaction)  new code 9YeFvK…
+[watch] mainnet at block 224,319,976 (head 224,320,095, lag 119); scanned 283, skipped 0 blocks; 1 event(s); neardata 406 req, 114 rate-limited
