@@ -47,3 +47,5 @@
 [watch] mainnet at block 224,374,562 (head 224,374,811, lag 249); scanned 6636, skipped 18053 blocks; 17 event(s); neardata 9646 req, 2980 rate-limited
 [watch] mainnet at block 224,374,842 (head 224,376,101, lag 1259); scanned 6916, skipped 18053 blocks; 17 event(s); neardata 10043 req, 3096 rate-limited
 [watch] mainnet at block 224,375,126 (head 224,376,101, lag 975); scanned 7200, skipped 18053 blocks; 17 event(s); neardata 10454 req, 3222 rate-limited
+[watch] mainnet at block 224,375,402 (head 224,376,101, lag 699); scanned 7476, skipped 18053 blocks; 17 event(s); neardata 10858 req, 3350 rate-limited
+[watch] block 224,375,602  deadswitch.thalderg.near  DeployContract (transaction)  new code 8T76DB…
