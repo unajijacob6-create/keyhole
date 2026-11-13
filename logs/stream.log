@@ -46,3 +46,6 @@
 [watch] mainnet at block 224,286,478 (head 224,286,742, lag 264); scanned 7614, skipped 20549 blocks; 8 event(s); neardata 10949 req, 3303 rate-limited
 [watch] block 224,286,518  statedapp-treasury.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,286,568  statedapp-treasury.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,286,766 (head 224,288,038, lag 1272); scanned 7902, skipped 20549 blocks; 10 event(s); neardata 11358 req, 3423 rate-limited
+[watch] mainnet stopped after 17400s; 10 event(s) reported
+stream watcher exited with code 0 after 17462s
