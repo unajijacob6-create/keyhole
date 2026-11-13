@@ -56,3 +56,5 @@
 [watch] mainnet at block 224,402,218 (head 224,402,656, lag 438); scanned 6848, skipped 15048 blocks; 27 event(s); neardata 9836 req, 2953 rate-limited
 [watch] mainnet at block 224,402,487 (head 224,402,656, lag 169); scanned 7117, skipped 15048 blocks; 27 event(s); neardata 10230 req, 3079 rate-limited
 [watch] mainnet: 4689 blocks behind; skipping to head 224,407,346 (blocks 224402657–224407345 not scanned)
+[watch] mainnet at block 224,407,445 (head 224,407,451, lag 6); scanned 7386, skipped 19737 blocks; 27 event(s); neardata 10625 req, 3201 rate-limited
+[watch] block 224,407,551  pay.tegata.near  DeployContract (transaction)  new code 6pTqTS…
