@@ -49,3 +49,4 @@
 [watch] mainnet: 3896 blocks behind; skipping to head 224,400,993 (blocks 224397097–224400992 not scanned)
 [watch] mainnet at block 224,401,102 (head 224,401,103, lag 1); scanned 5732, skipped 15048 blocks; 25 event(s); neardata 8223 req, 2459 rate-limited
 [watch] block 224,401,177  8d55fc342ce9cd716322dd7eb495849d7a0de72e.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,401,378 (head 224,401,422, lag 44); scanned 6008, skipped 15048 blocks; 26 event(s); neardata 8631 req, 2589 rate-limited
