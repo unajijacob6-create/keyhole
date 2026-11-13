@@ -16,3 +16,7 @@
 [watch] block 224,356,901  iamyoungjohn-near-70dcc3c0fb6b.openrail.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,357,105 (head 224,357,750, lag 645); scanned 2768, skipped 4464 blocks; 4 event(s); neardata 4017 req, 1233 rate-limited
 [watch] mainnet at block 224,357,382 (head 224,357,750, lag 368); scanned 3045, skipped 4464 blocks; 4 event(s); neardata 4423 req, 1361 rate-limited
+[watch] mainnet at block 224,357,677 (head 224,357,750, lag 73); scanned 3340, skipped 4464 blocks; 4 event(s); neardata 4838 req, 1481 rate-limited
+[watch] block 224,357,689  z3dvrkk989wmvk1njnq9d6n247rj020z.craft.tg  UseGlobalContract (contract-receipt)
+[watch] mainnet: 5108 blocks behind; skipping to head 224,362,859 (blocks 224357751–224362858 not scanned)
+[watch] block 224,362,914  0x4e45415a.c.aurora  DeployContract (transaction)  new code B6cUgy…
