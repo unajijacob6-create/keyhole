@@ -9,3 +9,5 @@
 [watch] mainnet at block 224,320,817 (head 224,321,218, lag 401); scanned 1124, skipped 0 blocks; 2 event(s); neardata 1630 req, 496 rate-limited
 [watch] mainnet at block 224,321,088 (head 224,321,218, lag 130); scanned 1395, skipped 0 blocks; 2 event(s); neardata 2031 req, 626 rate-limited
 [watch] mainnet: 4233 blocks behind; skipping to head 224,325,452 (blocks 224321219–224325451 not scanned)
+[watch] mainnet at block 224,325,587 (head 224,325,869, lag 282); scanned 1661, skipped 4233 blocks; 2 event(s); neardata 2422 req, 747 rate-limited
+[watch] block 224,325,744  aa-router.justhoot.near  DeployContract (contract-receipt)  new code HeJ5sr…
