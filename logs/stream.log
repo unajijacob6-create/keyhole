@@ -6,3 +6,5 @@
 [watch] mainnet at block 224,380,888 (head 224,381,402, lag 514); scanned 566, skipped 0 blocks; 3 event(s); neardata 808 req, 232 rate-limited
 [watch] mainnet at block 224,381,157 (head 224,381,402, lag 245); scanned 835, skipped 0 blocks; 3 event(s); neardata 1205 req, 360 rate-limited
 [watch] mainnet: 3020 blocks behind; skipping to head 224,384,423 (blocks 224381403–224384422 not scanned)
+[watch] mainnet at block 224,384,457 (head 224,384,529, lag 72); scanned 1115, skipped 3020 blocks; 3 event(s); neardata 1611 req, 481 rate-limited
+[watch] block 224,384,462  f0d8c0d4e63025db1eb7edb04acc85e2e9a026424d9a0523521be1990f41f39c  DeployContract (transaction)  new code DWNpbT…
