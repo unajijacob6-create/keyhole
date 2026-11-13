@@ -41,3 +41,5 @@
 [watch] block 224,280,844  0x4e4542ee.c.aurora  DeployContract (transaction)  new code B6cUgy…
 [watch] block 224,280,851  dmytro.masks.maskwars.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,281,012 (head 224,281,369, lag 357); scanned 7069, skipped 15628 blocks; 8 event(s); neardata 10150 req, 3054 rate-limited
+[watch] mainnet at block 224,281,295 (head 224,281,369, lag 74); scanned 7352, skipped 15628 blocks; 8 event(s); neardata 10561 req, 3182 rate-limited
+[watch] mainnet: 4921 blocks behind; skipping to head 224,286,291 (blocks 224281370–224286290 not scanned)
