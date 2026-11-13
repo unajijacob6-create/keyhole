@@ -33,3 +33,6 @@
 [watch] block 224,391,788  i23661d4.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,391,801  i23710rs.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] block 224,391,833  i23710z.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,391,921  i23710cf.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,391,927 (head 224,392,339, lag 412); scanned 3802, skipped 7803 blocks; 21 event(s); neardata 5409 req, 1584 rate-limited
+[watch] block 224,392,132  i23710dup.sputnik-dao.near  UseGlobalContract (contract-receipt)
