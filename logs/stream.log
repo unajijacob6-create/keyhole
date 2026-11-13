@@ -40,3 +40,5 @@
 [watch] mainnet at block 224,369,688 (head 224,370,586, lag 898); scanned 5545, skipped 14270 blocks; 15 event(s); neardata 8055 req, 2483 rate-limited
 [watch] block 224,369,888  ankora.geekybot-1.near  DeployContract (transaction)  new code 7tUc3E…
 [watch] mainnet at block 224,369,977 (head 224,370,586, lag 609); scanned 5834, skipped 14270 blocks; 16 event(s); neardata 8469 req, 2608 rate-limited
+[watch] mainnet at block 224,370,243 (head 224,370,586, lag 343); scanned 6100, skipped 14270 blocks; 16 event(s); neardata 8856 req, 2730 rate-limited
+[watch] block 224,370,373  744f101e77f4917019a808cb1f2a009376b797cd.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
