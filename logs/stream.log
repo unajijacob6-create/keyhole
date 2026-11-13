@@ -49,3 +49,7 @@
 [watch] mainnet at block 224,375,126 (head 224,376,101, lag 975); scanned 7200, skipped 18053 blocks; 17 event(s); neardata 10454 req, 3222 rate-limited
 [watch] mainnet at block 224,375,402 (head 224,376,101, lag 699); scanned 7476, skipped 18053 blocks; 17 event(s); neardata 10858 req, 3350 rate-limited
 [watch] block 224,375,602  deadswitch.thalderg.near  DeployContract (transaction)  new code 8T76DB…
+[watch] mainnet at block 224,375,689 (head 224,376,101, lag 412); scanned 7763, skipped 18053 blocks; 18 event(s); neardata 11266 req, 3472 rate-limited
+[watch] block 224,375,866  b9d43a067f9063ac38b7adcbbdf900eb7841b82adef3de31ae0e21d4b64f6de2  DeployContract (transaction)  new code 5CK15Y…
+[watch] mainnet stopped after 17407s; 19 event(s) reported
+stream watcher exited with code 0 after 17449s
