@@ -25,3 +25,5 @@
 [watch] mainnet at block 224,332,754 (head 224,333,118, lag 364); scanned 4433, skipped 8628 blocks; 4 event(s); neardata 6456 req, 2003 rate-limited
 [watch] mainnet at block 224,333,027 (head 224,333,118, lag 91); scanned 4706, skipped 8628 blocks; 4 event(s); neardata 6859 req, 2132 rate-limited
 [watch] mainnet: 4734 blocks behind; skipping to head 224,337,853 (blocks 224333119–224337852 not scanned)
+[watch] mainnet at block 224,338,040 (head 224,338,184, lag 144); scanned 4985, skipped 13362 blocks; 4 event(s); neardata 7264 req, 2254 rate-limited
+[watch] block 224,338,201  poker.deedlords.near  DeployContract (transaction)  new code 7gBmMK…
