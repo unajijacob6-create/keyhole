@@ -34,3 +34,5 @@
 [watch] mainnet at block 224,364,170 (head 224,364,564, lag 394); scanned 4725, skipped 9572 blocks; 13 event(s); neardata 6854 req, 2108 rate-limited
 [watch] block 224,364,176  probe-trez-conf.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] block 224,364,394  0x4e45415a.c.aurora  DeployContract (transaction)  new code B6cUgy…
+[watch] mainnet at block 224,364,444 (head 224,364,564, lag 120); scanned 4999, skipped 9572 blocks; 15 event(s); neardata 7255 req, 2234 rate-limited
+[watch] mainnet: 4698 blocks behind; skipping to head 224,369,263 (blocks 224364565–224369262 not scanned)
