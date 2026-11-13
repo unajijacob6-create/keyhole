@@ -29,3 +29,5 @@
 [watch] mainnet at block 224,302,269 (head 224,302,469, lag 200); scanned 5871, skipped 7373 blocks; 7 event(s); neardata 7584 req, 1687 rate-limited
 [watch] mainnet: 3315 blocks behind; skipping to head 224,305,785 (blocks 224302470–224305784 not scanned)
 [watch] mainnet at block 224,305,865 (head 224,305,890, lag 25); scanned 6152, skipped 10688 blocks; 7 event(s); neardata 7989 req, 1808 rate-limited
+[watch] mainnet at block 224,306,130 (head 224,306,228, lag 98); scanned 6417, skipped 10688 blocks; 7 event(s); neardata 8383 req, 1936 rate-limited
+[watch] block 224,306,234  vault.foundling.near  DeployContract (transaction)  new code BQwNyN…
