@@ -31,3 +31,6 @@
 [watch] mainnet at block 224,363,882 (head 224,364,564, lag 682); scanned 4437, skipped 9572 blocks; 11 event(s); neardata 6441 req, 1982 rate-limited
 [watch] block 224,363,941  0x4e45415a.c.aurora  DeployContract (transaction)  new code B6cUgy…
 [watch] block 224,364,128  probe-trez-conf.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,364,170 (head 224,364,564, lag 394); scanned 4725, skipped 9572 blocks; 13 event(s); neardata 6854 req, 2108 rate-limited
+[watch] block 224,364,176  probe-trez-conf.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] block 224,364,394  0x4e45415a.c.aurora  DeployContract (transaction)  new code B6cUgy…
