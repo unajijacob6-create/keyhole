@@ -27,3 +27,4 @@
 [watch] block 224,423,586  soundings.near  DeployContract (transaction)  new code 5mT5kk…
 [watch] mainnet at block 224,423,624 (head 224,423,749, lag 125); scanned 4171, skipped 8605 blocks; 10 event(s); neardata 5758 req, 1573 rate-limited
 [watch] mainnet at block 224,423,907 (head 224,425,130, lag 1223); scanned 4454, skipped 8605 blocks; 10 event(s); neardata 6171 req, 1701 rate-limited
+[watch] mainnet at block 224,424,182 (head 224,425,130, lag 948); scanned 4729, skipped 8605 blocks; 10 event(s); neardata 6572 req, 1827 rate-limited
