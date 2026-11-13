@@ -21,3 +21,4 @@
 [watch] mainnet at block 224,331,902 (head 224,333,118, lag 1216); scanned 3581, skipped 8628 blocks; 3 event(s); neardata 5231 req, 1629 rate-limited
 [watch] block 224,331,910  hermit-blackbox.near  DeployContract (transaction)  new code FcBAhB…
 [watch] mainnet at block 224,332,190 (head 224,333,118, lag 928); scanned 3869, skipped 8628 blocks; 4 event(s); neardata 5639 req, 1749 rate-limited
+[watch] mainnet at block 224,332,465 (head 224,333,118, lag 653); scanned 4144, skipped 8628 blocks; 4 event(s); neardata 6044 req, 1880 rate-limited
