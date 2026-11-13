@@ -33,3 +33,6 @@
 [watch] block 224,338,527  headroom-anchor.near  DeployContract (transaction)  new code 5tNACP…
 [watch] mainnet at block 224,338,601 (head 224,339,123, lag 522); scanned 5546, skipped 13362 blocks; 8 event(s); neardata 8074 req, 2502 rate-limited
 [watch] mainnet at block 224,338,870 (head 224,339,123, lag 253); scanned 5815, skipped 13362 blocks; 8 event(s); neardata 8472 req, 2631 rate-limited
+[watch] mainnet: 3435 blocks behind; skipping to head 224,342,559 (blocks 224339124–224342558 not scanned)
+[watch] mainnet at block 224,342,584 (head 224,342,665, lag 81); scanned 6094, skipped 16797 blocks; 8 event(s); neardata 8875 req, 2752 rate-limited
+[watch] block 224,342,725  4be3736c2449cc71c602b39bde857dd0358c2d89920bed82360fe00db01bd1ce  DeployGlobalContract (transaction)  new code Hnfyrj…
