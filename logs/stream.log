@@ -34,3 +34,4 @@
 [watch] mainnet at block 224,306,402 (head 224,307,561, lag 1159); scanned 6689, skipped 10688 blocks; 8 event(s); neardata 8778 req, 2059 rate-limited
 [watch] block 224,306,481  tp-wallet.hlpok1lad.tg  DeployContract (transaction)  new code 45HbvW…
 [watch] mainnet at block 224,306,769 (head 224,307,561, lag 792); scanned 7056, skipped 10688 blocks; 9 event(s); neardata 9266 req, 2179 rate-limited
+[watch] mainnet at block 224,307,182 (head 224,307,561, lag 379); scanned 7469, skipped 10688 blocks; 9 event(s); neardata 9793 req, 2293 rate-limited
