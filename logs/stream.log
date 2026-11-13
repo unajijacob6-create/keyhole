@@ -2,3 +2,7 @@
 [watch] mainnet block 224410866: HTTP 429; retry in 4s
 [watch] mainnet block 224410867: HTTP 429; retry in 4s
 [watch] mainnet at block 224,411,121 (head 224,411,233, lag 112); scanned 273, skipped 0 blocks; 0 event(s); neardata 396 req, 115 rate-limited
+[watch] mainnet at block 224,411,481 (head 224,412,131, lag 650); scanned 633, skipped 0 blocks; 0 event(s); neardata 875 req, 233 rate-limited
+[watch] block 224,411,723  chest.berthright.near  DeployContract (transaction)  new code EZSM5H…
+[watch] block 224,411,738  berthright.seafarer  UseGlobalContract (contract-receipt)
+[watch] mainnet block 224411780: HTTP 429; retry in 4s
