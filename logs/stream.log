@@ -16,3 +16,7 @@
 [watch] mainnet at block 224,385,284 (head 224,386,091, lag 807); scanned 1942, skipped 3020 blocks; 7 event(s); neardata 2814 req, 855 rate-limited
 [watch] mainnet at block 224,385,554 (head 224,386,091, lag 537); scanned 2212, skipped 3020 blocks; 7 event(s); neardata 3208 req, 979 rate-limited
 [watch] block 224,385,657  u-fbda9ededd79777a.funder.moonboys-stark.near  DeployContract (transaction)  new code 38XexK…
+[watch] mainnet at block 224,385,832 (head 224,386,091, lag 259); scanned 2490, skipped 3020 blocks; 8 event(s); neardata 3610 req, 1103 rate-limited
+[watch] block 224,385,948  cvmr6.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,385,996  cvmr6.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 4783 blocks behind; skipping to head 224,390,875 (blocks 224386092–224390874 not scanned)
