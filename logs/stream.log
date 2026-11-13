@@ -6,3 +6,4 @@
 [watch] block 224,411,723  chest.berthright.near  DeployContract (transaction)  new code EZSM5H…
 [watch] block 224,411,738  berthright.seafarer  UseGlobalContract (contract-receipt)
 [watch] mainnet block 224411780: HTTP 429; retry in 4s
+[watch] mainnet at block 224,411,855 (head 224,412,131, lag 276); scanned 1007, skipped 0 blocks; 2 event(s); neardata 1357 req, 341 rate-limited
