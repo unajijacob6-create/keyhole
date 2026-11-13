@@ -3,3 +3,9 @@
 [watch] mainnet at block 224,289,361 (head 224,289,380, lag 19); scanned 336, skipped 0 blocks; 0 event(s); neardata 456 req, 110 rate-limited
 [watch] mainnet at block 224,289,848 (head 224,290,130, lag 282); scanned 823, skipped 0 blocks; 0 event(s); neardata 1045 req, 212 rate-limited
 [watch] block 224,289,921  wkyyseetv0h7w7mrhxyjqrdbfvhvjchj.craft.tg  UseGlobalContract (contract-receipt)
+[watch] mainnet block 224290333: HTTP 429; retry in 4s
+[watch] mainnet at block 224,290,333 (head 224,291,755, lag 1422); scanned 1308, skipped 0 blocks; 1 event(s); neardata 1646 req, 327 rate-limited
+[watch] mainnet block 224290334: HTTP 429; retry in 4s
+[watch] mainnet block 224290335: HTTP 429; retry in 4s
+[watch] block 224,290,518  0x4e454228.c.aurora  DeployContract (transaction)  new code B6cUgy…
+[watch] block 224,290,602  0x4e454228.c.aurora  DeployContract (transaction)  new code B6cUgy…
