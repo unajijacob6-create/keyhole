@@ -16,3 +16,4 @@
 [watch] block 224,413,490  340347156519916b6fbff067fdef6a8f97c5e309.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] block 224,413,531  token.ctoads.near  DeployContract (transaction)  new code F3whBF…
 [watch] mainnet at block 224,413,639 (head 224,414,679, lag 1040); scanned 2791, skipped 0 blocks; 6 event(s); neardata 3741 req, 940 rate-limited
+[watch] mainnet at block 224,413,918 (head 224,414,679, lag 761); scanned 3070, skipped 0 blocks; 6 event(s); neardata 4154 req, 1074 rate-limited
