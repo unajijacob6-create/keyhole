@@ -8,3 +8,6 @@
 [watch] mainnet at block 224,351,247 (head 224,351,451, lag 204); scanned 1374, skipped 0 blocks; 1 event(s); neardata 2004 req, 619 rate-limited
 [watch] mainnet: 4464 blocks behind; skipping to head 224,355,916 (blocks 224351452–224355915 not scanned)
 [watch] mainnet at block 224,355,984 (head 224,356,024, lag 40); scanned 1647, skipped 4464 blocks; 1 event(s); neardata 2400 req, 739 rate-limited
+[watch] mainnet at block 224,356,254 (head 224,356,384, lag 130); scanned 1917, skipped 4464 blocks; 1 event(s); neardata 2799 req, 866 rate-limited
+[watch] block 224,356,319  donk.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] block 224,356,405  keys.nearlyops.near  DeployContract (transaction)  new code 7ZTPyb…
