@@ -7,3 +7,5 @@
 [watch] mainnet at block 224,320,532 (head 224,321,218, lag 686); scanned 839, skipped 0 blocks; 1 event(s); neardata 1221 req, 372 rate-limited
 [watch] block 224,320,687  test015-near.usefloat.near  DeployContract (contract-receipt)  new code Fqep3K…
 [watch] mainnet at block 224,320,817 (head 224,321,218, lag 401); scanned 1124, skipped 0 blocks; 2 event(s); neardata 1630 req, 496 rate-limited
+[watch] mainnet at block 224,321,088 (head 224,321,218, lag 130); scanned 1395, skipped 0 blocks; 2 event(s); neardata 2031 req, 626 rate-limited
+[watch] mainnet: 4233 blocks behind; skipping to head 224,325,452 (blocks 224321219–224325451 not scanned)
