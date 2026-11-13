@@ -26,3 +26,10 @@
 [watch] block 224,391,482  i23661d2.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,391,567  i23710nc.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,391,584  guard.near-preflight.near  DeployContract (transaction)  new code 54cUNc…
+[watch] mainnet at block 224,391,624 (head 224,392,339, lag 715); scanned 3499, skipped 7803 blocks; 14 event(s); neardata 4986 req, 1464 rate-limited
+[watch] block 224,391,657  i23710cf.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,391,688  i23661d3.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,391,739  i23710rs.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,391,788  i23661d4.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,391,801  i23710rs.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] block 224,391,833  i23710z.sputnik-dao.near  UseGlobalContract (contract-receipt)
