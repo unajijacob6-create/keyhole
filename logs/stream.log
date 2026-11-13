@@ -37,3 +37,5 @@
 [watch] mainnet at block 224,364,444 (head 224,364,564, lag 120); scanned 4999, skipped 9572 blocks; 15 event(s); neardata 7255 req, 2234 rate-limited
 [watch] mainnet: 4698 blocks behind; skipping to head 224,369,263 (blocks 224364565–224369262 not scanned)
 [watch] mainnet at block 224,369,421 (head 224,369,601, lag 180); scanned 5278, skipped 14270 blocks; 15 event(s); neardata 7658 req, 2354 rate-limited
+[watch] mainnet at block 224,369,688 (head 224,370,586, lag 898); scanned 5545, skipped 14270 blocks; 15 event(s); neardata 8055 req, 2483 rate-limited
+[watch] block 224,369,888  ankora.geekybot-1.near  DeployContract (transaction)  new code 7tUc3E…
