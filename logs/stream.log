@@ -20,3 +20,4 @@
 [watch] block 224,385,948  cvmr6.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,385,996  cvmr6.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 4783 blocks behind; skipping to head 224,390,875 (blocks 224386092–224390874 not scanned)
+[watch] mainnet at block 224,390,891 (head 224,390,897, lag 6); scanned 2766, skipped 7803 blocks; 10 event(s); neardata 4014 req, 1228 rate-limited
