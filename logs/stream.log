@@ -5,3 +5,5 @@
 [watch] mainnet at block 224,350,696 (head 224,351,451, lag 755); scanned 823, skipped 0 blocks; 0 event(s); neardata 1204 req, 371 rate-limited
 [watch] mainnet at block 224,350,966 (head 224,351,451, lag 485); scanned 1093, skipped 0 blocks; 0 event(s); neardata 1598 req, 494 rate-limited
 [watch] block 224,351,190  keys.nearlyops.near  DeployContract (transaction)  new code 7WyU8g…
+[watch] mainnet at block 224,351,247 (head 224,351,451, lag 204); scanned 1374, skipped 0 blocks; 1 event(s); neardata 2004 req, 619 rate-limited
+[watch] mainnet: 4464 blocks behind; skipping to head 224,355,916 (blocks 224351452–224355915 not scanned)
