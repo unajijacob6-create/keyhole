@@ -11,3 +11,5 @@
 [watch] block 224,290,602  0x4e454228.c.aurora  DeployContract (transaction)  new code B6cUgy…
 [watch] mainnet at block 224,290,814 (head 224,291,755, lag 941); scanned 1789, skipped 0 blocks; 3 event(s); neardata 2228 req, 427 rate-limited
 [watch] mainnet at block 224,291,203 (head 224,291,755, lag 552); scanned 2178, skipped 0 blocks; 3 event(s); neardata 2725 req, 536 rate-limited
+[watch] mainnet at block 224,291,515 (head 224,291,755, lag 240); scanned 2490, skipped 0 blocks; 3 event(s); neardata 3157 req, 656 rate-limited
+[watch] mainnet: 4365 blocks behind; skipping to head 224,296,121 (blocks 224291756–224296120 not scanned)
