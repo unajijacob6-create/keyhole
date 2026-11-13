@@ -39,3 +39,5 @@
 [watch] block 224,392,184  i23710dup.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,392,195 (head 224,392,339, lag 144); scanned 4070, skipped 7803 blocks; 23 event(s); neardata 5810 req, 1717 rate-limited
 [watch] mainnet: 3349 blocks behind; skipping to head 224,395,689 (blocks 224392340–224395688 not scanned)
+[watch] mainnet at block 224,395,819 (head 224,396,083, lag 264); scanned 4345, skipped 11152 blocks; 23 event(s); neardata 6208 req, 1835 rate-limited
+[watch] block 224,396,086  245206fec7be.user0.tmplr.near  UseGlobalContract (contract-receipt)
