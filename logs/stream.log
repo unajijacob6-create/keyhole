@@ -23,3 +23,4 @@
 [watch] mainnet at block 224,363,051 (head 224,363,290, lag 239); scanned 3606, skipped 9572 blocks; 6 event(s); neardata 5227 req, 1600 rate-limited
 [watch] block 224,363,146  y8k24hf2spg77fskfakd7phhhhj70889.craft.tg  UseGlobalContract (contract-receipt)
 [watch] block 224,363,215  0x4e45415a.c.aurora  DeployContract (transaction)  new code B6cUgy…
+[watch] mainnet at block 224,363,324 (head 224,364,564, lag 1240); scanned 3879, skipped 9572 blocks; 8 event(s); neardata 5625 req, 1725 rate-limited
