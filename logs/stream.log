@@ -16,3 +16,4 @@
 [watch] block 224,296,291  leash2-vault.near  DeployContract (transaction)  new code 2gMzTH…
 [watch] mainnet at block 224,296,297 (head 224,296,400, lag 103); scanned 2907, skipped 4365 blocks; 4 event(s); neardata 3692 req, 768 rate-limited
 [watch] mainnet at block 224,296,686 (head 224,296,822, lag 136); scanned 3296, skipped 4365 blocks; 4 event(s); neardata 4200 req, 886 rate-limited
+[watch] mainnet at block 224,297,144 (head 224,297,944, lag 800); scanned 3754, skipped 4365 blocks; 4 event(s); neardata 4760 req, 987 rate-limited
