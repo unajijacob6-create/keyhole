@@ -1,2 +1,3 @@
 [watch] mainnet from block 224,289,025; watching (none); network-wide deploy feed on
 [watch] mainnet: head refresh failed (HTTP 429); keeping 224289040
+[watch] mainnet at block 224,289,361 (head 224,289,380, lag 19); scanned 336, skipped 0 blocks; 0 event(s); neardata 456 req, 110 rate-limited
