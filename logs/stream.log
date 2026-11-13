@@ -7,3 +7,5 @@
 [watch] block 224,411,738  berthright.seafarer  UseGlobalContract (contract-receipt)
 [watch] mainnet block 224411780: HTTP 429; retry in 4s
 [watch] mainnet at block 224,411,855 (head 224,412,131, lag 276); scanned 1007, skipped 0 blocks; 2 event(s); neardata 1357 req, 341 rate-limited
+[watch] mainnet at block 224,412,228 (head 224,414,679, lag 2451); scanned 1380, skipped 0 blocks; 2 event(s); neardata 1848 req, 458 rate-limited
+[watch] block 224,412,418  rhea001616.multica.near  UseGlobalContract (contract-receipt)
