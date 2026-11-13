@@ -37,3 +37,4 @@
 [watch] mainnet at block 224,342,584 (head 224,342,665, lag 81); scanned 6094, skipped 16797 blocks; 8 event(s); neardata 8875 req, 2752 rate-limited
 [watch] block 224,342,725  4be3736c2449cc71c602b39bde857dd0358c2d89920bed82360fe00db01bd1ce  DeployGlobalContract (transaction)  new code Hnfyrj…
 [watch] mainnet at block 224,342,855 (head 224,343,008, lag 153); scanned 6365, skipped 16797 blocks; 9 event(s); neardata 9268 req, 2874 rate-limited
+[watch] mainnet at block 224,343,130 (head 224,344,333, lag 1203); scanned 6640, skipped 16797 blocks; 9 event(s); neardata 9660 req, 2990 rate-limited
