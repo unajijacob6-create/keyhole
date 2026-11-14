@@ -8,3 +8,4 @@
 [watch] mainnet: 3324 blocks behind; skipping to head 224,537,201 (blocks 224533877–224537200 not scanned)
 [watch] mainnet at block 224,537,418 (head 224,537,599, lag 181); scanned 1374, skipped 3324 blocks; 2 event(s); neardata 2005 req, 615 rate-limited
 [watch] block 224,537,488  degen.basketcase.near  DeployContract (transaction)  new code FxyEnG…
+[watch] mainnet at block 224,537,695 (head 224,538,718, lag 1023); scanned 1651, skipped 3324 blocks; 3 event(s); neardata 2402 req, 734 rate-limited
