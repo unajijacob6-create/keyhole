@@ -42,3 +42,7 @@
 [watch] mainnet at block 224,496,781 (head 224,497,288, lag 507); scanned 7110, skipped 17918 blocks; 11 event(s); neardata 10341 req, 3197 rate-limited
 [watch] mainnet at block 224,497,060 (head 224,497,288, lag 228); scanned 7389, skipped 17918 blocks; 11 event(s); neardata 10738 req, 3315 rate-limited
 [watch] mainnet: 3494 blocks behind; skipping to head 224,500,783 (blocks 224497289–224500782 not scanned)
+[watch] mainnet at block 224,500,834 (head 224,500,888, lag 54); scanned 7669, skipped 21412 blocks; 11 event(s); neardata 11139 req, 3434 rate-limited
+[watch] block 224,501,046  policy.afropanda.near  DeployContract (transaction)  new code HoV3wZ…
+[watch] mainnet stopped after 17402s; 12 event(s) reported
+stream watcher exited with code 0 after 17443s
