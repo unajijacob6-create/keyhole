@@ -33,3 +33,7 @@
 [watch] mainnet at block 224,490,587 (head 224,491,501, lag 914); scanned 5444, skipped 13390 blocks; 9 event(s); neardata 7930 req, 2458 rate-limited
 [watch] mainnet at block 224,490,867 (head 224,491,501, lag 634); scanned 5724, skipped 13390 blocks; 9 event(s); neardata 8329 req, 2578 rate-limited
 [watch] mainnet at block 224,491,156 (head 224,491,501, lag 345); scanned 6013, skipped 13390 blocks; 9 event(s); neardata 8741 req, 2701 rate-limited
+[watch] mainnet at block 224,491,426 (head 224,491,501, lag 75); scanned 6283, skipped 13390 blocks; 9 event(s); neardata 9142 req, 2832 rate-limited
+[watch] mainnet: 4528 blocks behind; skipping to head 224,496,030 (blocks 224491502–224496029 not scanned)
+[watch] block 224,496,060  attestor-v2.promptbarrel.near  DeployContract (transaction)  new code 8baorn…
+[watch] block 224,496,068  barrel-v2.promptbarrel.near  DeployContract (transaction)  new code G5deYZ…
