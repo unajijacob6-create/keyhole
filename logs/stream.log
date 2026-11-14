@@ -44,3 +44,6 @@
 [watch] mainnet at block 224,437,186 (head 224,437,766, lag 580); scanned 7829, skipped 18509 blocks; 11 event(s); neardata 11062 req, 3206 rate-limited
 [watch] block 224,437,223  petals-credit.near  DeployContract (transaction)  new code HZQbnF…
 [watch] mainnet at block 224,437,467 (head 224,437,766, lag 299); scanned 8110, skipped 18509 blocks; 12 event(s); neardata 11462 req, 3325 rate-limited
+[watch] mainnet at block 224,437,744 (head 224,437,766, lag 22); scanned 8387, skipped 18509 blocks; 12 event(s); neardata 11867 req, 3452 rate-limited
+[watch] mainnet stopped after 17401s; 12 event(s) reported
+stream watcher exited with code 0 after 17446s
