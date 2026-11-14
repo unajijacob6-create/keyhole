@@ -9,3 +9,5 @@
 [watch] mainnet: 3771 blocks behind; skipping to head 224,476,913 (blocks 224473142–224476912 not scanned)
 [watch] block 224,477,063  vault-1.top-notch.near  DeployContract (transaction)  new code GDANQp…
 [watch] block 224,477,093  12e792aa862cf7a6aaae11d544140fade99b317e.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,477,147 (head 224,477,357, lag 210); scanned 1623, skipped 3771 blocks; 4 event(s); neardata 2370 req, 731 rate-limited
+[watch] block 224,477,233  kf8pkrfkvd72rtwdvhp17sat6c8gmjr2.craft.tg  UseGlobalContract (contract-receipt)
