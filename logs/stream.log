@@ -11,3 +11,4 @@
 [watch] mainnet at block 224,537,695 (head 224,538,718, lag 1023); scanned 1651, skipped 3324 blocks; 3 event(s); neardata 2402 req, 734 rate-limited
 [watch] mainnet at block 224,537,967 (head 224,538,718, lag 751); scanned 1923, skipped 3324 blocks; 3 event(s); neardata 2796 req, 857 rate-limited
 [watch] block 224,538,190  inpay.0xforge.near  DeployContract (transaction)  new code 6UNgMb…
+[watch] mainnet at block 224,538,253 (head 224,538,718, lag 465); scanned 2209, skipped 3324 blocks; 4 event(s); neardata 3207 req, 981 rate-limited
