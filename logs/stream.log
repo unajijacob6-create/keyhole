@@ -13,3 +13,5 @@
 [watch] block 224,477,233  kf8pkrfkvd72rtwdvhp17sat6c8gmjr2.craft.tg  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,477,415 (head 224,478,654, lag 1239); scanned 1891, skipped 3771 blocks; 5 event(s); neardata 2758 req, 850 rate-limited
 [watch] block 224,477,622  4qy3g2wr8rw5nvd67kdxms27hyw49nq6.craft.tg  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,477,690 (head 224,478,654, lag 964); scanned 2166, skipped 3771 blocks; 6 event(s); neardata 3155 req, 972 rate-limited
+[watch] block 224,477,856  ezqwy5v97rvkhrp90dbfwj5eeaxagynf.craft.tg  UseGlobalContract (contract-receipt)
