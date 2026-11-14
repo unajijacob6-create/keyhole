@@ -43,3 +43,4 @@
 [watch] mainnet at block 224,436,901 (head 224,437,010, lag 109); scanned 7544, skipped 18509 blocks; 11 event(s); neardata 10658 req, 3088 rate-limited
 [watch] mainnet at block 224,437,186 (head 224,437,766, lag 580); scanned 7829, skipped 18509 blocks; 11 event(s); neardata 11062 req, 3206 rate-limited
 [watch] block 224,437,223  petals-credit.near  DeployContract (transaction)  new code HZQbnF…
+[watch] mainnet at block 224,437,467 (head 224,437,766, lag 299); scanned 8110, skipped 18509 blocks; 12 event(s); neardata 11462 req, 3325 rate-limited
