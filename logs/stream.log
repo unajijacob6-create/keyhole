@@ -49,3 +49,6 @@
 [watch] mainnet at block 224,556,804 (head 224,556,994, lag 190); scanned 7458, skipped 16626 blocks; 17 event(s); neardata 10835 req, 3344 rate-limited
 [watch] block 224,556,945  core.whatthenft.near  DeployContract (transaction)  new code 2RZR3n…
 [watch] mainnet: 5042 blocks behind; skipping to head 224,562,037 (blocks 224556995–224562036 not scanned)
+[watch] mainnet at block 224,562,113 (head 224,562,142, lag 29); scanned 7725, skipped 21668 blocks; 18 event(s); neardata 11229 req, 3466 rate-limited
+[watch] mainnet stopped after 17403s; 18 event(s) reported
+stream watcher exited with code 0 after 17442s
