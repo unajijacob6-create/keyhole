@@ -1,1 +1,2 @@
 [poll] mainnet: watching 24 account(s) every 120s
+[poll] tkn.near: {"name":"HANDLER_ERROR","cause":{"info":{"block_reference":{"block_id":224542501}},"name":"UNKNOWN_BLOCK"},"code":-32000,"message":"Server e; will retry
