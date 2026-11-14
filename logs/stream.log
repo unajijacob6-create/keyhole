@@ -35,3 +35,6 @@
 [watch] mainnet at block 224,551,087 (head 224,551,160, lag 73); scanned 5787, skipped 12580 blocks; 10 event(s); neardata 8417 req, 2603 rate-limited
 [watch] mainnet: 4046 blocks behind; skipping to head 224,555,207 (blocks 224551161–224555206 not scanned)
 [watch] mainnet at block 224,555,393 (head 224,555,654, lag 261); scanned 6047, skipped 16626 blocks; 10 event(s); neardata 8802 req, 2723 rate-limited
+[watch] mainnet at block 224,555,664 (head 224,556,994, lag 1330); scanned 6318, skipped 16626 blocks; 10 event(s); neardata 9199 req, 2847 rate-limited
+[watch] block 224,555,683  core.whatthenft.near  DeployContract (transaction)  new code Bafa8i…
+[watch] block 224,555,697  buyback.whatthenft.near  DeployContract (transaction)  new code 5wd4JW…
