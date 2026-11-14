@@ -25,3 +25,6 @@
 [watch] mainnet: 4961 blocks behind; skipping to head 224,520,674 (blocks 224515713–224520673 not scanned)
 [watch] mainnet at block 224,520,805 (head 224,521,108, lag 303); scanned 4982, skipped 13802 blocks; 3 event(s); neardata 7261 req, 2251 rate-limited
 [watch] mainnet at block 224,521,086 (head 224,521,108, lag 22); scanned 5263, skipped 13802 blocks; 3 event(s); neardata 7669 req, 2379 rate-limited
+[watch] mainnet at block 224,521,371 (head 224,522,350, lag 979); scanned 5548, skipped 13802 blocks; 3 event(s); neardata 8075 req, 2498 rate-limited
+[watch] block 224,521,509  755a0a4bb40161793c0a178c89b0ed1a876d8c0d0bbea8febecfe2a7d0d9662b  DeployContract (transaction)  new code GnfHJq…
+[watch] block 224,521,591  rhea001618.multica.near  UseGlobalContract (contract-receipt)
