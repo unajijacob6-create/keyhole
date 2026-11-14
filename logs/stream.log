@@ -5,3 +5,6 @@
 [watch] block 224,502,741  110a929fb93e946ac67f26c271924b53034f6cd4.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,502,853 (head 224,503,446, lag 593); scanned 832, skipped 0 blocks; 1 event(s); neardata 1207 req, 365 rate-limited
 [watch] mainnet at block 224,503,141 (head 224,503,446, lag 305); scanned 1120, skipped 0 blocks; 1 event(s); neardata 1616 req, 485 rate-limited
+[watch] mainnet at block 224,503,410 (head 224,503,446, lag 36); scanned 1389, skipped 0 blocks; 1 event(s); neardata 2016 req, 617 rate-limited
+[watch] mainnet: 4028 blocks behind; skipping to head 224,507,475 (blocks 224503447–224507474 not scanned)
+[watch] block 224,507,548  showstake-mainnet-escrow-endpx-2026.near  DeployContract (transaction)  new code 4Dq4uE…
