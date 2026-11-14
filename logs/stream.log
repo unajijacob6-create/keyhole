@@ -2,3 +2,7 @@
 [watch] mainnet block 224441428: HTTP 429; retry in 4s
 [watch] mainnet block 224441429: HTTP 429; retry in 4s
 [watch] mainnet at block 224,441,684 (head 224,441,833, lag 149); scanned 272, skipped 0 blocks; 0 event(s); neardata 403 req, 122 rate-limited
+[watch] mainnet at block 224,441,957 (head 224,443,058, lag 1101); scanned 545, skipped 0 blocks; 0 event(s); neardata 806 req, 251 rate-limited
+[watch] block 224,442,052  dex.intear.near  DeployContract (transaction)  new code CYv9pU…
+[watch] block 224,442,114  q8kfm.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,442,161  q8kfm.bulkpayment.near  UseGlobalContract (contract-receipt)
