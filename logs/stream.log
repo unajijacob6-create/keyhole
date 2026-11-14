@@ -14,3 +14,6 @@
 [watch] mainnet at block 224,538,253 (head 224,538,718, lag 465); scanned 2209, skipped 3324 blocks; 4 event(s); neardata 3207 req, 981 rate-limited
 [watch] mainnet at block 224,538,524 (head 224,538,718, lag 194); scanned 2480, skipped 3324 blocks; 4 event(s); neardata 3604 req, 1108 rate-limited
 [watch] mainnet: 4323 blocks behind; skipping to head 224,543,042 (blocks 224538719–224543041 not scanned)
+[watch] mainnet at block 224,543,113 (head 224,543,151, lag 38); scanned 2746, skipped 7647 blocks; 4 event(s); neardata 3990 req, 1223 rate-limited
+[watch] block 224,543,117  forger.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] block 224,543,204  a145dcce5119739380e74b3295098a2ae040e1ce4679efb4a7046420cee23474  DeployContract (transaction)  new code 6Ex4pg…
