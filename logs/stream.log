@@ -2,3 +2,5 @@
 [watch] block 224,532,782  petals-credit.near  DeployContract (transaction)  new code Dy3xxs…
 [watch] mainnet at block 224,532,986 (head 224,533,008, lag 22); scanned 266, skipped 0 blocks; 1 event(s); neardata 394 req, 119 rate-limited
 [watch] mainnet at block 224,533,255 (head 224,533,876, lag 621); scanned 535, skipped 0 blocks; 1 event(s); neardata 790 req, 245 rate-limited
+[watch] mainnet at block 224,533,543 (head 224,533,876, lag 333); scanned 823, skipped 0 blocks; 1 event(s); neardata 1203 req, 370 rate-limited
+[watch] block 224,533,580  leo2.sputnik-dao.near  UseGlobalContract (contract-receipt)
