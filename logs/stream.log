@@ -37,3 +37,6 @@
 [watch] block 224,527,704  mandate.bmandate.near  DeployContract (transaction)  new code 7dzGdF…
 [watch] mainnet at block 224,527,753 (head 224,528,793, lag 1040); scanned 7213, skipped 18519 blocks; 6 event(s); neardata 10496 req, 3249 rate-limited
 [watch] mainnet at block 224,528,028 (head 224,528,793, lag 765); scanned 7488, skipped 18519 blocks; 6 event(s); neardata 10897 req, 3375 rate-limited
+[watch] mainnet at block 224,528,318 (head 224,528,793, lag 475); scanned 7778, skipped 18519 blocks; 6 event(s); neardata 11311 req, 3498 rate-limited
+[watch] mainnet stopped after 17406s; 6 event(s) reported
+stream watcher exited with code 0 after 17452s
