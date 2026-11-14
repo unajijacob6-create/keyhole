@@ -10,3 +10,4 @@
 [watch] block 224,507,548  showstake-mainnet-escrow-endpx-2026.near  DeployContract (transaction)  new code 4Dq4uE…
 [watch] mainnet at block 224,507,716 (head 224,507,903, lag 187); scanned 1667, skipped 4028 blocks; 2 event(s); neardata 2419 req, 737 rate-limited
 [watch] mainnet at block 224,507,978 (head 224,509,150, lag 1172); scanned 1929, skipped 4028 blocks; 2 event(s); neardata 2811 req, 865 rate-limited
+[watch] mainnet at block 224,508,257 (head 224,509,150, lag 893); scanned 2208, skipped 4028 blocks; 2 event(s); neardata 3218 req, 994 rate-limited
