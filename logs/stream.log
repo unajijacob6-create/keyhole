@@ -23,3 +23,4 @@
 [watch] mainnet at block 224,483,725 (head 224,484,014, lag 289); scanned 3251, skipped 8721 blocks; 8 event(s); neardata 4744 req, 1472 rate-limited
 [watch] block 224,483,975  e2b3936775a4a1e300301f04cd7f7a4902b7a6002ee68c846ab71d4469fbbef2  DeployContract (transaction)  new code Bx8yPR…
 [watch] mainnet at block 224,483,995 (head 224,484,014, lag 19); scanned 3521, skipped 8721 blocks; 9 event(s); neardata 5133 req, 1591 rate-limited
+[watch] mainnet at block 224,484,266 (head 224,485,236, lag 970); scanned 3792, skipped 8721 blocks; 9 event(s); neardata 5527 req, 1712 rate-limited
