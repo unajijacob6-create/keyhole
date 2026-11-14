@@ -24,3 +24,6 @@
 [watch] mainnet at block 224,454,998 (head 224,455,942, lag 944); scanned 4162, skipped 9424 blocks; 4 event(s); neardata 6043 req, 1860 rate-limited
 [watch] mainnet at block 224,455,277 (head 224,455,942, lag 665); scanned 4441, skipped 9424 blocks; 4 event(s); neardata 6440 req, 1977 rate-limited
 [watch] mainnet at block 224,455,550 (head 224,455,942, lag 392); scanned 4714, skipped 9424 blocks; 4 event(s); neardata 6842 req, 2106 rate-limited
+[watch] mainnet at block 224,455,836 (head 224,455,942, lag 106); scanned 5000, skipped 9424 blocks; 4 event(s); neardata 7257 req, 2236 rate-limited
+[watch] block 224,455,929  registry.firekey.near  DeployContract (transaction)  new code FZg4mg…
+[watch] mainnet: 4814 blocks behind; skipping to head 224,460,757 (blocks 224455943–224460756 not scanned)
