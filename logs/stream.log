@@ -4,3 +4,5 @@
 [watch] mainnet at block 224,533,255 (head 224,533,876, lag 621); scanned 535, skipped 0 blocks; 1 event(s); neardata 790 req, 245 rate-limited
 [watch] mainnet at block 224,533,543 (head 224,533,876, lag 333); scanned 823, skipped 0 blocks; 1 event(s); neardata 1203 req, 370 rate-limited
 [watch] block 224,533,580  leo2.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,533,817 (head 224,533,876, lag 59); scanned 1097, skipped 0 blocks; 2 event(s); neardata 1606 req, 498 rate-limited
+[watch] mainnet: 3324 blocks behind; skipping to head 224,537,201 (blocks 224533877–224537200 not scanned)
