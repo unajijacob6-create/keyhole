@@ -24,3 +24,4 @@
 [watch] mainnet at block 224,543,953 (head 224,544,788, lag 835); scanned 3586, skipped 7647 blocks; 8 event(s); neardata 5208 req, 1599 rate-limited
 [watch] block 224,544,206  nft.trenchies.trenchie-arena.near  DeployContract (transaction)  new code 6cEk7D…
 [watch] mainnet at block 224,544,220 (head 224,544,788, lag 568); scanned 3853, skipped 7647 blocks; 9 event(s); neardata 5602 req, 1727 rate-limited
+[watch] mainnet at block 224,544,495 (head 224,544,788, lag 293); scanned 4128, skipped 7647 blocks; 9 event(s); neardata 6004 req, 1853 rate-limited
