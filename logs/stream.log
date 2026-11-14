@@ -21,3 +21,4 @@
 [watch] block 224,543,537  e0216842b03f5e23860f40f329e4667d3b37dbd6.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] block 224,543,642  obligoo.near  DeployContract (transaction)  new code 9MtT4H…
 [watch] mainnet at block 224,543,664 (head 224,544,788, lag 1124); scanned 3297, skipped 7647 blocks; 8 event(s); neardata 4795 req, 1475 rate-limited
+[watch] mainnet at block 224,543,953 (head 224,544,788, lag 835); scanned 3586, skipped 7647 blocks; 8 event(s); neardata 5208 req, 1599 rate-limited
