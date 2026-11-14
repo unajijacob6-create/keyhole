@@ -29,3 +29,5 @@
 [watch] mainnet: 4933 blocks behind; skipping to head 224,549,722 (blocks 224544789–224549721 not scanned)
 [watch] mainnet at block 224,549,970 (head 224,550,079, lag 109); scanned 4670, skipped 12580 blocks; 9 event(s); neardata 6797 req, 2101 rate-limited
 [watch] mainnet at block 224,550,255 (head 224,551,160, lag 905); scanned 4955, skipped 12580 blocks; 9 event(s); neardata 7208 req, 2226 rate-limited
+[watch] mainnet at block 224,550,526 (head 224,551,160, lag 634); scanned 5226, skipped 12580 blocks; 9 event(s); neardata 7606 req, 2352 rate-limited
+[watch] block 224,550,716  w2probe3.sputnik-dao.near  UseGlobalContract (contract-receipt)
