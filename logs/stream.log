@@ -29,3 +29,4 @@
 [watch] block 224,521,509  755a0a4bb40161793c0a178c89b0ed1a876d8c0d0bbea8febecfe2a7d0d9662b  DeployContract (transaction)  new code GnfHJq…
 [watch] block 224,521,591  rhea001618.multica.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,521,643 (head 224,522,350, lag 707); scanned 5820, skipped 13802 blocks; 5 event(s); neardata 8474 req, 2626 rate-limited
+[watch] mainnet at block 224,521,928 (head 224,522,350, lag 422); scanned 6105, skipped 13802 blocks; 5 event(s); neardata 8888 req, 2754 rate-limited
