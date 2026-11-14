@@ -7,3 +7,5 @@
 [watch] block 224,442,114  q8kfm.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,442,161  q8kfm.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,442,241 (head 224,443,058, lag 817); scanned 829, skipped 0 blocks; 3 event(s); neardata 1215 req, 376 rate-limited
+[watch] mainnet at block 224,442,517 (head 224,443,058, lag 541); scanned 1105, skipped 0 blocks; 3 event(s); neardata 1617 req, 501 rate-limited
+[watch] block 224,442,559  dew-10.aa-dew.near  UseGlobalContract (contract-receipt)
