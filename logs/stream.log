@@ -19,3 +19,5 @@
 [watch] mainnet at block 224,514,454 (head 224,515,712, lag 1258); scanned 3592, skipped 8841 blocks; 2 event(s); neardata 5232 req, 1618 rate-limited
 [watch] mainnet at block 224,514,737 (head 224,515,712, lag 975); scanned 3875, skipped 8841 blocks; 2 event(s); neardata 5646 req, 1748 rate-limited
 [watch] mainnet at block 224,515,010 (head 224,515,712, lag 702); scanned 4148, skipped 8841 blocks; 2 event(s); neardata 6044 req, 1874 rate-limited
+[watch] mainnet at block 224,515,292 (head 224,515,712, lag 420); scanned 4430, skipped 8841 blocks; 2 event(s); neardata 6453 req, 2001 rate-limited
+[watch] block 224,515,455  lagos-2.nearlytrade.near  UseGlobalContract (contract-receipt)
