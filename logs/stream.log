@@ -43,3 +43,6 @@
 [watch] block 224,556,308  bf54e11d3abe7fa8a440ccf1534759ca7e96a91930504aa095a0f65808e02be3  DeployContract (transaction)  new code 7Vp9yR…
 [watch] block 224,556,310  0f8f96dddb63cbfac543cfc314c7610a70a96b4e.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] block 224,556,377  bf54e11d3abe7fa8a440ccf1534759ca7e96a91930504aa095a0f65808e02be3  DeployContract (contract-receipt)  new code 3ohvMh…
+[watch] mainnet at block 224,556,515 (head 224,556,994, lag 479); scanned 7169, skipped 16626 blocks; 15 event(s); neardata 10426 req, 3223 rate-limited
+[watch] block 224,556,689  5ttj5.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,556,738  5ttj5.bulkpayment.near  UseGlobalContract (contract-receipt)
