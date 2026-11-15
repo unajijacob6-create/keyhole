@@ -35,3 +35,6 @@
 [watch] mainnet at block 224,649,753 (head 224,650,746, lag 993); scanned 7249, skipped 18058 blocks; 2 event(s); neardata 10475 req, 3193 rate-limited
 [watch] block 224,649,826  6ceea3724300.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,650,042 (head 224,650,746, lag 704); scanned 7538, skipped 18058 blocks; 3 event(s); neardata 10884 req, 3313 rate-limited
+[watch] mainnet at block 224,650,316 (head 224,650,746, lag 430); scanned 7812, skipped 18058 blocks; 3 event(s); neardata 11281 req, 3437 rate-limited
+[watch] mainnet stopped after 17400s; 3 event(s) reported
+stream watcher exited with code 0 after 17446s
