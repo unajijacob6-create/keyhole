@@ -2,3 +2,4 @@
 [watch] mainnet block 224624462: HTTP 429; retry in 4s
 [watch] mainnet block 224624463: HTTP 429; retry in 4s
 [watch] block 224,624,510  luna-ren-marsh.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,624,729 (head 224,624,849, lag 120); scanned 283, skipped 0 blocks; 1 event(s); neardata 404 req, 111 rate-limited
