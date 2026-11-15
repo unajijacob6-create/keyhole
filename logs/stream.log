@@ -1,1 +1,3 @@
 [watch] mainnet from block 224,716,527; watching (none); network-wide deploy feed on
+[watch] mainnet at block 224,716,802 (head 224,716,813, lag 11); scanned 275, skipped 0 blocks; 0 event(s); neardata 397 req, 112 rate-limited
+[watch] block 224,716,923  mihaocat-2.nearlytrade.near  UseGlobalContract (contract-receipt)
