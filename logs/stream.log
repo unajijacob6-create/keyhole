@@ -1,35 +1,4 @@
-[watch] mainnet from block 224,593,736; watching (none); network-wide deploy feed on
-[watch] mainnet at block 224,594,008 (head 224,594,204, lag 196); scanned 272, skipped 0 blocks; 0 event(s); neardata 406 req, 124 rate-limited
-[watch] mainnet at block 224,594,281 (head 224,595,562, lag 1281); scanned 545, skipped 0 blocks; 0 event(s); neardata 809 req, 253 rate-limited
-[watch] mainnet at block 224,594,560 (head 224,595,562, lag 1002); scanned 824, skipped 0 blocks; 0 event(s); neardata 1221 req, 385 rate-limited
-[watch] mainnet at block 224,594,838 (head 224,595,562, lag 724); scanned 1102, skipped 0 blocks; 0 event(s); neardata 1621 req, 508 rate-limited
-[watch] mainnet at block 224,595,123 (head 224,595,562, lag 439); scanned 1387, skipped 0 blocks; 0 event(s); neardata 2028 req, 630 rate-limited
-[watch] mainnet at block 224,595,391 (head 224,595,562, lag 171); scanned 1655, skipped 0 blocks; 0 event(s); neardata 2426 req, 759 rate-limited
-[watch] mainnet: 5242 blocks behind; skipping to head 224,600,805 (blocks 224595563–224600804 not scanned)
-[watch] mainnet at block 224,600,896 (head 224,600,909, lag 13); scanned 1918, skipped 5242 blocks; 0 event(s); neardata 2809 req, 876 rate-limited
-[watch] mainnet at block 224,601,175 (head 224,601,228, lag 53); scanned 2197, skipped 5242 blocks; 0 event(s); neardata 3204 req, 990 rate-limited
-[watch] mainnet at block 224,601,466 (head 224,602,449, lag 983); scanned 2488, skipped 5242 blocks; 0 event(s); neardata 3609 req, 1103 rate-limited
-[watch] mainnet at block 224,601,733 (head 224,602,449, lag 716); scanned 2755, skipped 5242 blocks; 0 event(s); neardata 4002 req, 1229 rate-limited
-[watch] mainnet at block 224,602,008 (head 224,602,449, lag 441); scanned 3030, skipped 5242 blocks; 0 event(s); neardata 4401 req, 1354 rate-limited
-[watch] mainnet at block 224,602,298 (head 224,602,449, lag 151); scanned 3320, skipped 5242 blocks; 0 event(s); neardata 4815 req, 1478 rate-limited
-[watch] mainnet: 4561 blocks behind; skipping to head 224,607,011 (blocks 224602450–224607010 not scanned)
-[watch] mainnet at block 224,607,120 (head 224,607,362, lag 242); scanned 3581, skipped 9803 blocks; 0 event(s); neardata 5204 req, 1601 rate-limited
-[watch] mainnet at block 224,607,392 (head 224,608,409, lag 1017); scanned 3853, skipped 9803 blocks; 0 event(s); neardata 5597 req, 1721 rate-limited
-[watch] mainnet at block 224,607,678 (head 224,608,409, lag 731); scanned 4139, skipped 9803 blocks; 0 event(s); neardata 6002 req, 1840 rate-limited
-[watch] mainnet at block 224,607,952 (head 224,608,409, lag 457); scanned 4413, skipped 9803 blocks; 0 event(s); neardata 6406 req, 1971 rate-limited
-[watch] mainnet at block 224,608,231 (head 224,608,409, lag 178); scanned 4692, skipped 9803 blocks; 0 event(s); neardata 6808 req, 2094 rate-limited
-[watch] mainnet: 3964 blocks behind; skipping to head 224,612,374 (blocks 224608410–224612373 not scanned)
-[watch] mainnet at block 224,612,472 (head 224,612,477, lag 5); scanned 4969, skipped 13767 blocks; 0 event(s); neardata 7211 req, 2216 rate-limited
-[watch] mainnet at block 224,612,739 (head 224,612,820, lag 81); scanned 5236, skipped 13767 blocks; 0 event(s); neardata 7603 req, 2340 rate-limited
-[watch] mainnet at block 224,613,009 (head 224,614,175, lag 1166); scanned 5506, skipped 13767 blocks; 0 event(s); neardata 8001 req, 2467 rate-limited
-[watch] mainnet at block 224,613,299 (head 224,614,175, lag 876); scanned 5796, skipped 13767 blocks; 0 event(s); neardata 8412 req, 2588 rate-limited
-[watch] mainnet at block 224,613,570 (head 224,614,175, lag 605); scanned 6067, skipped 13767 blocks; 0 event(s); neardata 8816 req, 2721 rate-limited
-[watch] mainnet at block 224,613,853 (head 224,614,175, lag 322); scanned 6350, skipped 13767 blocks; 0 event(s); neardata 9218 req, 2841 rate-limited
-[watch] mainnet at block 224,614,132 (head 224,614,175, lag 43); scanned 6629, skipped 13767 blocks; 0 event(s); neardata 9629 req, 2973 rate-limited
-[watch] mainnet: 5191 blocks behind; skipping to head 224,619,367 (blocks 224614176–224619366 not scanned)
-[watch] mainnet at block 224,619,584 (head 224,619,813, lag 229); scanned 6890, skipped 18958 blocks; 0 event(s); neardata 10018 req, 3096 rate-limited
-[watch] mainnet at block 224,619,867 (head 224,621,134, lag 1267); scanned 7173, skipped 18958 blocks; 0 event(s); neardata 10422 req, 3217 rate-limited
-[watch] mainnet at block 224,620,154 (head 224,621,134, lag 980); scanned 7460, skipped 18958 blocks; 0 event(s); neardata 10827 req, 3335 rate-limited
-[watch] mainnet at block 224,620,428 (head 224,621,134, lag 706); scanned 7734, skipped 18958 blocks; 0 event(s); neardata 11227 req, 3460 rate-limited
-[watch] mainnet stopped after 17409s; 0 event(s) reported
-stream watcher exited with code 0 after 17469s
+[watch] mainnet from block 224,624,446; watching (none); network-wide deploy feed on
+[watch] mainnet block 224624462: HTTP 429; retry in 4s
+[watch] mainnet block 224624463: HTTP 429; retry in 4s
+[watch] block 224,624,510  luna-ren-marsh.sputnik-dao.near  UseGlobalContract (contract-receipt)
