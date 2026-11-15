@@ -26,3 +26,5 @@
 [watch] mainnet at block 224,673,375 (head 224,673,424, lag 49); scanned 4970, skipped 13150 blocks; 3 event(s); neardata 7258 req, 2262 rate-limited
 [watch] mainnet at block 224,673,657 (head 224,674,691, lag 1034); scanned 5252, skipped 13150 blocks; 3 event(s); neardata 7660 req, 2381 rate-limited
 [watch] mainnet at block 224,673,931 (head 224,674,691, lag 760); scanned 5526, skipped 13150 blocks; 3 event(s); neardata 8056 req, 2502 rate-limited
+[watch] mainnet at block 224,674,200 (head 224,674,691, lag 491); scanned 5795, skipped 13150 blocks; 3 event(s); neardata 8452 req, 2629 rate-limited
+[watch] block 224,674,442  app.staging.luckout.near  DeployContract (transaction)  new code BftGkL…
