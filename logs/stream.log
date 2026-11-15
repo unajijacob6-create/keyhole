@@ -1,40 +1,4 @@
-[watch] mainnet from block 224,624,446; watching (none); network-wide deploy feed on
-[watch] mainnet block 224624462: HTTP 429; retry in 4s
-[watch] mainnet block 224624463: HTTP 429; retry in 4s
-[watch] block 224,624,510  luna-ren-marsh.sputnik-dao.near  UseGlobalContract (contract-receipt)
-[watch] mainnet at block 224,624,729 (head 224,624,849, lag 120); scanned 283, skipped 0 blocks; 1 event(s); neardata 404 req, 111 rate-limited
-[watch] mainnet at block 224,624,999 (head 224,625,987, lag 988); scanned 553, skipped 0 blocks; 1 event(s); neardata 801 req, 238 rate-limited
-[watch] mainnet at block 224,625,278 (head 224,625,987, lag 709); scanned 832, skipped 0 blocks; 1 event(s); neardata 1204 req, 362 rate-limited
-[watch] mainnet at block 224,625,563 (head 224,625,987, lag 424); scanned 1117, skipped 0 blocks; 1 event(s); neardata 1611 req, 484 rate-limited
-[watch] mainnet at block 224,625,847 (head 224,625,987, lag 140); scanned 1401, skipped 0 blocks; 1 event(s); neardata 2025 req, 614 rate-limited
-[watch] mainnet: 4333 blocks behind; skipping to head 224,630,321 (blocks 224625988–224630320 not scanned)
-[watch] mainnet at block 224,630,437 (head 224,630,656, lag 219); scanned 1658, skipped 4333 blocks; 1 event(s); neardata 2406 req, 733 rate-limited
-[watch] mainnet at block 224,630,723 (head 224,631,623, lag 900); scanned 1944, skipped 4333 blocks; 1 event(s); neardata 2815 req, 855 rate-limited
-[watch] block 224,630,797  532fb7e43333d9216b737e3fdbedbfc9ad0b9171.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
-[watch] mainnet at block 224,631,006 (head 224,631,623, lag 617); scanned 2227, skipped 4333 blocks; 2 event(s); neardata 3223 req, 979 rate-limited
-[watch] mainnet at block 224,631,287 (head 224,631,623, lag 336); scanned 2508, skipped 4333 blocks; 2 event(s); neardata 3627 req, 1103 rate-limited
-[watch] mainnet at block 224,631,577 (head 224,631,623, lag 46); scanned 2798, skipped 4333 blocks; 2 event(s); neardata 4036 req, 1221 rate-limited
-[watch] mainnet: 3636 blocks behind; skipping to head 224,635,260 (blocks 224631624–224635259 not scanned)
-[watch] mainnet at block 224,635,472 (head 224,635,706, lag 234); scanned 3057, skipped 7969 blocks; 2 event(s); neardata 4421 req, 1343 rate-limited
-[watch] mainnet at block 224,635,747 (head 224,637,073, lag 1326); scanned 3332, skipped 7969 blocks; 2 event(s); neardata 4825 req, 1472 rate-limited
-[watch] mainnet at block 224,636,026 (head 224,637,073, lag 1047); scanned 3611, skipped 7969 blocks; 2 event(s); neardata 5235 req, 1602 rate-limited
-[watch] mainnet at block 224,636,319 (head 224,637,073, lag 754); scanned 3904, skipped 7969 blocks; 2 event(s); neardata 5645 req, 1719 rate-limited
-[watch] mainnet at block 224,636,591 (head 224,637,073, lag 482); scanned 4176, skipped 7969 blocks; 2 event(s); neardata 6046 req, 1848 rate-limited
-[watch] mainnet at block 224,636,874 (head 224,637,073, lag 199); scanned 4459, skipped 7969 blocks; 2 event(s); neardata 6459 req, 1979 rate-limited
-[watch] mainnet: 5168 blocks behind; skipping to head 224,642,242 (blocks 224637074–224642241 not scanned)
-[watch] mainnet at block 224,642,315 (head 224,642,348, lag 33); scanned 4732, skipped 13137 blocks; 2 event(s); neardata 6862 req, 2105 rate-limited
-[watch] mainnet at block 224,642,584 (head 224,642,679, lag 95); scanned 5001, skipped 13137 blocks; 2 event(s); neardata 7257 req, 2230 rate-limited
-[watch] mainnet at block 224,642,877 (head 224,643,982, lag 1105); scanned 5294, skipped 13137 blocks; 2 event(s); neardata 7665 req, 2343 rate-limited
-[watch] mainnet at block 224,643,151 (head 224,643,982, lag 831); scanned 5568, skipped 13137 blocks; 2 event(s); neardata 8067 req, 2471 rate-limited
-[watch] mainnet at block 224,643,445 (head 224,643,982, lag 537); scanned 5862, skipped 13137 blocks; 2 event(s); neardata 8477 req, 2587 rate-limited
-[watch] mainnet at block 224,643,717 (head 224,643,982, lag 265); scanned 6134, skipped 13137 blocks; 2 event(s); neardata 8878 req, 2716 rate-limited
-[watch] mainnet: 4921 blocks behind; skipping to head 224,648,904 (blocks 224643983–224648903 not scanned)
-[watch] mainnet at block 224,648,925 (head 224,648,924, lag -1); scanned 6421, skipped 18058 blocks; 2 event(s); neardata 9279 req, 2829 rate-limited
-[watch] mainnet at block 224,649,190 (head 224,649,370, lag 180); scanned 6686, skipped 18058 blocks; 2 event(s); neardata 9673 req, 2955 rate-limited
-[watch] mainnet at block 224,649,483 (head 224,650,746, lag 1263); scanned 6979, skipped 18058 blocks; 2 event(s); neardata 10081 req, 3069 rate-limited
-[watch] mainnet at block 224,649,753 (head 224,650,746, lag 993); scanned 7249, skipped 18058 blocks; 2 event(s); neardata 10475 req, 3193 rate-limited
-[watch] block 224,649,826  6ceea3724300.user0.tmplr.near  UseGlobalContract (contract-receipt)
-[watch] mainnet at block 224,650,042 (head 224,650,746, lag 704); scanned 7538, skipped 18058 blocks; 3 event(s); neardata 10884 req, 3313 rate-limited
-[watch] mainnet at block 224,650,316 (head 224,650,746, lag 430); scanned 7812, skipped 18058 blocks; 3 event(s); neardata 11281 req, 3437 rate-limited
-[watch] mainnet stopped after 17400s; 3 event(s) reported
-stream watcher exited with code 0 after 17446s
+[watch] mainnet from block 224,655,255; watching (none); network-wide deploy feed on
+[watch] mainnet: head refresh failed (HTTP 429); keeping 224655270
+[watch] block 224,655,458  8c3c32801ddab897f4a003f2b9cbae5bb8ccf777.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] block 224,655,471  5f8b92fcc3d99773353556688da801993c0a814a.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
