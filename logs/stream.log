@@ -2,3 +2,4 @@
 [watch] mainnet at block 224,716,802 (head 224,716,813, lag 11); scanned 275, skipped 0 blocks; 0 event(s); neardata 397 req, 112 rate-limited
 [watch] block 224,716,923  mihaocat-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,717,089 (head 224,717,638, lag 549); scanned 562, skipped 0 blocks; 1 event(s); neardata 808 req, 236 rate-limited
+[watch] mainnet at block 224,717,355 (head 224,717,638, lag 283); scanned 828, skipped 0 blocks; 1 event(s); neardata 1198 req, 360 rate-limited
