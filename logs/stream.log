@@ -22,3 +22,4 @@
 [watch] mainnet at block 224,702,830 (head 224,702,879, lag 49); scanned 4472, skipped 12381 blocks; 0 event(s); neardata 6423 req, 1930 rate-limited
 [watch] block 224,702,995  trading-signer.fourfivex.near  DeployContract (transaction)  new code AwLEfg…
 [watch] mainnet at block 224,703,098 (head 224,703,192, lag 94); scanned 4740, skipped 12381 blocks; 1 event(s); neardata 6814 req, 2051 rate-limited
+[watch] mainnet at block 224,703,375 (head 224,704,416, lag 1041); scanned 5017, skipped 12381 blocks; 1 event(s); neardata 7205 req, 2164 rate-limited
