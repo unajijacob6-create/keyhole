@@ -1,3 +1,4 @@
 [watch] mainnet from block 224,685,977; watching (none); network-wide deploy feed on
 [watch] mainnet at block 224,686,266 (head 224,686,708, lag 442); scanned 289, skipped 0 blocks; 0 event(s); neardata 407 req, 108 rate-limited
 [watch] mainnet at block 224,686,532 (head 224,686,708, lag 176); scanned 555, skipped 0 blocks; 0 event(s); neardata 797 req, 232 rate-limited
+[watch] mainnet at block 224,686,793 (head 224,688,828, lag 2035); scanned 816, skipped 0 blocks; 0 event(s); neardata 1188 req, 361 rate-limited
