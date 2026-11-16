@@ -11,3 +11,10 @@
 [watch] mainnet at block 224,784,888 (head 224,786,215, lag 1327); scanned 2200, skipped 4592 blocks; 1 event(s); neardata 3196 req, 980 rate-limited
 [watch] mainnet at block 224,785,173 (head 224,786,215, lag 1042); scanned 2485, skipped 4592 blocks; 1 event(s); neardata 3608 req, 1106 rate-limited
 [watch] mainnet at block 224,785,444 (head 224,786,215, lag 771); scanned 2756, skipped 4592 blocks; 1 event(s); neardata 4010 req, 1237 rate-limited
+[watch] block 224,785,537  ddd7cd31c7cbb9e8.racerbot.near  UseGlobalContract (transaction)
+[watch] block 224,785,541  c0f42a189e716b51.racerbot.near  UseGlobalContract (transaction)
+[watch] block 224,785,588  811b7b2451b38a57.racerbot.near  UseGlobalContract (transaction)
+[watch] block 224,785,601  71741cb90f697747.racerbot.near  UseGlobalContract (transaction)
+[watch] block 224,785,684  124c0e56df1d5ac2.racerbot.near  UseGlobalContract (transaction)
+[watch] block 224,785,698  d51ccec1fcc47b32.racerbot.near  UseGlobalContract (transaction)
+[watch] mainnet at block 224,785,714 (head 224,786,215, lag 501); scanned 3026, skipped 4592 blocks; 7 event(s); neardata 4399 req, 1356 rate-limited
