@@ -60,3 +60,7 @@
 [watch] block 224,860,523  qa9zc.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,860,664 (head 224,861,047, lag 383); scanned 8543, skipped 12761 blocks; 5 event(s); neardata 11378 req, 2800 rate-limited
 [watch] mainnet at block 224,860,958 (head 224,861,047, lag 89); scanned 8837, skipped 12761 blocks; 5 event(s); neardata 11793 req, 2921 rate-limited
+[watch] mainnet at block 224,861,240 (head 224,863,985, lag 2745); scanned 9119, skipped 12761 blocks; 5 event(s); neardata 12204 req, 3049 rate-limited
+[watch] mainnet block 224861402: HTTP 429; retry in 4s
+[watch] mainnet block 224861403: HTTP 429; retry in 4s
+[watch] mainnet block 224861404: HTTP 429; retry in 4s
