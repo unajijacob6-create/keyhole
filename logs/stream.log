@@ -1,2 +1,4 @@
 [watch] mainnet from block 224,808,862; watching (none); network-wide deploy feed on
 [watch] block 224,808,955  only.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,809,136 (head 224,809,640, lag 504); scanned 274, skipped 0 blocks; 1 event(s); neardata 403 req, 119 rate-limited
+[watch] mainnet at block 224,809,412 (head 224,809,640, lag 228); scanned 550, skipped 0 blocks; 1 event(s); neardata 806 req, 246 rate-limited
