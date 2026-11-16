@@ -20,3 +20,4 @@
 [watch] mainnet block 224846565: HTTP 429; retry in 4s
 [watch] block 224,846,793  wn6hz.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,846,840  wn6hz.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,846,956 (head 224,847,002, lag 46); scanned 3625, skipped 3971 blocks; 2 event(s); neardata 4749 req, 1106 rate-limited
