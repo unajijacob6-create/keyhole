@@ -32,3 +32,4 @@
 [watch] block 224,741,810  circle.uprail.near  DeployContract (transaction)  new code 3GqdY4…
 [watch] mainnet at block 224,742,053 (head 224,743,013, lag 960); scanned 6851, skipped 18675 blocks; 3 event(s); neardata 9958 req, 3074 rate-limited
 [watch] mainnet at block 224,742,318 (head 224,743,013, lag 695); scanned 7116, skipped 18675 blocks; 3 event(s); neardata 10348 req, 3199 rate-limited
+[watch] mainnet at block 224,742,585 (head 224,743,013, lag 428); scanned 7383, skipped 18675 blocks; 3 event(s); neardata 10746 req, 3331 rate-limited
