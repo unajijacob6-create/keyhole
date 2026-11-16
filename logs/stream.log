@@ -15,3 +15,8 @@
 [watch] mainnet: head refresh failed (HTTP 429); keeping 224846058
 [watch] mainnet block 224846133: HTTP 429; retry in 4s
 [watch] mainnet block 224846134: HTTP 429; retry in 4s
+[watch] mainnet at block 224,846,350 (head 224,847,002, lag 652); scanned 3019, skipped 3971 blocks; 0 event(s); neardata 4049 req, 1011 rate-limited
+[watch] mainnet block 224846564: HTTP 429; retry in 4s
+[watch] mainnet block 224846565: HTTP 429; retry in 4s
+[watch] block 224,846,793  wn6hz.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 224,846,840  wn6hz.bulkpayment.near  UseGlobalContract (contract-receipt)
