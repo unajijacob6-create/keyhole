@@ -25,3 +25,6 @@
 [watch] mainnet at block 224,735,925 (head 224,736,913, lag 988); scanned 5497, skipped 13901 blocks; 1 event(s); neardata 7976 req, 2452 rate-limited
 [watch] mainnet at block 224,736,190 (head 224,736,913, lag 723); scanned 5762, skipped 13901 blocks; 1 event(s); neardata 8365 req, 2576 rate-limited
 [watch] mainnet at block 224,736,458 (head 224,736,913, lag 455); scanned 6030, skipped 13901 blocks; 1 event(s); neardata 8765 req, 2708 rate-limited
+[watch] mainnet at block 224,736,732 (head 224,736,913, lag 181); scanned 6304, skipped 13901 blocks; 1 event(s); neardata 9162 req, 2830 rate-limited
+[watch] block 224,736,819  givemymoney.near  DeployContract (transaction)  new code FnNdsB…
+[watch] mainnet: 4774 blocks behind; skipping to head 224,741,688 (blocks 224736914–224741687 not scanned)
