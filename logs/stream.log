@@ -36,3 +36,7 @@
 [watch] block 224,793,261  cfc410d39d030a34.racerbot.near  UseGlobalContract (transaction)
 [watch] block 224,793,279  5bf2e67e44a6948d.racerbot.near  UseGlobalContract (transaction)
 [watch] block 224,793,305  17f64d77e1b3be5e.racerbot.near  UseGlobalContract (transaction)
+[watch] mainnet at block 224,793,389 (head 224,793,507, lag 118); scanned 5251, skipped 10042 blocks; 17 event(s); neardata 7620 req, 2347 rate-limited
+[watch] block 224,793,411  2d0350a65342a46f.racerbot.near  UseGlobalContract (transaction)
+[watch] mainnet: 5229 blocks behind; skipping to head 224,798,737 (blocks 224793508–224798736 not scanned)
+[watch] block 224,798,859  6d9fe5b69c179061.racerbot.near  UseGlobalContract (transaction)
