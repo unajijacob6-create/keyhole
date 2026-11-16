@@ -50,3 +50,7 @@
 [watch] mainnet at block 224,854,500 (head 224,855,240, lag 740); scanned 7006, skipped 8134 blocks; 3 event(s); neardata 9271 req, 2239 rate-limited
 [watch] mainnet block 224854564: HTTP 429; retry in 4s
 [watch] mainnet at block 224,854,792 (head 224,855,240, lag 448); scanned 7298, skipped 8134 blocks; 3 event(s); neardata 9677 req, 2353 rate-limited
+[watch] mainnet at block 224,855,080 (head 224,855,240, lag 160); scanned 7586, skipped 8134 blocks; 3 event(s); neardata 10085 req, 2473 rate-limited
+[watch] mainnet: head refresh failed (HTTP 429); keeping 224855240
+[watch] mainnet: 4627 blocks behind; skipping to head 224,859,868 (blocks 224855241–224859867 not scanned)
+[watch] mainnet: head refresh failed (HTTP 429); keeping 224859983
