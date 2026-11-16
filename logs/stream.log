@@ -55,3 +55,5 @@
 [watch] block 224,805,205  v3-prize.lottery_raen.near  DeployContract (transaction)  new code 7CaTp2…
 [watch] mainnet at block 224,805,299 (head 224,806,576, lag 1277); scanned 7438, skipped 19765 blocks; 24 event(s); neardata 10803 req, 3330 rate-limited
 [watch] mainnet at block 224,805,570 (head 224,806,576, lag 1006); scanned 7709, skipped 19765 blocks; 24 event(s); neardata 11198 req, 3455 rate-limited
+[watch] mainnet stopped after 17409s; 24 event(s) reported
+stream watcher exited with code 0 after 17495s
