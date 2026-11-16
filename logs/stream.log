@@ -64,3 +64,9 @@
 [watch] mainnet block 224861402: HTTP 429; retry in 4s
 [watch] mainnet block 224861403: HTTP 429; retry in 4s
 [watch] mainnet block 224861404: HTTP 429; retry in 4s
+[watch] mainnet at block 224,861,559 (head 224,863,985, lag 2426); scanned 9438, skipped 12761 blocks; 5 event(s); neardata 12644 req, 3170 rate-limited
+[watch] mainnet block 224861640: HTTP 429; retry in 4s
+[watch] mainnet block 224861641: HTTP 429; retry in 4s
+[watch] mainnet block 224861642: HTTP 429; retry in 4s
+[watch] mainnet stopped after 17405s; 5 event(s) reported
+stream watcher exited with code 0 after 17444s
