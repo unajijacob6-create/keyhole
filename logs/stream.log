@@ -46,3 +46,8 @@
 [watch] mainnet at block 224,799,713 (head 224,800,330, lag 617); scanned 6346, skipped 15271 blocks; 19 event(s); neardata 9222 req, 2847 rate-limited
 [watch] mainnet at block 224,800,000 (head 224,800,330, lag 330); scanned 6633, skipped 15271 blocks; 19 event(s); neardata 9632 req, 2970 rate-limited
 [watch] block 224,800,138  4bb91b2e87fdb568.racerbot.near  UseGlobalContract (transaction)
+[watch] mainnet at block 224,800,278 (head 224,800,330, lag 52); scanned 6911, skipped 15271 blocks; 20 event(s); neardata 10036 req, 3097 rate-limited
+[watch] mainnet: 4494 blocks behind; skipping to head 224,804,825 (blocks 224800331–224804824 not scanned)
+[watch] block 224,804,942  5f196d2f792e5e1f.racerbot.near  UseGlobalContract (transaction)
+[watch] block 224,805,017  v3-vault.lottery_raen.near  DeployContract (transaction)  new code Dbrm8F…
+[watch] block 224,805,020  a6123fb78f1c6c60.racerbot.near  UseGlobalContract (transaction)
