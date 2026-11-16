@@ -46,3 +46,4 @@
 [watch] mainnet at block 224,853,622 (head 224,853,756, lag 134); scanned 6128, skipped 8134 blocks; 2 event(s); neardata 8037 req, 1883 rate-limited
 [watch] block 224,853,811  id.bonuz-id.near  DeployContract (transaction)  new code 7AjXwY…
 [watch] mainnet at block 224,853,915 (head 224,855,240, lag 1325); scanned 6421, skipped 8134 blocks; 3 event(s); neardata 8447 req, 2001 rate-limited
+[watch] mainnet at block 224,854,187 (head 224,855,240, lag 1053); scanned 6693, skipped 8134 blocks; 3 event(s); neardata 8848 req, 2129 rate-limited
