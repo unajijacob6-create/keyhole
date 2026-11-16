@@ -1,2 +1,4 @@
 [poll] mainnet: watching 24 account(s) every 120s
 [poll] block 224,770,356  v2.ref-finance.near  code GZmkbf… → txLoEF…
+[poll] mainnet: stopped; 1 change(s) reported
+mainnet watcher exited with code 0 after 17449s
