@@ -59,3 +59,4 @@
 [watch] block 224,860,476  qa9zc.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 224,860,523  qa9zc.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,860,664 (head 224,861,047, lag 383); scanned 8543, skipped 12761 blocks; 5 event(s); neardata 11378 req, 2800 rate-limited
+[watch] mainnet at block 224,860,958 (head 224,861,047, lag 89); scanned 8837, skipped 12761 blocks; 5 event(s); neardata 11793 req, 2921 rate-limited
