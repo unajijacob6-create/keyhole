@@ -1,4 +1,1 @@
 [poll] mainnet: watching 24 account(s) every 120s
-[poll] v2.ref-finance.near: {"name":"HANDLER_ERROR","cause":{"info":{"block_reference":{"block_id":224967955}},"name":"UNKNOWN_BLOCK"},"code":-32000,"message":"Server e; will retry
-[poll] mainnet: stopped; 0 change(s) reported
-mainnet watcher exited with code 0 after 17450s
