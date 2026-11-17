@@ -34,3 +34,6 @@
 [watch] block 225,010,366  mapa3fdjfbwxv6rpshgbngw7vy91msyr.craft.tg  UseGlobalContract (contract-receipt)
 [watch] mainnet: 4332 blocks behind; skipping to head 225,014,763 (blocks 225010431–225014762 not scanned)
 [watch] mainnet at block 225,014,798 (head 225,014,865, lag 67); scanned 7605, skipped 20171 blocks; 2 event(s); neardata 10915 req, 3273 rate-limited
+[watch] mainnet at block 225,015,077 (head 225,015,142, lag 65); scanned 7884, skipped 20171 blocks; 2 event(s); neardata 11326 req, 3403 rate-limited
+[watch] mainnet stopped after 17407s; 2 event(s) reported
+stream watcher exited with code 0 after 17451s
