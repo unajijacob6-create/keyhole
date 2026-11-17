@@ -12,3 +12,5 @@
 [watch] mainnet at block 224,933,325 (head 224,933,403, lag 78); scanned 2225, skipped 3950 blocks; 2 event(s); neardata 3211 req, 969 rate-limited
 [watch] mainnet at block 224,933,602 (head 224,935,256, lag 1654); scanned 2502, skipped 3950 blocks; 2 event(s); neardata 3609 req, 1089 rate-limited
 [watch] mainnet at block 224,933,892 (head 224,935,256, lag 1364); scanned 2792, skipped 3950 blocks; 2 event(s); neardata 4021 req, 1212 rate-limited
+[watch] mainnet at block 224,934,178 (head 224,935,256, lag 1078); scanned 3078, skipped 3950 blocks; 2 event(s); neardata 4436 req, 1340 rate-limited
+[watch] block 224,934,280  mihao.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
