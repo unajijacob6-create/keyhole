@@ -24,3 +24,4 @@
 [watch] block 224,942,203  chipsets.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,942,341 (head 224,943,401, lag 1060); scanned 4758, skipped 10433 blocks; 5 event(s); neardata 6853 req, 2073 rate-limited
 [watch] mainnet at block 224,942,613 (head 224,943,401, lag 788); scanned 5030, skipped 10433 blocks; 5 event(s); neardata 7256 req, 2203 rate-limited
+[watch] mainnet at block 224,942,899 (head 224,943,401, lag 502); scanned 5316, skipped 10433 blocks; 5 event(s); neardata 7668 req, 2330 rate-limited
