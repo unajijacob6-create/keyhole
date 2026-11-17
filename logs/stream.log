@@ -8,3 +8,4 @@
 [watch] block 224,928,558  mvb94.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 3950 blocks behind; skipping to head 224,932,611 (blocks 224928661–224932610 not scanned)
 [watch] mainnet at block 224,932,767 (head 224,932,844, lag 77); scanned 1667, skipped 3950 blocks; 2 event(s); neardata 2409 req, 727 rate-limited
+[watch] mainnet at block 224,933,049 (head 224,933,403, lag 354); scanned 1949, skipped 3950 blocks; 2 event(s); neardata 2813 req, 847 rate-limited
