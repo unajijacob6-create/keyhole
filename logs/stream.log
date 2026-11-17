@@ -19,3 +19,4 @@
 [watch] mainnet at block 224,935,015 (head 224,935,256, lag 241); scanned 3915, skipped 3950 blocks; 3 event(s); neardata 5645 req, 1713 rate-limited
 [watch] block 224,935,048  clark.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 6483 blocks behind; skipping to head 224,941,740 (blocks 224935257–224941739 not scanned)
+[watch] mainnet at block 224,941,783 (head 224,941,839, lag 56); scanned 4200, skipped 10433 blocks; 4 event(s); neardata 6050 req, 1829 rate-limited
