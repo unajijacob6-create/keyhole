@@ -23,3 +23,6 @@
 [watch] mainnet at block 224,915,243 (head 224,915,864, lag 621); scanned 5572, skipped 12552 blocks; 0 event(s); neardata 8028 req, 2433 rate-limited
 [watch] mainnet at block 224,915,529 (head 224,915,864, lag 335); scanned 5858, skipped 12552 blocks; 0 event(s); neardata 8439 req, 2558 rate-limited
 [watch] block 224,915,758  qx4k4.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 224,915,797 (head 224,915,864, lag 67); scanned 6126, skipped 12552 blocks; 1 event(s); neardata 8836 req, 2688 rate-limited
+[watch] block 224,915,803  qx4k4.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 4354 blocks behind; skipping to head 224,920,219 (blocks 224915865–224920218 not scanned)
