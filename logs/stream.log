@@ -1,2 +1,4 @@
 [watch] mainnet from block 224,927,150; watching (none); network-wide deploy feed on
 [watch] mainnet at block 224,927,443 (head 224,927,566, lag 123); scanned 293, skipped 0 blocks; 0 event(s); neardata 409 req, 105 rate-limited
+[watch] mainnet at block 224,927,708 (head 224,928,660, lag 952); scanned 558, skipped 0 blocks; 0 event(s); neardata 802 req, 232 rate-limited
+[watch] block 224,927,904  mvb94.sputnik-dao.near  UseGlobalContract (contract-receipt)
