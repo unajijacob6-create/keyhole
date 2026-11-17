@@ -6,3 +6,5 @@
 [watch] block 224,957,507  lagos.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,957,628 (head 224,958,323, lag 695); scanned 1081, skipped 0 blocks; 1 event(s); neardata 1570 req, 478 rate-limited
 [watch] mainnet at block 224,957,899 (head 224,958,323, lag 424); scanned 1352, skipped 0 blocks; 1 event(s); neardata 1963 req, 600 rate-limited
+[watch] mainnet at block 224,958,188 (head 224,958,323, lag 135); scanned 1641, skipped 0 blocks; 1 event(s); neardata 2373 req, 722 rate-limited
+[watch] mainnet: 5054 blocks behind; skipping to head 224,963,378 (blocks 224958324–224963377 not scanned)
