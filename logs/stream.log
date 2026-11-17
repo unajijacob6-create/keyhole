@@ -3,3 +3,4 @@
 [watch] mainnet at block 224,927,708 (head 224,928,660, lag 952); scanned 558, skipped 0 blocks; 0 event(s); neardata 802 req, 232 rate-limited
 [watch] block 224,927,904  mvb94.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 224,927,980 (head 224,928,660, lag 680); scanned 830, skipped 0 blocks; 1 event(s); neardata 1195 req, 354 rate-limited
+[watch] mainnet at block 224,928,266 (head 224,928,660, lag 394); scanned 1116, skipped 0 blocks; 1 event(s); neardata 1607 req, 479 rate-limited
