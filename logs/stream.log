@@ -34,3 +34,4 @@
 [watch] block 225,155,062  gta6-5.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,155,082 (head 225,156,170, lag 1088); scanned 7113, skipped 13272 blocks; 6 event(s); neardata 9792 req, 2643 rate-limited
 [watch] mainnet at block 225,155,369 (head 225,156,170, lag 801); scanned 7400, skipped 13272 blocks; 6 event(s); neardata 10200 req, 2764 rate-limited
+[watch] mainnet at block 225,155,647 (head 225,156,170, lag 523); scanned 7678, skipped 13272 blocks; 6 event(s); neardata 10604 req, 2891 rate-limited
