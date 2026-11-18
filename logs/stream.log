@@ -3,3 +3,6 @@
 [watch] mainnet at block 225,165,583 (head 225,165,835, lag 252); scanned 997, skipped 0 blocks; 0 event(s); neardata 1210 req, 198 rate-limited
 [watch] mainnet at block 225,166,091 (head 225,167,203, lag 1112); scanned 1505, skipped 0 blocks; 0 event(s); neardata 1820 req, 299 rate-limited
 [watch] mainnet at block 225,166,598 (head 225,167,203, lag 605); scanned 2012, skipped 0 blocks; 0 event(s); neardata 2433 req, 405 rate-limited
+[watch] mainnet at block 225,167,136 (head 225,167,203, lag 67); scanned 2550, skipped 0 blocks; 0 event(s); neardata 3071 req, 505 rate-limited
+[watch] block 225,167,156  lucia.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,167,616 (head 225,169,915, lag 2299); scanned 3030, skipped 0 blocks; 1 event(s); neardata 3658 req, 611 rate-limited
