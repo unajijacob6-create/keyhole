@@ -16,3 +16,4 @@
 [watch] block 225,116,521  nbbgz.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 225,116,570  nbbgz.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,116,580 (head 225,116,582, lag 2); scanned 3354, skipped 8045 blocks; 3 event(s); neardata 4874 req, 1499 rate-limited
+[watch] mainnet at block 225,116,866 (head 225,117,440, lag 574); scanned 3640, skipped 8045 blocks; 3 event(s); neardata 5283 req, 1622 rate-limited
