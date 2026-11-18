@@ -23,3 +23,5 @@
 [watch] block 225,146,934  dcty-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,147,175 (head 225,148,184, lag 1009); scanned 5330, skipped 7148 blocks; 2 event(s); neardata 7272 req, 1912 rate-limited
 [watch] mainnet at block 225,147,595 (head 225,148,184, lag 589); scanned 5750, skipped 7148 blocks; 2 event(s); neardata 7809 req, 2030 rate-limited
+[watch] mainnet at block 225,147,866 (head 225,148,184, lag 318); scanned 6021, skipped 7148 blocks; 2 event(s); neardata 8197 req, 2146 rate-limited
+[watch] block 225,147,900  dcty-3.nearlytrade.near  UseGlobalContract (contract-receipt)
