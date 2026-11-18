@@ -26,3 +26,5 @@
 [watch] mainnet at block 225,048,955 (head 225,049,168, lag 213); scanned 2659, skipped 0 blocks; 3 event(s); neardata 3703 req, 1031 rate-limited
 [watch] mainnet: 7091 blocks behind; skipping to head 225,056,260 (blocks 225049169–225056259 not scanned)
 [watch] mainnet at block 225,056,328 (head 225,056,346, lag 18); scanned 2941, skipped 7091 blocks; 3 event(s); neardata 4110 req, 1152 rate-limited
+[watch] mainnet at block 225,056,589 (head 225,057,541, lag 952); scanned 3202, skipped 7091 blocks; 3 event(s); neardata 4494 req, 1274 rate-limited
+[watch] block 225,056,818  mihao-2.nearlytrade.near  UseGlobalContract (contract-receipt)
