@@ -14,3 +14,5 @@
 [watch] mainnet: 4021 blocks behind; skipping to head 225,116,282 (blocks 225112261–225116281 not scanned)
 [watch] mainnet at block 225,116,309 (head 225,116,360, lag 51); scanned 3083, skipped 8045 blocks; 1 event(s); neardata 4473 req, 1370 rate-limited
 [watch] block 225,116,521  nbbgz.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 225,116,570  nbbgz.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,116,580 (head 225,116,582, lag 2); scanned 3354, skipped 8045 blocks; 3 event(s); neardata 4874 req, 1499 rate-limited
