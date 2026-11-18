@@ -12,3 +12,5 @@
 [watch] mainnet at block 225,111,999 (head 225,112,260, lag 261); scanned 2794, skipped 4024 blocks; 0 event(s); neardata 4068 req, 1258 rate-limited
 [watch] block 225,112,106  gta6-3.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 4021 blocks behind; skipping to head 225,116,282 (blocks 225112261–225116281 not scanned)
+[watch] mainnet at block 225,116,309 (head 225,116,360, lag 51); scanned 3083, skipped 8045 blocks; 1 event(s); neardata 4473 req, 1370 rate-limited
+[watch] block 225,116,521  nbbgz.sputnik-dao.near  UseGlobalContract (contract-receipt)
