@@ -9,3 +9,6 @@
 [watch] mainnet at block 225,111,165 (head 225,112,260, lag 1095); scanned 1960, skipped 4024 blocks; 0 event(s); neardata 2851 req, 874 rate-limited
 [watch] mainnet at block 225,111,437 (head 225,112,260, lag 823); scanned 2232, skipped 4024 blocks; 0 event(s); neardata 3250 req, 1002 rate-limited
 [watch] mainnet at block 225,111,728 (head 225,112,260, lag 532); scanned 2523, skipped 4024 blocks; 0 event(s); neardata 3663 req, 1124 rate-limited
+[watch] mainnet at block 225,111,999 (head 225,112,260, lag 261); scanned 2794, skipped 4024 blocks; 0 event(s); neardata 4068 req, 1258 rate-limited
+[watch] block 225,112,106  gta6-3.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 4021 blocks behind; skipping to head 225,116,282 (blocks 225112261–225116281 not scanned)
