@@ -30,3 +30,5 @@
 [watch] mainnet: 6124 blocks behind; skipping to head 225,154,309 (blocks 225148185–225154308 not scanned)
 [watch] block 225,154,339  37a74051aea547a5fa1449f3a3e46e0da9c8209541a68a8bdadd62a800f4fb95  DeployContract (transaction)  new code Hjizog…
 [watch] mainnet at block 225,154,541 (head 225,154,778, lag 237); scanned 6572, skipped 13272 blocks; 5 event(s); neardata 9000 req, 2393 rate-limited
+[watch] mainnet at block 225,154,808 (head 225,156,170, lag 1362); scanned 6839, skipped 13272 blocks; 5 event(s); neardata 9396 req, 2521 rate-limited
+[watch] block 225,155,062  gta6-5.nearlytrade.near  UseGlobalContract (contract-receipt)
