@@ -30,3 +30,5 @@
 [watch] mainnet at block 225,117,767 (head 225,120,351, lag 2584); scanned 4541, skipped 8045 blocks; 5 event(s); neardata 6530 req, 1966 rate-limited
 [watch] mainnet at block 225,118,049 (head 225,120,351, lag 2302); scanned 4823, skipped 8045 blocks; 5 event(s); neardata 6933 req, 2088 rate-limited
 [watch] mainnet at block 225,118,338 (head 225,120,351, lag 2013); scanned 5112, skipped 8045 blocks; 5 event(s); neardata 7337 req, 2203 rate-limited
+[watch] mainnet at block 225,118,622 (head 225,120,351, lag 1729); scanned 5396, skipped 8045 blocks; 5 event(s); neardata 7741 req, 2322 rate-limited
+[watch] mainnet block 225118709: HTTP 429; retry in 4s
