@@ -21,3 +21,5 @@
 [watch] mainnet block 225048197: HTTP 429; retry in 4s
 [watch] block 225,048,202  fdynnvm9lof1nfjshpu37zo8annjk4zuqchqtzf8vxa1-sol.aa-dew.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,048,386 (head 225,049,168, lag 782); scanned 2090, skipped 0 blocks; 3 event(s); neardata 2905 req, 802 rate-limited
+[watch] mainnet at block 225,048,669 (head 225,049,168, lag 499); scanned 2373, skipped 0 blocks; 3 event(s); neardata 3303 req, 918 rate-limited
+[watch] mainnet block 225048782: HTTP 429; retry in 4s
