@@ -22,3 +22,4 @@
 [watch] block 225,034,617  intearbots.near  DeployContract (transaction)  new code FgFMBU…
 [watch] mainnet at block 225,034,867 (head 225,035,886, lag 1019); scanned 5424, skipped 12681 blocks; 1 event(s); neardata 7741 req, 2295 rate-limited
 [watch] mainnet at block 225,035,138 (head 225,035,886, lag 748); scanned 5695, skipped 12681 blocks; 1 event(s); neardata 8133 req, 2417 rate-limited
+[watch] mainnet at block 225,035,414 (head 225,035,886, lag 472); scanned 5971, skipped 12681 blocks; 1 event(s); neardata 8533 req, 2541 rate-limited
