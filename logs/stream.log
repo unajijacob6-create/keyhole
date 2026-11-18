@@ -24,3 +24,6 @@
 [watch] mainnet block 225117315: HTTP 429; retry in 4s
 [watch] mainnet block 225117316: HTTP 429; retry in 4s
 [watch] mainnet block 225117317: HTTP 429; retry in 4s
+[watch] block 225,117,435  teste.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,117,462 (head 225,120,351, lag 2889); scanned 4236, skipped 8045 blocks; 4 event(s); neardata 6114 req, 1855 rate-limited
+[watch] block 225,117,487  teste.bulkpayment.near  UseGlobalContract (contract-receipt)
