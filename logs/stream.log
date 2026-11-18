@@ -33,3 +33,4 @@
 [watch] block 225,057,200  dew-15.aa-dew.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,057,408 (head 225,057,541, lag 133); scanned 4021, skipped 7091 blocks; 5 event(s); neardata 5679 req, 1639 rate-limited
 [watch] mainnet: 3512 blocks behind; skipping to head 225,061,054 (blocks 225057542–225061053 not scanned)
+[watch] mainnet at block 225,061,195 (head 225,061,439, lag 244); scanned 4296, skipped 10603 blocks; 5 event(s); neardata 6079 req, 1760 rate-limited
