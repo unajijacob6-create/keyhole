@@ -17,3 +17,10 @@
 [watch] block 225,116,570  nbbgz.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,116,580 (head 225,116,582, lag 2); scanned 3354, skipped 8045 blocks; 3 event(s); neardata 4874 req, 1499 rate-limited
 [watch] mainnet at block 225,116,866 (head 225,117,440, lag 574); scanned 3640, skipped 8045 blocks; 3 event(s); neardata 5283 req, 1622 rate-limited
+[watch] mainnet at block 225,117,154 (head 225,117,440, lag 286); scanned 3928, skipped 8045 blocks; 3 event(s); neardata 5690 req, 1740 rate-limited
+[watch] mainnet block 225117241: HTTP 429; retry in 4s
+[watch] mainnet block 225117242: HTTP 429; retry in 4s
+[watch] mainnet block 225117243: HTTP 429; retry in 4s
+[watch] mainnet block 225117315: HTTP 429; retry in 4s
+[watch] mainnet block 225117316: HTTP 429; retry in 4s
+[watch] mainnet block 225117317: HTTP 429; retry in 4s
