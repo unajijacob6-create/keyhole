@@ -1,3 +1,10 @@
 [watch] mainnet from block 225,046,296; watching (none); network-wide deploy feed on
 [watch] block 225,046,427  dew-14.aa-dew.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,046,592 (head 225,047,162, lag 570); scanned 296, skipped 0 blocks; 1 event(s); neardata 414 req, 107 rate-limited
+[watch] mainnet block 225046936: HTTP 429; retry in 4s
+[watch] mainnet at block 225,046,936 (head 225,047,162, lag 226); scanned 640, skipped 0 blocks; 1 event(s); neardata 876 req, 223 rate-limited
+[watch] mainnet block 225047111: HTTP 429; retry in 4s
+[watch] mainnet block 225047112: HTTP 429; retry in 4s
+[watch] mainnet block 225047113: HTTP 429; retry in 4s
+[watch] mainnet block 225047192: HTTP 429; retry in 4s
+[watch] mainnet block 225047193: HTTP 429; retry in 4s
