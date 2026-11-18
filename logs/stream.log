@@ -25,3 +25,7 @@
 [watch] mainnet at block 225,147,595 (head 225,148,184, lag 589); scanned 5750, skipped 7148 blocks; 2 event(s); neardata 7809 req, 2030 rate-limited
 [watch] mainnet at block 225,147,866 (head 225,148,184, lag 318); scanned 6021, skipped 7148 blocks; 2 event(s); neardata 8197 req, 2146 rate-limited
 [watch] block 225,147,900  dcty-3.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,148,157 (head 225,148,184, lag 27); scanned 6312, skipped 7148 blocks; 3 event(s); neardata 8609 req, 2267 rate-limited
+[watch] block 225,148,164  dcty-4.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 6124 blocks behind; skipping to head 225,154,309 (blocks 225148185–225154308 not scanned)
+[watch] block 225,154,339  37a74051aea547a5fa1449f3a3e46e0da9c8209541a68a8bdadd62a800f4fb95  DeployContract (transaction)  new code Hjizog…
