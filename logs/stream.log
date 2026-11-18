@@ -20,3 +20,4 @@
 [watch] mainnet: 3818 blocks behind; skipping to head 225,034,364 (blocks 225030546–225034363 not scanned)
 [watch] mainnet at block 225,034,593 (head 225,034,766, lag 173); scanned 5150, skipped 12681 blocks; 0 event(s); neardata 7340 req, 2170 rate-limited
 [watch] block 225,034,617  intearbots.near  DeployContract (transaction)  new code FgFMBU…
+[watch] mainnet at block 225,034,867 (head 225,035,886, lag 1019); scanned 5424, skipped 12681 blocks; 1 event(s); neardata 7741 req, 2295 rate-limited
