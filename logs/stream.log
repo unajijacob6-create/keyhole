@@ -44,3 +44,4 @@
 [watch] mainnet: 9994 blocks behind; skipping to head 225,130,346 (blocks 225120352–225130345 not scanned)
 [watch] block 225,130,448  app.staging.luckout.near  DeployContract (transaction)  new code 5pjgdH…
 [watch] mainnet at block 225,130,495 (head 225,130,543, lag 48); scanned 7275, skipped 18039 blocks; 7 event(s); neardata 10332 req, 3031 rate-limited
+[watch] mainnet at block 225,130,925 (head 225,131,454, lag 529); scanned 7705, skipped 18039 blocks; 7 event(s); neardata 10883 req, 3150 rate-limited
