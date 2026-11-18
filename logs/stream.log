@@ -2,3 +2,4 @@
 [watch] mainnet at block 225,134,976 (head 225,135,136, lag 160); scanned 279, skipped 0 blocks; 0 event(s); neardata 403 req, 114 rate-limited
 [watch] mainnet at block 225,135,239 (head 225,136,378, lag 1139); scanned 542, skipped 0 blocks; 0 event(s); neardata 799 req, 246 rate-limited
 [watch] block 225,135,283  raen_trade.near  DeployContract (transaction)  new code 2uirxa…
+[watch] mainnet at block 225,135,521 (head 225,136,378, lag 857); scanned 824, skipped 0 blocks; 1 event(s); neardata 1197 req, 361 rate-limited
