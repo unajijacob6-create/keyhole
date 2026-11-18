@@ -7,3 +7,4 @@
 [watch] block 225,167,156  lucia.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,167,616 (head 225,169,915, lag 2299); scanned 3030, skipped 0 blocks; 1 event(s); neardata 3658 req, 611 rate-limited
 [watch] mainnet at block 225,168,098 (head 225,169,915, lag 1817); scanned 3512, skipped 0 blocks; 1 event(s); neardata 4244 req, 715 rate-limited
+[watch] mainnet at block 225,168,604 (head 225,169,915, lag 1311); scanned 4018, skipped 0 blocks; 1 event(s); neardata 4854 req, 819 rate-limited
