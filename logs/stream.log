@@ -12,3 +12,4 @@
 [watch] mainnet at block 225,085,299 (head 225,085,486, lag 187); scanned 2745, skipped 6786 blocks; 0 event(s); neardata 3983 req, 1223 rate-limited
 [watch] mainnet at block 225,085,591 (head 225,086,501, lag 910); scanned 3037, skipped 6786 blocks; 0 event(s); neardata 4385 req, 1331 rate-limited
 [watch] mainnet at block 225,085,892 (head 225,086,501, lag 609); scanned 3338, skipped 6786 blocks; 0 event(s); neardata 4790 req, 1436 rate-limited
+[watch] mainnet at block 225,086,166 (head 225,086,501, lag 335); scanned 3612, skipped 6786 blocks; 0 event(s); neardata 5197 req, 1569 rate-limited
