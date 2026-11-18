@@ -47,3 +47,6 @@
 [watch] mainnet at block 225,130,925 (head 225,131,454, lag 529); scanned 7705, skipped 18039 blocks; 7 event(s); neardata 10883 req, 3150 rate-limited
 [watch] block 225,131,336  base-0xf628430260c07eeea7b6993cd6ee9ed8e84a95e0.omft.near  DeployContract (contract-receipt)  new code 2VUeqH…
 [watch] mainnet at block 225,131,358 (head 225,131,454, lag 96); scanned 8138, skipped 18039 blocks; 8 event(s); neardata 11433 req, 3267 rate-limited
+[watch] mainnet at block 225,131,685 (head 225,133,058, lag 1373); scanned 8465, skipped 18039 blocks; 8 event(s); neardata 11878 req, 3383 rate-limited
+[watch] mainnet stopped after 17405s; 8 event(s) reported
+stream watcher exited with code 0 after 17443s
