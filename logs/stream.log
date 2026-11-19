@@ -30,3 +30,4 @@
 [watch] mainnet at block 225,186,054 (head 225,186,459, lag 405); scanned 10837, skipped 10631 blocks; 4 event(s); neardata 13303 req, 2429 rate-limited
 [watch] mainnet at block 225,186,595 (head 225,188,637, lag 2042); scanned 11378, skipped 10631 blocks; 4 event(s); neardata 13957 req, 2540 rate-limited
 [watch] block 225,186,605  hos-outlayer.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,187,035 (head 225,188,637, lag 1602); scanned 11818, skipped 10631 blocks; 5 event(s); neardata 14505 req, 2649 rate-limited
