@@ -42,3 +42,7 @@
 [watch] mainnet block 225274977: HTTP 429; retry in 4s
 [watch] block 225,275,160  dacitycoin-3.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,275,326 (head 225,277,316, lag 1990); scanned 10566, skipped 10419 blocks; 11 event(s); neardata 13249 req, 2653 rate-limited
+[watch] mainnet at block 225,275,858 (head 225,277,316, lag 1458); scanned 11098, skipped 10419 blocks; 11 event(s); neardata 13882 req, 2755 rate-limited
+[watch] mainnet block 225275898: HTTP 429; retry in 4s
+[watch] mainnet block 225275899: HTTP 429; retry in 4s
+[watch] mainnet block 225275900: HTTP 429; retry in 4s
