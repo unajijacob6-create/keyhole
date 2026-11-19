@@ -1,3 +1,5 @@
 [watch] mainnet from block 225,254,341; watching (none); network-wide deploy feed on
 [watch] mainnet at block 225,254,612 (head 225,254,913, lag 301); scanned 271, skipped 0 blocks; 0 event(s); neardata 406 req, 125 rate-limited
 [watch] mainnet at block 225,254,895 (head 225,254,913, lag 18); scanned 554, skipped 0 blocks; 0 event(s); neardata 817 req, 252 rate-limited
+[watch] mainnet at block 225,255,163 (head 225,256,545, lag 1382); scanned 822, skipped 0 blocks; 0 event(s); neardata 1214 req, 380 rate-limited
+[watch] block 225,255,271  ogcj.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
