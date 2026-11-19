@@ -4,3 +4,5 @@
 [watch] mainnet at block 225,224,883 (head 225,226,221, lag 1338); scanned 548, skipped 0 blocks; 1 event(s); neardata 812 req, 251 rate-limited
 [watch] mainnet at block 225,225,173 (head 225,226,221, lag 1048); scanned 838, skipped 0 blocks; 1 event(s); neardata 1220 req, 370 rate-limited
 [watch] mainnet at block 225,225,443 (head 225,226,221, lag 778); scanned 1108, skipped 0 blocks; 1 event(s); neardata 1614 req, 493 rate-limited
+[watch] mainnet at block 225,225,730 (head 225,226,221, lag 491); scanned 1395, skipped 0 blocks; 1 event(s); neardata 2025 req, 617 rate-limited
+[watch] block 225,225,854  vetoken000012.vetoken-market.stg.ref-dev-team.near  UseGlobalContract (contract-receipt)
