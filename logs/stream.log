@@ -19,3 +19,5 @@
 [watch] mainnet at block 225,177,967 (head 225,179,695, lag 1728); scanned 7699, skipped 5682 blocks; 1 event(s); neardata 9396 req, 1672 rate-limited
 [watch] block 225,178,343  antinu.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,178,498 (head 225,179,695, lag 1197); scanned 8230, skipped 5682 blocks; 2 event(s); neardata 10032 req, 1776 rate-limited
+[watch] mainnet at block 225,178,819 (head 225,179,695, lag 876); scanned 8551, skipped 5682 blocks; 2 event(s); neardata 10471 req, 1894 rate-limited
+[watch] block 225,179,131  hunnid.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
