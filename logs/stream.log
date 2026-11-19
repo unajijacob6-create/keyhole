@@ -30,3 +30,5 @@
 [watch] block 225,297,645  ndckx.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 225,297,693  ndckx.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,297,811 (head 225,298,127, lag 316); scanned 6662, skipped 6777 blocks; 6 event(s); neardata 9367 req, 2683 rate-limited
+[watch] mainnet at block 225,298,088 (head 225,298,127, lag 39); scanned 6939, skipped 6777 blocks; 6 event(s); neardata 9776 req, 2815 rate-limited
+[watch] mainnet: 10265 blocks behind; skipping to head 225,308,393 (blocks 225298128–225308392 not scanned)
