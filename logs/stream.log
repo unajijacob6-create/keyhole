@@ -12,3 +12,6 @@
 [watch] mainnet at block 225,290,034 (head 225,290,039, lag 5); scanned 2650, skipped 3012 blocks; 0 event(s); neardata 3748 req, 1083 rate-limited
 [watch] block 225,290,037  iamyoungjohn-near-8ab99b9a8586.openrail.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 3765 blocks behind; skipping to head 225,293,805 (blocks 225290040–225293804 not scanned)
+[watch] mainnet at block 225,294,108 (head 225,294,263, lag 155); scanned 2959, skipped 6777 blocks; 1 event(s); neardata 4186 req, 1207 rate-limited
+[watch] block 225,294,180  dgmgg.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 225,294,226  dgmgg.bulkpayment.near  UseGlobalContract (contract-receipt)
