@@ -28,3 +28,5 @@
 [watch] block 225,185,355  dacity-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,185,574 (head 225,186,459, lag 885); scanned 10357, skipped 10631 blocks; 4 event(s); neardata 12714 req, 2320 rate-limited
 [watch] mainnet at block 225,186,054 (head 225,186,459, lag 405); scanned 10837, skipped 10631 blocks; 4 event(s); neardata 13303 req, 2429 rate-limited
+[watch] mainnet at block 225,186,595 (head 225,188,637, lag 2042); scanned 11378, skipped 10631 blocks; 4 event(s); neardata 13957 req, 2540 rate-limited
+[watch] block 225,186,605  hos-outlayer.sputnik-dao.near  UseGlobalContract (contract-receipt)
