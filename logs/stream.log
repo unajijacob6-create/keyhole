@@ -21,3 +21,4 @@
 [watch] mainnet block 225265396: HTTP 429; retry in 4s
 [watch] mainnet block 225265397: HTTP 429; retry in 4s
 [watch] mainnet block 225265398: HTTP 429; retry in 4s
+[watch] mainnet at block 225,265,626 (head 225,266,663, lag 1037); scanned 5993, skipped 5292 blocks; 4 event(s); neardata 7723 req, 1710 rate-limited
