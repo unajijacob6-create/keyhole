@@ -21,3 +21,5 @@
 [watch] mainnet at block 225,178,498 (head 225,179,695, lag 1197); scanned 8230, skipped 5682 blocks; 2 event(s); neardata 10032 req, 1776 rate-limited
 [watch] mainnet at block 225,178,819 (head 225,179,695, lag 876); scanned 8551, skipped 5682 blocks; 2 event(s); neardata 10471 req, 1894 rate-limited
 [watch] block 225,179,131  hunnid.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,179,292 (head 225,179,695, lag 403); scanned 9024, skipped 5682 blocks; 3 event(s); neardata 11050 req, 2001 rate-limited
+[watch] mainnet: 4949 blocks behind; skipping to head 225,184,645 (blocks 225179696–225184644 not scanned)
