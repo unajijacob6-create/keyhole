@@ -24,3 +24,5 @@
 [watch] mainnet at block 225,179,292 (head 225,179,695, lag 403); scanned 9024, skipped 5682 blocks; 3 event(s); neardata 11050 req, 2001 rate-limited
 [watch] mainnet: 4949 blocks behind; skipping to head 225,184,645 (blocks 225179696–225184644 not scanned)
 [watch] mainnet at block 225,184,762 (head 225,184,832, lag 70); scanned 9545, skipped 10631 blocks; 3 event(s); neardata 11680 req, 2101 rate-limited
+[watch] mainnet at block 225,185,160 (head 225,185,426, lag 266); scanned 9943, skipped 10631 blocks; 3 event(s); neardata 12194 req, 2214 rate-limited
+[watch] block 225,185,355  dacity-2.nearlytrade.near  UseGlobalContract (contract-receipt)
