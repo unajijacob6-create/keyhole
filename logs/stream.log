@@ -25,3 +25,4 @@
 [watch] block 225,238,939  80627e7f8256.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] block 225,238,962  53b29c860070.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,239,083 (head 225,241,323, lag 2240); scanned 4736, skipped 10012 blocks; 7 event(s); neardata 6870 req, 2111 rate-limited
+[watch] mainnet at block 225,239,375 (head 225,241,323, lag 1948); scanned 5028, skipped 10012 blocks; 7 event(s); neardata 7284 req, 2232 rate-limited
