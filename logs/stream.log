@@ -6,3 +6,6 @@
 [watch] mainnet at block 225,225,443 (head 225,226,221, lag 778); scanned 1108, skipped 0 blocks; 1 event(s); neardata 1614 req, 493 rate-limited
 [watch] mainnet at block 225,225,730 (head 225,226,221, lag 491); scanned 1395, skipped 0 blocks; 1 event(s); neardata 2025 req, 617 rate-limited
 [watch] block 225,225,854  vetoken000012.vetoken-market.stg.ref-dev-team.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,226,006 (head 225,226,221, lag 215); scanned 1671, skipped 0 blocks; 2 event(s); neardata 2430 req, 747 rate-limited
+[watch] block 225,226,139  d125f9ce30a721bcdd59a112c46c1d6b390e47e6.venear.dao  DeployContract (contract-receipt)  new code EV4eXN…
+[watch] mainnet: 5316 blocks behind; skipping to head 225,231,538 (blocks 225226222–225231537 not scanned)
