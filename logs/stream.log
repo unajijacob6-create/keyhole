@@ -16,3 +16,5 @@
 [watch] mainnet: 7672 blocks behind; skipping to head 225,204,575 (blocks 225196903–225204574 not scanned)
 [watch] mainnet at block 225,204,593 (head 225,204,594, lag 1); scanned 2898, skipped 7672 blocks; 0 event(s); neardata 4134 req, 1222 rate-limited
 [watch] mainnet at block 225,204,860 (head 225,205,025, lag 165); scanned 3165, skipped 7672 blocks; 0 event(s); neardata 4521 req, 1339 rate-limited
+[watch] mainnet at block 225,205,147 (head 225,206,321, lag 1174); scanned 3452, skipped 7672 blocks; 0 event(s); neardata 4934 req, 1465 rate-limited
+[watch] block 225,205,180  hatch.jollydragonroger.near  DeployContract (transaction)  new code BL3wzB…
