@@ -9,3 +9,4 @@
 [watch] mainnet at block 225,226,006 (head 225,226,221, lag 215); scanned 1671, skipped 0 blocks; 2 event(s); neardata 2430 req, 747 rate-limited
 [watch] block 225,226,139  d125f9ce30a721bcdd59a112c46c1d6b390e47e6.venear.dao  DeployContract (contract-receipt)  new code EV4eXN…
 [watch] mainnet: 5316 blocks behind; skipping to head 225,231,538 (blocks 225226222–225231537 not scanned)
+[watch] mainnet at block 225,231,603 (head 225,231,643, lag 40); scanned 1952, skipped 5316 blocks; 3 event(s); neardata 2834 req, 867 rate-limited
