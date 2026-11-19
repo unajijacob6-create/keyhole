@@ -11,3 +11,4 @@
 [watch] block 225,256,180  8h8tk.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,256,491 (head 225,256,545, lag 54); scanned 2150, skipped 0 blocks; 4 event(s); neardata 3016 req, 855 rate-limited
 [watch] mainnet: 5292 blocks behind; skipping to head 225,261,838 (blocks 225256546–225261837 not scanned)
+[watch] mainnet at block 225,262,251 (head 225,262,257, lag 6); scanned 2618, skipped 5292 blocks; 4 event(s); neardata 3593 req, 958 rate-limited
