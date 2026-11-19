@@ -37,3 +37,4 @@
 [watch] block 225,274,095  base-0xf628430260c07eeea7b6993cd6ee9ed8e84a95e0.stft.near  DeployContract (contract-receipt)  new code DMmMur…
 [watch] block 225,274,118  shield-3.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 225,274,339  shield-4.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,274,448 (head 225,274,551, lag 103); scanned 9688, skipped 10419 blocks; 10 event(s); neardata 12143 req, 2427 rate-limited
