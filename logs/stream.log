@@ -6,3 +6,6 @@
 [watch] mainnet at block 225,255,492 (head 225,256,545, lag 1053); scanned 1151, skipped 0 blocks; 1 event(s); neardata 1661 req, 498 rate-limited
 [watch] block 225,255,636  cj.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,255,792 (head 225,256,545, lag 753); scanned 1451, skipped 0 blocks; 2 event(s); neardata 2089 req, 627 rate-limited
+[watch] mainnet at block 225,256,091 (head 225,256,545, lag 454); scanned 1750, skipped 0 blocks; 2 event(s); neardata 2502 req, 740 rate-limited
+[watch] block 225,256,132  8h8tk.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 225,256,180  8h8tk.bulkpayment.near  UseGlobalContract (contract-receipt)
