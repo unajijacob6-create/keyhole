@@ -16,3 +16,5 @@
 [watch] mainnet at block 225,176,637 (head 225,177,338, lag 701); scanned 6369, skipped 5682 blocks; 1 event(s); neardata 7740 req, 1347 rate-limited
 [watch] mainnet at block 225,177,053 (head 225,177,338, lag 285); scanned 6785, skipped 5682 blocks; 1 event(s); neardata 8271 req, 1461 rate-limited
 [watch] mainnet at block 225,177,439 (head 225,179,695, lag 2256); scanned 7171, skipped 5682 blocks; 1 event(s); neardata 8765 req, 1568 rate-limited
+[watch] mainnet at block 225,177,967 (head 225,179,695, lag 1728); scanned 7699, skipped 5682 blocks; 1 event(s); neardata 9396 req, 1672 rate-limited
+[watch] block 225,178,343  antinu.v2-launchpad.justhoot.near  UseGlobalContract (contract-receipt)
