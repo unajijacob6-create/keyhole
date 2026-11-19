@@ -9,3 +9,5 @@
 [watch] mainnet at block 225,256,091 (head 225,256,545, lag 454); scanned 1750, skipped 0 blocks; 2 event(s); neardata 2502 req, 740 rate-limited
 [watch] block 225,256,132  8h8tk.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 225,256,180  8h8tk.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,256,491 (head 225,256,545, lag 54); scanned 2150, skipped 0 blocks; 4 event(s); neardata 3016 req, 855 rate-limited
+[watch] mainnet: 5292 blocks behind; skipping to head 225,261,838 (blocks 225256546–225261837 not scanned)
