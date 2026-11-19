@@ -38,3 +38,6 @@
 [watch] block 225,274,118  shield-3.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] block 225,274,339  shield-4.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,274,448 (head 225,274,551, lag 103); scanned 9688, skipped 10419 blocks; 10 event(s); neardata 12143 req, 2427 rate-limited
+[watch] mainnet at block 225,274,927 (head 225,277,316, lag 2389); scanned 10167, skipped 10419 blocks; 10 event(s); neardata 12736 req, 2539 rate-limited
+[watch] mainnet block 225274977: HTTP 429; retry in 4s
+[watch] block 225,275,160  dacitycoin-3.nearlytrade.near  UseGlobalContract (contract-receipt)
