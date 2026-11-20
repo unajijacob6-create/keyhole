@@ -49,3 +49,7 @@
 [watch] mainnet at block 225,456,341 (head 225,456,347, lag 6); scanned 7357, skipped 15672 blocks; 3 event(s); neardata 10554 req, 3164 rate-limited
 [watch] mainnet: 3756 blocks behind; skipping to head 225,460,104 (blocks 225456348–225460103 not scanned)
 [watch] mainnet at block 225,460,358 (head 225,460,543, lag 185); scanned 7618, skipped 19428 blocks; 3 event(s); neardata 10933 req, 3279 rate-limited
+[watch] mainnet at block 225,460,644 (head 225,461,842, lag 1198); scanned 7904, skipped 19428 blocks; 3 event(s); neardata 11343 req, 3401 rate-limited
+[watch] block 225,460,728  arb.funsie.near  DeployContract (transaction)  new code 4S5YX2…
+[watch] mainnet stopped after 17401s; 4 event(s) reported
+stream watcher exited with code 0 after 17448s
