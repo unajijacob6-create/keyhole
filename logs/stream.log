@@ -13,3 +13,11 @@
 [watch] mainnet at block 225,440,583 (head 225,440,627, lag 44); scanned 2795, skipped 4476 blocks; 1 event(s); neardata 4046 req, 1235 rate-limited
 [watch] mainnet: 3114 blocks behind; skipping to head 225,443,742 (blocks 225440628–225443741 not scanned)
 [watch] mainnet at block 225,443,969 (head 225,444,153, lag 184); scanned 3067, skipped 7590 blocks; 1 event(s); neardata 4445 req, 1358 rate-limited
+[watch] block 225,444,253  junior.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,444,259 (head 225,445,279, lag 1020); scanned 3357, skipped 7590 blocks; 2 event(s); neardata 4854 req, 1475 rate-limited
+[watch] mainnet block 225444345: HTTP 429; retry in 4s
+[watch] mainnet block 225444346: HTTP 429; retry in 4s
+[watch] mainnet block 225444347: HTTP 429; retry in 4s
+[watch] mainnet block 225444393: HTTP 429; retry in 4s
+[watch] mainnet block 225444394: HTTP 429; retry in 4s
+[watch] mainnet block 225444395: HTTP 429; retry in 4s
