@@ -14,3 +14,5 @@
 [watch] block 225,412,318  rhea001633.multica.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,412,414 (head 225,414,122, lag 1708); scanned 5478, skipped 3893 blocks; 1 event(s); neardata 6830 req, 1324 rate-limited
 [watch] block 225,412,784  cruce.wx-cruce.near  DeployContract (transaction)  new code 54M626…
+[watch] block 225,412,919  rhea001634.multica.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,412,921 (head 225,414,122, lag 1201); scanned 5985, skipped 3893 blocks; 3 event(s); neardata 7435 req, 1422 rate-limited
