@@ -24,3 +24,4 @@
 [watch] mainnet at block 225,419,773 (head 225,419,773, lag 0); scanned 7968, skipped 8762 blocks; 4 event(s); neardata 9840 req, 1837 rate-limited
 [watch] mainnet at block 225,420,307 (head 225,420,752, lag 445); scanned 8502, skipped 8762 blocks; 4 event(s); neardata 10475 req, 1937 rate-limited
 [watch] block 225,420,335  cruce.wx-cruce.near  DeployContract (transaction)  new code As8D37…
+[watch] mainnet at block 225,420,693 (head 225,420,752, lag 59); scanned 8888, skipped 8762 blocks; 5 event(s); neardata 10977 req, 2053 rate-limited
