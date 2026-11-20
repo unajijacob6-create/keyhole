@@ -10,3 +10,5 @@
 [watch] block 225,439,795  vault.house.maskwars.near  DeployContract (transaction)  new code GBcgJ4…
 [watch] mainnet at block 225,440,025 (head 225,440,627, lag 602); scanned 2237, skipped 4476 blocks; 1 event(s); neardata 3235 req, 982 rate-limited
 [watch] mainnet at block 225,440,302 (head 225,440,627, lag 325); scanned 2514, skipped 4476 blocks; 1 event(s); neardata 3638 req, 1108 rate-limited
+[watch] mainnet at block 225,440,583 (head 225,440,627, lag 44); scanned 2795, skipped 4476 blocks; 1 event(s); neardata 4046 req, 1235 rate-limited
+[watch] mainnet: 3114 blocks behind; skipping to head 225,443,742 (blocks 225440628–225443741 not scanned)
