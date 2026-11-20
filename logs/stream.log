@@ -27,3 +27,4 @@
 [watch] mainnet at block 225,420,693 (head 225,420,752, lag 59); scanned 8888, skipped 8762 blocks; 5 event(s); neardata 10977 req, 2053 rate-limited
 [watch] mainnet at block 225,421,218 (head 225,422,940, lag 1722); scanned 9413, skipped 8762 blocks; 5 event(s); neardata 11607 req, 2157 rate-limited
 [watch] block 225,421,521  cruce.wx-cruce.near  DeployContract (transaction)  new code 95j2RP…
+[watch] mainnet at block 225,421,679 (head 225,422,940, lag 1261); scanned 9874, skipped 8762 blocks; 6 event(s); neardata 12177 req, 2266 rate-limited
