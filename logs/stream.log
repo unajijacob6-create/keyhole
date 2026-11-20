@@ -2,3 +2,5 @@
 [watch] mainnet at block 225,372,886 (head 225,373,229, lag 343); scanned 290, skipped 0 blocks; 0 event(s); neardata 408 req, 107 rate-limited
 [watch] mainnet at block 225,373,151 (head 225,373,229, lag 78); scanned 555, skipped 0 blocks; 0 event(s); neardata 803 req, 237 rate-limited
 [watch] mainnet at block 225,373,417 (head 225,374,991, lag 1574); scanned 821, skipped 0 blocks; 0 event(s); neardata 1195 req, 362 rate-limited
+[watch] mainnet at block 225,373,689 (head 225,374,991, lag 1302); scanned 1093, skipped 0 blocks; 0 event(s); neardata 1598 req, 493 rate-limited
+[watch] block 225,373,921  users.sickyam7186.near  DeployContract (transaction)  new code 5W1oBt…
