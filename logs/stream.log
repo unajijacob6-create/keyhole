@@ -36,3 +36,7 @@
 [watch] mainnet at block 225,428,826 (head 225,429,305, lag 479); scanned 12439, skipped 13344 blocks; 6 event(s); neardata 15262 req, 2776 rate-limited
 [watch] mainnet at block 225,429,351 (head 225,431,115, lag 1764); scanned 12964, skipped 13344 blocks; 6 event(s); neardata 15896 req, 2884 rate-limited
 [watch] block 225,429,605  givemymoney.near  DeployContract (transaction)  new code AwLEfg…
+[watch] mainnet at block 225,429,836 (head 225,431,115, lag 1279); scanned 13449, skipped 13344 blocks; 7 event(s); neardata 16487 req, 2990 rate-limited
+[watch] block 225,430,164  3sz1rphewem8a1r3kst5ax5ss6aw3fhf.craft.tg  UseGlobalContract (contract-receipt)
+[watch] mainnet stopped after 17407s; 8 event(s) reported
+stream watcher exited with code 0 after 17446s
