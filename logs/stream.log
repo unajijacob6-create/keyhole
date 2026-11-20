@@ -14,3 +14,5 @@
 [watch] mainnet at block 225,382,372 (head 225,383,073, lag 701); scanned 3051, skipped 6725 blocks; 1 event(s); neardata 4395 req, 1326 rate-limited
 [watch] mainnet at block 225,382,642 (head 225,383,073, lag 431); scanned 3321, skipped 6725 blocks; 1 event(s); neardata 4796 req, 1457 rate-limited
 [watch] block 225,382,854  raen_trade.near  DeployContract (transaction)  new code 3T9sH9…
+[watch] mainnet at block 225,382,920 (head 225,383,073, lag 153); scanned 3599, skipped 6725 blocks; 2 event(s); neardata 5192 req, 1575 rate-limited
+[watch] mainnet: 3754 blocks behind; skipping to head 225,386,828 (blocks 225383074–225386827 not scanned)
