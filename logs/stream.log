@@ -2,3 +2,4 @@
 [watch] block 225,614,883  rhn6k.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 225,614,931  rhn6k.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,615,013 (head 225,615,206, lag 193); scanned 274, skipped 0 blocks; 2 event(s); neardata 407 req, 122 rate-limited
+[watch] mainnet at block 225,615,285 (head 225,616,560, lag 1275); scanned 546, skipped 0 blocks; 2 event(s); neardata 805 req, 248 rate-limited
