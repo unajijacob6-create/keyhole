@@ -13,3 +13,5 @@
 [watch] mainnet at block 225,471,092 (head 225,471,748, lag 656); scanned 2760, skipped 5252 blocks; 1 event(s); neardata 4041 req, 1264 rate-limited
 [watch] mainnet at block 225,471,366 (head 225,471,748, lag 382); scanned 3034, skipped 5252 blocks; 1 event(s); neardata 4442 req, 1390 rate-limited
 [watch] block 225,471,466  chrome.retr0x.near  UseGlobalContract (transaction)
+[watch] mainnet at block 225,471,652 (head 225,471,748, lag 96); scanned 3320, skipped 5252 blocks; 2 event(s); neardata 4856 req, 1518 rate-limited
+[watch] mainnet: 4294 blocks behind; skipping to head 225,476,043 (blocks 225471749–225476042 not scanned)
