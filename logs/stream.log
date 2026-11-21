@@ -19,3 +19,5 @@
 [watch] mainnet at block 225,537,575 (head 225,538,121, lag 546); scanned 4425, skipped 9361 blocks; 0 event(s); neardata 6429 req, 1982 rate-limited
 [watch] mainnet at block 225,537,852 (head 225,538,121, lag 269); scanned 4702, skipped 9361 blocks; 0 event(s); neardata 6833 req, 2110 rate-limited
 [watch] block 225,537,862  dex.intear.near  DeployContract (transaction)  new code H9kEDU…
+[watch] mainnet: 4624 blocks behind; skipping to head 225,542,746 (blocks 225538122–225542745 not scanned)
+[watch] mainnet at block 225,542,747 (head 225,542,764, lag 17); scanned 4973, skipped 13985 blocks; 1 event(s); neardata 7227 req, 2231 rate-limited
