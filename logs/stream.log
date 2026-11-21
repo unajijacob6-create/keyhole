@@ -10,3 +10,6 @@
 [watch] mainnet at block 225,591,406 (head 225,592,429, lag 1023); scanned 2203, skipped 4428 blocks; 0 event(s); neardata 3220 req, 1001 rate-limited
 [watch] mainnet at block 225,591,695 (head 225,592,429, lag 734); scanned 2492, skipped 4428 blocks; 0 event(s); neardata 3631 req, 1123 rate-limited
 [watch] mainnet at block 225,591,965 (head 225,592,429, lag 464); scanned 2762, skipped 4428 blocks; 0 event(s); neardata 4027 req, 1248 rate-limited
+[watch] mainnet at block 225,592,236 (head 225,592,429, lag 193); scanned 3033, skipped 4428 blocks; 0 event(s); neardata 4418 req, 1369 rate-limited
+[watch] block 225,592,358  x036wr006xhsxkmzp8733rwwcbe4ycw4.craft.tg  UseGlobalContract (contract-receipt)
+[watch] mainnet: 4349 blocks behind; skipping to head 225,596,779 (blocks 225592430–225596778 not scanned)
