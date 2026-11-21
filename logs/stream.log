@@ -1,3 +1,4 @@
 [watch] mainnet from block 225,614,739; watching (none); network-wide deploy feed on
 [watch] block 225,614,883  rhn6k.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 225,614,931  rhn6k.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,615,013 (head 225,615,206, lag 193); scanned 274, skipped 0 blocks; 2 event(s); neardata 407 req, 122 rate-limited
