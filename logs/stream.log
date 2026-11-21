@@ -7,3 +7,4 @@
 [watch] mainnet at block 225,494,724 (head 225,494,892, lag 168); scanned 1391, skipped 0 blocks; 1 event(s); neardata 2019 req, 617 rate-limited
 [watch] block 225,494,821  pentest-b202611211057.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 4309 blocks behind; skipping to head 225,499,202 (blocks 225494893–225499201 not scanned)
+[watch] mainnet at block 225,499,312 (head 225,499,579, lag 267); scanned 1670, skipped 4309 blocks; 2 event(s); neardata 2421 req, 734 rate-limited
