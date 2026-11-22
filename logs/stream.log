@@ -31,3 +31,7 @@
 [watch] mainnet at block 225,671,658 (head 225,671,670, lag 12); scanned 6887, skipped 19434 blocks; 0 event(s); neardata 9952 req, 3034 rate-limited
 [watch] mainnet at block 225,671,943 (head 225,672,074, lag 131); scanned 7172, skipped 19434 blocks; 0 event(s); neardata 10354 req, 3147 rate-limited
 [watch] mainnet at block 225,672,213 (head 225,673,299, lag 1086); scanned 7442, skipped 19434 blocks; 0 event(s); neardata 10744 req, 3268 rate-limited
+[watch] mainnet at block 225,672,508 (head 225,673,299, lag 791); scanned 7737, skipped 19434 blocks; 0 event(s); neardata 11156 req, 3385 rate-limited
+[watch] block 225,672,558  qtpj4ww00mbavvd4tp3n5hr73crhw813.craft.tg  UseGlobalContract (contract-receipt)
+[watch] mainnet stopped after 17402s; 1 event(s) reported
+stream watcher exited with code 0 after 17435s
