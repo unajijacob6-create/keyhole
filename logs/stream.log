@@ -1,3 +1,4 @@
 [watch] mainnet from block 225,766,533; watching (none); network-wide deploy feed on
 [watch] block 225,766,747  mpdao-vote.near  DeployContract (transaction)  new code F1Xe6P…
 [watch] mainnet at block 225,766,810 (head 225,767,181, lag 371); scanned 277, skipped 0 blocks; 1 event(s); neardata 404 req, 117 rate-limited
+[watch] mainnet at block 225,767,081 (head 225,767,181, lag 100); scanned 548, skipped 0 blocks; 1 event(s); neardata 802 req, 243 rate-limited
