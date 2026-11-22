@@ -33,3 +33,6 @@
 [watch] block 225,641,881  lontra-2.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,641,948 (head 225,642,204, lag 256); scanned 7183, skipped 20026 blocks; 3 event(s); neardata 10449 req, 3233 rate-limited
 [watch] mainnet at block 225,642,219 (head 225,643,287, lag 1068); scanned 7454, skipped 20026 blocks; 3 event(s); neardata 10846 req, 3358 rate-limited
+[watch] mainnet at block 225,642,507 (head 225,643,287, lag 780); scanned 7742, skipped 20026 blocks; 3 event(s); neardata 11253 req, 3477 rate-limited
+[watch] mainnet stopped after 17402s; 3 event(s) reported
+stream watcher exited with code 0 after 17443s
