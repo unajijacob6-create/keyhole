@@ -25,3 +25,6 @@
 [watch] mainnet at block 225,696,127 (head 225,696,934, lag 807); scanned 6147, skipped 14103 blocks; 0 event(s); neardata 8875 req, 2706 rate-limited
 [watch] mainnet at block 225,696,401 (head 225,696,934, lag 533); scanned 6421, skipped 14103 blocks; 0 event(s); neardata 9279 req, 2837 rate-limited
 [watch] mainnet at block 225,696,682 (head 225,696,934, lag 252); scanned 6702, skipped 14103 blocks; 0 event(s); neardata 9682 req, 2959 rate-limited
+[watch] mainnet: 5192 blocks behind; skipping to head 225,702,127 (blocks 225696935–225702126 not scanned)
+[watch] mainnet at block 225,702,145 (head 225,702,206, lag 61); scanned 6973, skipped 19295 blocks; 0 event(s); neardata 10087 req, 3089 rate-limited
+[watch] block 225,702,305  9c6cc1c2b6a121fc447af8fe5e8064faed97f1dbb52893f98d406f43bdc62d0d  DeployContract (transaction)  new code Hwkwbx…
