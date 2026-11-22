@@ -31,3 +31,4 @@
 [watch] mainnet at block 225,636,764 (head 225,636,932, lag 168); scanned 6907, skipped 15118 blocks; 2 event(s); neardata 10045 req, 3109 rate-limited
 [watch] mainnet: 4908 blocks behind; skipping to head 225,641,841 (blocks 225636933–225641840 not scanned)
 [watch] block 225,641,881  lontra-2.nearlytrade.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,641,948 (head 225,642,204, lag 256); scanned 7183, skipped 20026 blocks; 3 event(s); neardata 10449 req, 3233 rate-limited
