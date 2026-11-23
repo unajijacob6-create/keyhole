@@ -7,3 +7,5 @@
 [watch] block 225,919,140  zzmvf.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 225,919,186  zzmvf.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,919,411 (head 225,919,725, lag 314); scanned 1362, skipped 0 blocks; 2 event(s); neardata 2000 req, 625 rate-limited
+[watch] mainnet at block 225,919,709 (head 225,919,725, lag 16); scanned 1660, skipped 0 blocks; 2 event(s); neardata 2410 req, 738 rate-limited
+[watch] mainnet: 4672 blocks behind; skipping to head 225,924,398 (blocks 225919726–225924397 not scanned)
