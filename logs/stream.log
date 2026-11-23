@@ -1,3 +1,4 @@
 [watch] mainnet from block 225,797,007; watching (none); network-wide deploy feed on
 [watch] block 225,797,182  p3wecejmeyn1r3dp48795q9gbc7rtxp2.craft.tg  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,797,279 (head 225,797,637, lag 358); scanned 272, skipped 0 blocks; 1 event(s); neardata 403 req, 120 rate-limited
+[watch] mainnet at block 225,797,566 (head 225,797,637, lag 71); scanned 559, skipped 0 blocks; 1 event(s); neardata 813 req, 242 rate-limited
