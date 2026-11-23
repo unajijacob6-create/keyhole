@@ -21,3 +21,4 @@
 [watch] mainnet at block 225,838,740 (head 225,838,794, lag 54); scanned 4453, skipped 7352 blocks; 3 event(s); neardata 6453 req, 1984 rate-limited
 [watch] block 225,838,764  rhea001638.multica.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 5333 blocks behind; skipping to head 225,844,128 (blocks 225838795–225844127 not scanned)
+[watch] mainnet at block 225,844,347 (head 225,844,572, lag 225); scanned 4727, skipped 12685 blocks; 4 event(s); neardata 6852 req, 2104 rate-limited
