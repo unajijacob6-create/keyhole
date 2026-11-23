@@ -2,3 +2,4 @@
 [watch] mainnet: head refresh failed (HTTP 429); keeping 225857583
 [watch] block 225,857,772  rk5qr.sputnik-dao.near  UseGlobalContract (contract-receipt)
 [watch] block 225,857,820  rk5qr.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,857,831 (head 225,858,036, lag 205); scanned 263, skipped 0 blocks; 2 event(s); neardata 385 req, 112 rate-limited
