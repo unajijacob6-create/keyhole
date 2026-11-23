@@ -1,39 +1,4 @@
-[watch] mainnet from block 225,826,935; watching (none); network-wide deploy feed on
-[watch] mainnet at block 225,827,223 (head 225,827,644, lag 421); scanned 288, skipped 0 blocks; 0 event(s); neardata 410 req, 111 rate-limited
-[watch] mainnet at block 225,827,518 (head 225,827,644, lag 126); scanned 583, skipped 0 blocks; 0 event(s); neardata 819 req, 226 rate-limited
-[watch] block 225,827,648  1377kn13h7mjmhtm12pcfzjmynw5ax4msp8d7g4wgscg.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
-[watch] mainnet at block 225,827,783 (head 225,829,578, lag 1795); scanned 848, skipped 0 blocks; 1 event(s); neardata 1215 req, 355 rate-limited
-[watch] mainnet at block 225,828,056 (head 225,829,578, lag 1522); scanned 1121, skipped 0 blocks; 1 event(s); neardata 1609 req, 476 rate-limited
-[watch] mainnet at block 225,828,346 (head 225,829,578, lag 1232); scanned 1411, skipped 0 blocks; 1 event(s); neardata 2020 req, 597 rate-limited
-[watch] mainnet at block 225,828,618 (head 225,829,578, lag 960); scanned 1683, skipped 0 blocks; 1 event(s); neardata 2424 req, 730 rate-limited
-[watch] mainnet at block 225,828,902 (head 225,829,578, lag 676); scanned 1967, skipped 0 blocks; 1 event(s); neardata 2831 req, 853 rate-limited
-[watch] block 225,829,119  rhea000081.ma.private-mainnet.ref-dev-team.near  UseGlobalContract (contract-receipt)
-[watch] block 225,829,161  hpr95kjdgvzvaj1n8t83b165x0yg3hkz.craft.tg  UseGlobalContract (contract-receipt)
-[watch] mainnet at block 225,829,179 (head 225,829,578, lag 399); scanned 2244, skipped 0 blocks; 3 event(s); neardata 3237 req, 982 rate-limited
-[watch] mainnet at block 225,829,461 (head 225,829,578, lag 117); scanned 2526, skipped 0 blocks; 3 event(s); neardata 3641 req, 1104 rate-limited
-[watch] mainnet: 7352 blocks behind; skipping to head 225,836,931 (blocks 225829579–225836930 not scanned)
-[watch] mainnet at block 225,837,080 (head 225,837,395, lag 315); scanned 2793, skipped 7352 blocks; 3 event(s); neardata 4037 req, 1229 rate-limited
-[watch] mainnet at block 225,837,353 (head 225,837,395, lag 42); scanned 3066, skipped 7352 blocks; 3 event(s); neardata 4437 req, 1355 rate-limited
-[watch] mainnet at block 225,837,638 (head 225,838,794, lag 1156); scanned 3351, skipped 7352 blocks; 3 event(s); neardata 4844 req, 1476 rate-limited
-[watch] mainnet at block 225,837,912 (head 225,838,794, lag 882); scanned 3625, skipped 7352 blocks; 3 event(s); neardata 5248 req, 1607 rate-limited
-[watch] mainnet at block 225,838,191 (head 225,838,794, lag 603); scanned 3904, skipped 7352 blocks; 3 event(s); neardata 5650 req, 1730 rate-limited
-[watch] mainnet at block 225,838,471 (head 225,838,794, lag 323); scanned 4184, skipped 7352 blocks; 3 event(s); neardata 6052 req, 1851 rate-limited
-[watch] mainnet at block 225,838,740 (head 225,838,794, lag 54); scanned 4453, skipped 7352 blocks; 3 event(s); neardata 6453 req, 1984 rate-limited
-[watch] block 225,838,764  rhea001638.multica.near  UseGlobalContract (contract-receipt)
-[watch] mainnet: 5333 blocks behind; skipping to head 225,844,128 (blocks 225838795–225844127 not scanned)
-[watch] mainnet at block 225,844,347 (head 225,844,572, lag 225); scanned 4727, skipped 12685 blocks; 4 event(s); neardata 6852 req, 2104 rate-limited
-[watch] mainnet at block 225,844,619 (head 225,845,853, lag 1234); scanned 4999, skipped 12685 blocks; 4 event(s); neardata 7250 req, 2229 rate-limited
-[watch] mainnet at block 225,844,895 (head 225,845,853, lag 958); scanned 5275, skipped 12685 blocks; 4 event(s); neardata 7649 req, 2352 rate-limited
-[watch] mainnet at block 225,845,181 (head 225,845,853, lag 672); scanned 5561, skipped 12685 blocks; 4 event(s); neardata 8062 req, 2480 rate-limited
-[watch] mainnet at block 225,845,450 (head 225,845,853, lag 403); scanned 5830, skipped 12685 blocks; 4 event(s); neardata 8457 req, 2605 rate-limited
-[watch] mainnet at block 225,845,725 (head 225,845,853, lag 128); scanned 6105, skipped 12685 blocks; 4 event(s); neardata 8854 req, 2728 rate-limited
-[watch] mainnet: 4895 blocks behind; skipping to head 225,850,749 (blocks 225845854–225850748 not scanned)
-[watch] mainnet at block 225,850,899 (head 225,851,157, lag 258); scanned 6384, skipped 17580 blocks; 4 event(s); neardata 9255 req, 2844 rate-limited
-[watch] mainnet at block 225,851,163 (head 225,852,355, lag 1192); scanned 6648, skipped 17580 blocks; 4 event(s); neardata 9648 req, 2973 rate-limited
-[watch] mainnet at block 225,851,438 (head 225,852,355, lag 917); scanned 6923, skipped 17580 blocks; 4 event(s); neardata 10045 req, 3094 rate-limited
-[watch] mainnet at block 225,851,726 (head 225,852,355, lag 629); scanned 7211, skipped 17580 blocks; 4 event(s); neardata 10458 req, 3220 rate-limited
-[watch] mainnet at block 225,851,997 (head 225,852,355, lag 358); scanned 7482, skipped 17580 blocks; 4 event(s); neardata 10862 req, 3353 rate-limited
-[watch] mainnet at block 225,852,283 (head 225,852,355, lag 72); scanned 7768, skipped 17580 blocks; 4 event(s); neardata 11268 req, 3472 rate-limited
-[watch] mainnet: 4538 blocks behind; skipping to head 225,856,894 (blocks 225852356–225856893 not scanned)
-[watch] mainnet stopped after 17402s; 4 event(s) reported
-stream watcher exited with code 0 after 17451s
+[watch] mainnet from block 225,857,568; watching (none); network-wide deploy feed on
+[watch] mainnet: head refresh failed (HTTP 429); keeping 225857583
+[watch] block 225,857,772  rk5qr.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 225,857,820  rk5qr.bulkpayment.near  UseGlobalContract (contract-receipt)
