@@ -6,3 +6,6 @@
 [watch] mainnet at block 225,828,056 (head 225,829,578, lag 1522); scanned 1121, skipped 0 blocks; 1 event(s); neardata 1609 req, 476 rate-limited
 [watch] mainnet at block 225,828,346 (head 225,829,578, lag 1232); scanned 1411, skipped 0 blocks; 1 event(s); neardata 2020 req, 597 rate-limited
 [watch] mainnet at block 225,828,618 (head 225,829,578, lag 960); scanned 1683, skipped 0 blocks; 1 event(s); neardata 2424 req, 730 rate-limited
+[watch] mainnet at block 225,828,902 (head 225,829,578, lag 676); scanned 1967, skipped 0 blocks; 1 event(s); neardata 2831 req, 853 rate-limited
+[watch] block 225,829,119  rhea000081.ma.private-mainnet.ref-dev-team.near  UseGlobalContract (contract-receipt)
+[watch] block 225,829,161  hpr95kjdgvzvaj1n8t83b165x0yg3hkz.craft.tg  UseGlobalContract (contract-receipt)
