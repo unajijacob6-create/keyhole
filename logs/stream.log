@@ -29,3 +29,4 @@
 [watch] mainnet at block 225,906,875 (head 225,906,884, lag 9); scanned 6345, skipped 12826 blocks; 1 event(s); neardata 9142 req, 2766 rate-limited
 [watch] mainnet: 4883 blocks behind; skipping to head 225,911,768 (blocks 225906885–225911767 not scanned)
 [watch] mainnet at block 225,912,013 (head 225,912,236, lag 223); scanned 6600, skipped 17709 blocks; 1 event(s); neardata 9519 req, 2882 rate-limited
+[watch] mainnet at block 225,912,278 (head 225,913,684, lag 1406); scanned 6865, skipped 17709 blocks; 1 event(s); neardata 9913 req, 3010 rate-limited
