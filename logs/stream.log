@@ -1,2 +1,4 @@
 [watch] mainnet from block 225,826,935; watching (none); network-wide deploy feed on
 [watch] mainnet at block 225,827,223 (head 225,827,644, lag 421); scanned 288, skipped 0 blocks; 0 event(s); neardata 410 req, 111 rate-limited
+[watch] mainnet at block 225,827,518 (head 225,827,644, lag 126); scanned 583, skipped 0 blocks; 0 event(s); neardata 819 req, 226 rate-limited
+[watch] block 225,827,648  1377kn13h7mjmhtm12pcfzjmynw5ax4msp8d7g4wgscg.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
