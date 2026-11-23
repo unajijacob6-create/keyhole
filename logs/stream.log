@@ -10,3 +10,5 @@
 [watch] block 225,829,119  rhea000081.ma.private-mainnet.ref-dev-team.near  UseGlobalContract (contract-receipt)
 [watch] block 225,829,161  hpr95kjdgvzvaj1n8t83b165x0yg3hkz.craft.tg  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,829,179 (head 225,829,578, lag 399); scanned 2244, skipped 0 blocks; 3 event(s); neardata 3237 req, 982 rate-limited
+[watch] mainnet at block 225,829,461 (head 225,829,578, lag 117); scanned 2526, skipped 0 blocks; 3 event(s); neardata 3641 req, 1104 rate-limited
+[watch] mainnet: 7352 blocks behind; skipping to head 225,836,931 (blocks 225829579–225836930 not scanned)
