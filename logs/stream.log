@@ -27,3 +27,5 @@
 [watch] mainnet at block 225,820,300 (head 225,820,611, lag 311); scanned 6415, skipped 16878 blocks; 1 event(s); neardata 9281 req, 2843 rate-limited
 [watch] mainnet at block 225,820,571 (head 225,820,611, lag 40); scanned 6686, skipped 16878 blocks; 1 event(s); neardata 9671 req, 2962 rate-limited
 [watch] mainnet at block 225,820,844 (head 225,821,921, lag 1077); scanned 6959, skipped 16878 blocks; 1 event(s); neardata 10065 req, 3082 rate-limited
+[watch] mainnet at block 225,821,126 (head 225,821,921, lag 795); scanned 7241, skipped 16878 blocks; 1 event(s); neardata 10472 req, 3208 rate-limited
+[watch] block 225,821,292  via-trading.near  DeployContract (transaction)  new code Bnea2P…
