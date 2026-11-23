@@ -30,3 +30,6 @@
 [watch] mainnet at block 225,821,126 (head 225,821,921, lag 795); scanned 7241, skipped 16878 blocks; 1 event(s); neardata 10472 req, 3208 rate-limited
 [watch] block 225,821,292  via-trading.near  DeployContract (transaction)  new code Bnea2P…
 [watch] mainnet at block 225,821,394 (head 225,821,921, lag 527); scanned 7509, skipped 16878 blocks; 2 event(s); neardata 10873 req, 3341 rate-limited
+[watch] mainnet at block 225,821,682 (head 225,821,921, lag 239); scanned 7797, skipped 16878 blocks; 2 event(s); neardata 11287 req, 3467 rate-limited
+[watch] mainnet stopped after 17400s; 2 event(s) reported
+stream watcher exited with code 0 after 17443s
