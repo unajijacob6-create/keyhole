@@ -13,3 +13,4 @@
 [watch] mainnet: 5176 blocks behind; skipping to head 225,864,577 (blocks 225859401–225864576 not scanned)
 [watch] block 225,864,592  implicit_ecb99f39364bd2f15a93eb2a.auth.peerfolio.near  UseGlobalContract (transaction)
 [watch] mainnet at block 225,864,670 (head 225,864,681, lag 11); scanned 1926, skipped 5176 blocks; 5 event(s); neardata 2800 req, 860 rate-limited
+[watch] mainnet at block 225,864,938 (head 225,865,019, lag 81); scanned 2194, skipped 5176 blocks; 5 event(s); neardata 3200 req, 992 rate-limited
