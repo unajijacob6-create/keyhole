@@ -8,3 +8,7 @@
 [watch] mainnet at block 225,858,673 (head 225,859,400, lag 727); scanned 1105, skipped 0 blocks; 2 event(s); neardata 1606 req, 491 rate-limited
 [watch] mainnet at block 225,858,942 (head 225,859,400, lag 458); scanned 1374, skipped 0 blocks; 2 event(s); neardata 2000 req, 615 rate-limited
 [watch] block 225,859,174  x68x9.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,859,218 (head 225,859,400, lag 182); scanned 1650, skipped 0 blocks; 3 event(s); neardata 2399 req, 739 rate-limited
+[watch] block 225,859,225  x68x9.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 5176 blocks behind; skipping to head 225,864,577 (blocks 225859401–225864576 not scanned)
+[watch] block 225,864,592  implicit_ecb99f39364bd2f15a93eb2a.auth.peerfolio.near  UseGlobalContract (transaction)
