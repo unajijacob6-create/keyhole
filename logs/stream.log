@@ -36,3 +36,4 @@
 [watch] mainnet: 4780 blocks behind; skipping to head 226,001,775 (blocks 225996995–226001774 not scanned)
 [watch] mainnet at block 226,001,826 (head 226,001,879, lag 53); scanned 6402, skipped 17456 blocks; 6 event(s); neardata 9257 req, 2824 rate-limited
 [watch] block 226,002,023  b837a12213fe2dd566880949e210724ed026009f.lockup.near  DeployContract (contract-receipt)  new code 3skHaU…
+[watch] mainnet at block 226,002,094 (head 226,002,218, lag 124); scanned 6670, skipped 17456 blocks; 7 event(s); neardata 9651 req, 2948 rate-limited
