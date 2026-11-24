@@ -9,3 +9,7 @@
 [watch] mainnet at block 226,011,142 (head 226,011,840, lag 698); scanned 1881, skipped 0 blocks; 2 event(s); neardata 2576 req, 681 rate-limited
 [watch] block 226,011,194  b63ac8a9ee19.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,011,433 (head 226,011,840, lag 407); scanned 2172, skipped 0 blocks; 3 event(s); neardata 2990 req, 805 rate-limited
+[watch] mainnet at block 226,011,705 (head 226,011,840, lag 135); scanned 2444, skipped 0 blocks; 3 event(s); neardata 3391 req, 934 rate-limited
+[watch] block 226,011,837  161c64378a53.user0.tmplr.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: 5980 blocks behind; skipping to head 226,017,821 (blocks 226011841–226017820 not scanned)
+[watch] block 226,017,923  id_000092.ma.private-mainnet.ref-dev-team.near  UseGlobalContract (contract-receipt)
