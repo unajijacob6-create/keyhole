@@ -19,3 +19,6 @@
 [watch] mainnet at block 225,985,756 (head 225,985,904, lag 148); scanned 3116, skipped 4672 blocks; 3 event(s); neardata 4480 req, 1347 rate-limited
 [watch] mainnet: 4025 blocks behind; skipping to head 225,989,930 (blocks 225985905–225989929 not scanned)
 [watch] mainnet at block 225,990,041 (head 225,990,293, lag 252); scanned 3376, skipped 8697 blocks; 3 event(s); neardata 4859 req, 1462 rate-limited
+[watch] mainnet at block 225,990,316 (head 225,991,351, lag 1035); scanned 3651, skipped 8697 blocks; 3 event(s); neardata 5259 req, 1586 rate-limited
+[watch] block 225,990,534  2zzb3.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 225,990,582  2zzb3.bulkpayment.near  UseGlobalContract (contract-receipt)
