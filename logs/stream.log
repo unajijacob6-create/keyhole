@@ -31,3 +31,4 @@
 [watch] mainnet at block 225,972,668 (head 225,972,860, lag 192); scanned 6603, skipped 17651 blocks; 1 event(s); neardata 9589 req, 2953 rate-limited
 [watch] mainnet at block 225,972,953 (head 225,973,692, lag 739); scanned 6888, skipped 17651 blocks; 1 event(s); neardata 9994 req, 3073 rate-limited
 [watch] block 225,973,043  id_000104.ma.private-mainnet.ref-dev-team.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,973,218 (head 225,973,692, lag 474); scanned 7153, skipped 17651 blocks; 2 event(s); neardata 10382 req, 3196 rate-limited
