@@ -19,3 +19,6 @@
 [watch] block 226,051,290  ac11fbf82d13e555b53f3ec46b469440c3ff863f.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,051,325 (head 226,051,474, lag 149); scanned 3336, skipped 8550 blocks; 4 event(s); neardata 4837 req, 1481 rate-limited
 [watch] mainnet at block 226,051,610 (head 226,052,691, lag 1081); scanned 3621, skipped 8550 blocks; 4 event(s); neardata 5249 req, 1607 rate-limited
+[watch] mainnet at block 226,051,881 (head 226,052,691, lag 810); scanned 3892, skipped 8550 blocks; 4 event(s); neardata 5649 req, 1736 rate-limited
+[watch] block 226,052,021  25d08f70f03beffc5b36d1a2df0599829935eff7.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] block 226,052,126  99bc294fe42f3230f4ab513efb3c0f7df29de38d5276d9dfbeeba7c6b72cd837  DeployContract (transaction)  new code Rp7nhg…
