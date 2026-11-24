@@ -27,3 +27,4 @@
 [watch] mainnet at block 225,938,024 (head 225,938,087, lag 63); scanned 5502, skipped 14473 blocks; 2 event(s); neardata 8029 req, 2500 rate-limited
 [watch] block 225,938,176  b1e5dac1dc22.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,938,293 (head 225,939,301, lag 1008); scanned 5771, skipped 14473 blocks; 3 event(s); neardata 8424 req, 2625 rate-limited
+[watch] mainnet at block 225,938,584 (head 225,939,301, lag 717); scanned 6062, skipped 14473 blocks; 3 event(s); neardata 8838 req, 2748 rate-limited
