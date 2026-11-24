@@ -1,3 +1,5 @@
 [watch] mainnet from block 225,948,414; watching (none); network-wide deploy feed on
 [watch] mainnet block 225948430: HTTP 429; retry in 4s
 [watch] mainnet at block 225,948,691 (head 225,948,848, lag 157); scanned 277, skipped 0 blocks; 0 event(s); neardata 393 req, 107 rate-limited
+[watch] mainnet at block 225,948,962 (head 225,950,070, lag 1108); scanned 548, skipped 0 blocks; 0 event(s); neardata 795 req, 236 rate-limited
+[watch] block 225,949,149  1551af778288.user0.tmplr.near  UseGlobalContract (contract-receipt)
