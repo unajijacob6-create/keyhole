@@ -1,3 +1,4 @@
 [watch] mainnet from block 226,009,261; watching (none); network-wide deploy feed on
 [watch] block 226,009,312  withdraw-btc.hydration-whm.near  DeployContract (transaction)  new code 2mobHE…
 [watch] mainnet at block 226,009,586 (head 226,009,607, lag 21); scanned 325, skipped 0 blocks; 1 event(s); neardata 451 req, 114 rate-limited
+[watch] mainnet at block 226,009,928 (head 226,010,186, lag 258); scanned 667, skipped 0 blocks; 1 event(s); neardata 900 req, 221 rate-limited
