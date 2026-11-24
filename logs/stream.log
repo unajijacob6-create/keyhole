@@ -6,3 +6,5 @@
 [watch] block 226,010,537  k15dpz6t9tex8dx91g5x05qfdrxy5zst.craft.tg  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,010,552 (head 226,011,840, lag 1288); scanned 1291, skipped 0 blocks; 2 event(s); neardata 1748 req, 444 rate-limited
 [watch] mainnet at block 226,010,848 (head 226,011,840, lag 992); scanned 1587, skipped 0 blocks; 2 event(s); neardata 2165 req, 564 rate-limited
+[watch] mainnet at block 226,011,142 (head 226,011,840, lag 698); scanned 1881, skipped 0 blocks; 2 event(s); neardata 2576 req, 681 rate-limited
+[watch] block 226,011,194  b63ac8a9ee19.user0.tmplr.near  UseGlobalContract (contract-receipt)
