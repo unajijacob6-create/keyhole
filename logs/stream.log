@@ -30,3 +30,4 @@
 [watch] block 226,029,271  62fb4ada45e1c07775279509d151622b8c384dc9.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet block 226029297: HTTP 429; retry in 4s
 [watch] mainnet at block 226,029,390 (head 226,029,527, lag 137); scanned 6178, skipped 13951 blocks; 7 event(s); neardata 8530 req, 2323 rate-limited
+[watch] mainnet at block 226,029,707 (head 226,030,624, lag 917); scanned 6495, skipped 13951 blocks; 7 event(s); neardata 8953 req, 2427 rate-limited
