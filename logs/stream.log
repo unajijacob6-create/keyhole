@@ -32,3 +32,5 @@
 [watch] mainnet at block 225,996,226 (head 225,996,994, lag 768); scanned 5582, skipped 12676 blocks; 5 event(s); neardata 8069 req, 2459 rate-limited
 [watch] mainnet at block 225,996,507 (head 225,996,994, lag 487); scanned 5863, skipped 12676 blocks; 5 event(s); neardata 8474 req, 2583 rate-limited
 [watch] block 225,996,552  contract.saifu-network.near  DeployContract (transaction)  new code EpsDFt…
+[watch] mainnet at block 225,996,783 (head 225,996,994, lag 211); scanned 6139, skipped 12676 blocks; 6 event(s); neardata 8871 req, 2703 rate-limited
+[watch] mainnet: 4780 blocks behind; skipping to head 226,001,775 (blocks 225996995–226001774 not scanned)
