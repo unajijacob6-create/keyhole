@@ -13,3 +13,4 @@
 [watch] block 226,011,837  161c64378a53.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: 5980 blocks behind; skipping to head 226,017,821 (blocks 226011841–226017820 not scanned)
 [watch] block 226,017,923  id_000092.ma.private-mainnet.ref-dev-team.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 226,017,965 (head 226,018,237, lag 272); scanned 2724, skipped 5980 blocks; 5 event(s); neardata 3795 req, 1054 rate-limited
