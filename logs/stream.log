@@ -6,3 +6,5 @@
 [watch] mainnet at block 225,978,804 (head 225,979,737, lag 933); scanned 836, skipped 0 blocks; 0 event(s); neardata 1213 req, 365 rate-limited
 [watch] mainnet at block 225,979,086 (head 225,979,737, lag 651); scanned 1118, skipped 0 blocks; 0 event(s); neardata 1618 req, 489 rate-limited
 [watch] block 225,979,298  b90ea3515550.user0.tmplr.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 225,979,363 (head 225,979,737, lag 374); scanned 1395, skipped 0 blocks; 1 event(s); neardata 2018 req, 611 rate-limited
+[watch] mainnet block 225979499: HTTP 429; retry in 4s
