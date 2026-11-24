@@ -10,3 +10,6 @@
 [watch] mainnet block 225979499: HTTP 429; retry in 4s
 [watch] mainnet at block 225,979,649 (head 225,979,737, lag 88); scanned 1681, skipped 0 blocks; 1 event(s); neardata 2427 req, 735 rate-limited
 [watch] mainnet: 4672 blocks behind; skipping to head 225,984,410 (blocks 225979738–225984409 not scanned)
+[watch] mainnet at block 225,984,593 (head 225,984,829, lag 236); scanned 1953, skipped 4672 blocks; 1 event(s); neardata 2822 req, 854 rate-limited
+[watch] block 225,984,649  8dn8z.sputnik-dao.near  UseGlobalContract (contract-receipt)
+[watch] block 225,984,697  8dn8z.bulkpayment.near  UseGlobalContract (contract-receipt)
