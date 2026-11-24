@@ -33,3 +33,4 @@
 [watch] mainnet at block 226,057,954 (head 226,059,056, lag 1102); scanned 5298, skipped 13217 blocks; 9 event(s); neardata 7676 req, 2353 rate-limited
 [watch] block 226,057,981  791473aeace6.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] block 226,058,142  34b0ed55ab6f1157fb2f1db5391e01627d34bde12d80506102e0d9c08beec9bb  DeployContract (transaction)  new code 85Ha3r…
+[watch] mainnet at block 226,058,229 (head 226,059,056, lag 827); scanned 5573, skipped 13217 blocks; 11 event(s); neardata 8080 req, 2482 rate-limited
