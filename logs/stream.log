@@ -24,3 +24,5 @@
 [watch] block 225,990,582  2zzb3.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 225,990,604 (head 225,991,351, lag 747); scanned 3939, skipped 8697 blocks; 5 event(s); neardata 5664 req, 1702 rate-limited
 [watch] mainnet at block 225,990,872 (head 225,991,351, lag 479); scanned 4207, skipped 8697 blocks; 5 event(s); neardata 6062 req, 1833 rate-limited
+[watch] mainnet at block 225,991,152 (head 225,991,351, lag 199); scanned 4487, skipped 8697 blocks; 5 event(s); neardata 6465 req, 1956 rate-limited
+[watch] mainnet: 3979 blocks behind; skipping to head 225,995,331 (blocks 225991352–225995330 not scanned)
