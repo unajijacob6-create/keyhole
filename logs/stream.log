@@ -19,3 +19,5 @@
 [watch] block 226,018,580  v1.bond-operator.near  DeployContract (transaction)  new code 4BeKxg…
 [watch] mainnet at block 226,018,869 (head 226,019,444, lag 575); scanned 3628, skipped 5980 blocks; 6 event(s); neardata 5062 req, 1415 rate-limited
 [watch] mainnet at block 226,019,156 (head 226,019,444, lag 288); scanned 3915, skipped 5980 blocks; 6 event(s); neardata 5473 req, 1539 rate-limited
+[watch] mainnet at block 226,019,426 (head 226,019,444, lag 18); scanned 4185, skipped 5980 blocks; 6 event(s); neardata 5869 req, 1665 rate-limited
+[watch] mainnet: 4386 blocks behind; skipping to head 226,023,831 (blocks 226019445–226023830 not scanned)
