@@ -2,3 +2,4 @@
 [watch] mainnet: head refresh failed (HTTP 429); keeping 226161944
 [watch] block 226,161,959  5vsbf.bulkpayment.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,162,202 (head 226,162,320, lag 118); scanned 273, skipped 0 blocks; 1 event(s); neardata 401 req, 119 rate-limited
+[watch] mainnet at block 226,162,488 (head 226,163,448, lag 960); scanned 559, skipped 0 blocks; 1 event(s); neardata 807 req, 237 rate-limited
