@@ -32,3 +32,5 @@
 [watch] mainnet at block 226,212,689 (head 226,212,735, lag 46); scanned 6423, skipped 13551 blocks; 1 event(s); neardata 9298 req, 2849 rate-limited
 [watch] mainnet: 4567 blocks behind; skipping to head 226,217,303 (blocks 226212736–226217302 not scanned)
 [watch] mainnet at block 226,217,513 (head 226,217,752, lag 239); scanned 6680, skipped 18118 blocks; 1 event(s); neardata 9685 req, 2974 rate-limited
+[watch] mainnet at block 226,217,782 (head 226,219,083, lag 1301); scanned 6949, skipped 18118 blocks; 1 event(s); neardata 10076 req, 3094 rate-limited
+[watch] block 226,217,936  6q33nxxjzxuyw4eusvgu6fwzfqal8xsih56olxsct6pm.deposit.aurora  DeployContract (contract-receipt)  new code CffB7Y…
