@@ -1,10 +1,3 @@
-[watch] mainnet at block 226,162,202 (head 226,162,320, lag 118); scanned 273, skipped 0 blocks; 1 event(s); neardata 401 req, 119 rate-limited
-[watch] mainnet at block 226,162,488 (head 226,163,448, lag 960); scanned 559, skipped 0 blocks; 1 event(s); neardata 807 req, 237 rate-limited
-[watch] mainnet at block 226,162,757 (head 226,163,448, lag 691); scanned 828, skipped 0 blocks; 1 event(s); neardata 1205 req, 367 rate-limited
-[watch] block 226,162,862  c61c25aae70f95c83a428d23bc679bca11b19411.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
-[watch] mainnet at block 226,163,045 (head 226,163,448, lag 403); scanned 1116, skipped 0 blocks; 2 event(s); neardata 1605 req, 479 rate-limited
-[watch] mainnet at block 226,163,341 (head 226,163,448, lag 107); scanned 1412, skipped 0 blocks; 2 event(s); neardata 2016 req, 594 rate-limited
-[watch] mainnet block 226163396: HTTP 429; retry in 4s
 [watch] mainnet block 226163398: HTTP 429; retry in 4s
 [watch] block 226,163,407  e4f93b5a5c88.user0.tmplr.near  UseGlobalContract (contract-receipt)
 [watch] mainnet: head refresh failed (HTTP 429); keeping 226163448
@@ -78,3 +71,10 @@
 [watch] mainnet block 226184691: HTTP 429; retry in 4s
 [watch] mainnet at block 226,184,904 (head 226,185,683, lag 779); scanned 9643, skipped 13332 blocks; 7 event(s); neardata 12420 req, 2741 rate-limited
 [watch] mainnet block 226185185: HTTP 429; retry in 4s
+[watch] mainnet at block 226,185,377 (head 226,185,683, lag 306); scanned 10116, skipped 13332 blocks; 7 event(s); neardata 12992 req, 2840 rate-limited
+[watch] mainnet block 226185610: HTTP 429; retry in 4s
+[watch] mainnet block 226185612: HTTP 429; retry in 4s
+[watch] mainnet: head refresh failed (HTTP 429); keeping 226185683
+[watch] mainnet: 5702 blocks behind; skipping to head 226,191,386 (blocks 226185684–226191385 not scanned)
+[watch] block 226,191,455  raen_trade.near  DeployContract (transaction)  new code 61agH5…
+[watch] mainnet: head refresh failed (HTTP 429); keeping 226191461
