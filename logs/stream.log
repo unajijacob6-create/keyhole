@@ -1,2 +1,5 @@
 [watch] mainnet from block 226,131,503; watching (none); network-wide deploy feed on
 [watch] mainnet block 226131521: HTTP 429; retry in 4s
+[watch] mainnet at block 226,131,768 (head 226,132,021, lag 253); scanned 265, skipped 0 blocks; 0 event(s); neardata 389 req, 115 rate-limited
+[watch] mainnet block 226131987: HTTP 429; retry in 4s
+[watch] mainnet block 226131989: HTTP 429; retry in 4s
