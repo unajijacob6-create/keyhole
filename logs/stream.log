@@ -1,11 +1,3 @@
-[watch] mainnet block 226163398: HTTP 429; retry in 4s
-[watch] block 226,163,407  e4f93b5a5c88.user0.tmplr.near  UseGlobalContract (contract-receipt)
-[watch] mainnet: head refresh failed (HTTP 429); keeping 226163448
-[watch] mainnet: 4121 blocks behind; skipping to head 226,167,570 (blocks 226163449–226167569 not scanned)
-[watch] mainnet block 226167752: HTTP 429; retry in 4s
-[watch] mainnet: head refresh failed (HTTP 429); keeping 226167788
-[watch] mainnet at block 226,167,814 (head 226,168,275, lag 461); scanned 1764, skipped 4121 blocks; 3 event(s); neardata 2452 req, 670 rate-limited
-[watch] mainnet block 226168116: HTTP 429; retry in 4s
 [watch] mainnet at block 226,168,116 (head 226,168,275, lag 159); scanned 2066, skipped 4121 blocks; 3 event(s); neardata 2870 req, 785 rate-limited
 [watch] block 226,168,309  705b2186714b1b1aa3d35d19a160d459cdd95336.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet block 226168413: HTTP 429; retry in 4s
@@ -78,3 +70,11 @@
 [watch] mainnet: 5702 blocks behind; skipping to head 226,191,386 (blocks 226185684–226191385 not scanned)
 [watch] block 226,191,455  raen_trade.near  DeployContract (transaction)  new code 61agH5…
 [watch] mainnet: head refresh failed (HTTP 429); keeping 226191461
+[watch] mainnet at block 226,191,587 (head 226,191,607, lag 20); scanned 10624, skipped 19034 blocks; 8 event(s); neardata 13596 req, 2910 rate-limited
+[watch] mainnet: head refresh failed (HTTP 429); keeping 226191607
+[watch] mainnet: head refresh failed (HTTP 429); keeping 226191852
+[watch] mainnet block 226192152: HTTP 429; retry in 4s
+[watch] mainnet block 226192153: HTTP 429; retry in 4s
+[watch] mainnet block 226192154: HTTP 429; retry in 4s
+[watch] mainnet stopped after 17404s; 8 event(s) reported
+stream watcher exited with code 0 after 17447s
