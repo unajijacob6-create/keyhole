@@ -54,3 +54,7 @@
 [watch] mainnet block 226182684: HTTP 429; retry in 4s
 [watch] mainnet at block 226,182,816 (head 226,182,883, lag 67); scanned 7555, skipped 13332 blocks; 5 event(s); neardata 9683 req, 2093 rate-limited
 [watch] mainnet at block 226,183,098 (head 226,183,505, lag 407); scanned 7837, skipped 13332 blocks; 5 event(s); neardata 10081 req, 2208 rate-limited
+[watch] mainnet at block 226,183,411 (head 226,183,505, lag 94); scanned 8150, skipped 13332 blocks; 5 event(s); neardata 10511 req, 2326 rate-limited
+[watch] mainnet block 226183482: HTTP 429; retry in 4s
+[watch] mainnet block 226183483: HTTP 429; retry in 4s
+[watch] block 226,183,556  eth-0x96f6ef951840721adbf46ac996b59e0235cb985c.omft.near  DeployContract (contract-receipt)  new code 2VUeqH…
