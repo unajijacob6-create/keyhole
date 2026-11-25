@@ -15,3 +15,6 @@
 [watch] mainnet block 226132846: HTTP 429; retry in 4s
 [watch] mainnet block 226132848: HTTP 429; retry in 4s
 [watch] mainnet at block 226,133,061 (head 226,133,414, lag 353); scanned 1558, skipped 0 blocks; 0 event(s); neardata 2140 req, 572 rate-limited
+[watch] mainnet at block 226,133,369 (head 226,133,414, lag 45); scanned 1866, skipped 0 blocks; 0 event(s); neardata 2572 req, 695 rate-limited
+[watch] mainnet: head refresh failed (HTTP 429); keeping 226133414
+[watch] mainnet: 4598 blocks behind; skipping to head 226,138,013 (blocks 226133415–226138012 not scanned)
