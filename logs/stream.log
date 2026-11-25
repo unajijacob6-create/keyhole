@@ -37,3 +37,5 @@
 [watch] mainnet at block 226,150,489 (head 226,151,103, lag 614); scanned 6050, skipped 12936 blocks; 0 event(s); neardata 8587 req, 2510 rate-limited
 [watch] block 226,150,601  zilkroadmarket.near  DeployContract (contract-receipt)  new code 9J16WB…
 [watch] mainnet at block 226,150,776 (head 226,151,103, lag 327); scanned 6337, skipped 12936 blocks; 1 event(s); neardata 8998 req, 2633 rate-limited
+[watch] mainnet at block 226,151,048 (head 226,151,103, lag 55); scanned 6609, skipped 12936 blocks; 1 event(s); neardata 9397 req, 2761 rate-limited
+[watch] mainnet: 4840 blocks behind; skipping to head 226,155,944 (blocks 226151104–226155943 not scanned)
