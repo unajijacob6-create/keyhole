@@ -6,3 +6,11 @@
 [watch] mainnet at block 226,162,757 (head 226,163,448, lag 691); scanned 828, skipped 0 blocks; 1 event(s); neardata 1205 req, 367 rate-limited
 [watch] block 226,162,862  c61c25aae70f95c83a428d23bc679bca11b19411.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,163,045 (head 226,163,448, lag 403); scanned 1116, skipped 0 blocks; 2 event(s); neardata 1605 req, 479 rate-limited
+[watch] mainnet at block 226,163,341 (head 226,163,448, lag 107); scanned 1412, skipped 0 blocks; 2 event(s); neardata 2016 req, 594 rate-limited
+[watch] mainnet block 226163396: HTTP 429; retry in 4s
+[watch] mainnet block 226163398: HTTP 429; retry in 4s
+[watch] block 226,163,407  e4f93b5a5c88.user0.tmplr.near  UseGlobalContract (contract-receipt)
+[watch] mainnet: head refresh failed (HTTP 429); keeping 226163448
+[watch] mainnet: 4121 blocks behind; skipping to head 226,167,570 (blocks 226163449–226167569 not scanned)
+[watch] mainnet block 226167752: HTTP 429; retry in 4s
+[watch] mainnet: head refresh failed (HTTP 429); keeping 226167788
