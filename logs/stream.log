@@ -63,3 +63,14 @@
 [watch] mainnet block 226184001: HTTP 429; retry in 4s
 [watch] mainnet block 226184002: HTTP 429; retry in 4s
 [watch] mainnet block 226184003: HTTP 429; retry in 4s
+[watch] block 226,184,048  84c45d950ef111860044b88434e516847440c024.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 226,184,054 (head 226,185,683, lag 1629); scanned 8793, skipped 13332 blocks; 7 event(s); neardata 11377 req, 2548 rate-limited
+[watch] mainnet block 226184116: HTTP 429; retry in 4s
+[watch] mainnet block 226184117: HTTP 429; retry in 4s
+[watch] mainnet block 226184118: HTTP 429; retry in 4s
+[watch] mainnet block 226184158: HTTP 429; retry in 4s
+[watch] mainnet block 226184159: HTTP 429; retry in 4s
+[watch] mainnet block 226184160: HTTP 429; retry in 4s
+[watch] mainnet block 226184305: HTTP 429; retry in 4s
+[watch] mainnet block 226184440: HTTP 429; retry in 4s
+[watch] mainnet block 226184442: HTTP 429; retry in 4s
