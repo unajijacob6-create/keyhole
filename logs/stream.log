@@ -1,3 +1,4 @@
 [watch] mainnet from block 226,161,929; watching (none); network-wide deploy feed on
 [watch] mainnet: head refresh failed (HTTP 429); keeping 226161944
 [watch] block 226,161,959  5vsbf.bulkpayment.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 226,162,202 (head 226,162,320, lag 118); scanned 273, skipped 0 blocks; 1 event(s); neardata 401 req, 119 rate-limited
