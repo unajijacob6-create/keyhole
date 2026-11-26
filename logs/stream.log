@@ -1,1 +1,3 @@
 [watch] mainnet from block 226,284,021; watching (none); network-wide deploy feed on
+[watch] mainnet at block 226,284,313 (head 226,284,468, lag 155); scanned 292, skipped 0 blocks; 0 event(s); neardata 415 req, 113 rate-limited
+[watch] block 226,284,489  af61baf34a0584a463049aa46f6e241b446d3ea8.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
