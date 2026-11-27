@@ -31,3 +31,5 @@
 [watch] mainnet at block 226,514,277 (head 226,514,967, lag 690); scanned 5574, skipped 13251 blocks; 0 event(s); neardata 8043 req, 2440 rate-limited
 [watch] block 226,514,460  ripcord-registry.near  DeployContract (transaction)  new code AwLEfg…
 [watch] mainnet at block 226,514,548 (head 226,514,967, lag 419); scanned 5845, skipped 13251 blocks; 1 event(s); neardata 8440 req, 2567 rate-limited
+[watch] mainnet at block 226,514,822 (head 226,514,967, lag 145); scanned 6119, skipped 13251 blocks; 1 event(s); neardata 8842 req, 2695 rate-limited
+[watch] mainnet: 4205 blocks behind; skipping to head 226,519,173 (blocks 226514968–226519172 not scanned)
