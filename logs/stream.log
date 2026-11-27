@@ -2,3 +2,4 @@
 [watch] mainnet: head refresh failed (HTTP 429); keeping 226374363
 [watch] mainnet at block 226,374,611 (head 226,374,805, lag 194); scanned 263, skipped 0 blocks; 0 event(s); neardata 380 req, 108 rate-limited
 [watch] mainnet at block 226,374,879 (head 226,376,169, lag 1290); scanned 531, skipped 0 blocks; 0 event(s); neardata 773 req, 231 rate-limited
+[watch] mainnet at block 226,375,153 (head 226,376,169, lag 1016); scanned 805, skipped 0 blocks; 0 event(s); neardata 1171 req, 355 rate-limited
