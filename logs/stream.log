@@ -38,3 +38,7 @@
 [watch] block 226,490,430  test14.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,490,576 (head 226,491,584, lag 1008); scanned 7299, skipped 17753 blocks; 4 event(s); neardata 10421 req, 3083 rate-limited
 [watch] mainnet at block 226,490,858 (head 226,491,584, lag 726); scanned 7581, skipped 17753 blocks; 4 event(s); neardata 10825 req, 3205 rate-limited
+[watch] block 226,491,111  app.staging.luckout.near  DeployContract (transaction)  new code AwLEfg…
+[watch] mainnet at block 226,491,133 (head 226,491,584, lag 451); scanned 7856, skipped 17753 blocks; 5 event(s); neardata 11224 req, 3330 rate-limited
+[watch] mainnet stopped after 17405s; 5 event(s) reported
+stream watcher exited with code 0 after 17443s
