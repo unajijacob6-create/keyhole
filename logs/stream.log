@@ -37,3 +37,4 @@
 [watch] mainnet at block 226,490,283 (head 226,490,348, lag 65); scanned 7006, skipped 17753 blocks; 3 event(s); neardata 10015 req, 2971 rate-limited
 [watch] block 226,490,430  test14.nearlytrade.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,490,576 (head 226,491,584, lag 1008); scanned 7299, skipped 17753 blocks; 4 event(s); neardata 10421 req, 3083 rate-limited
+[watch] mainnet at block 226,490,858 (head 226,491,584, lag 726); scanned 7581, skipped 17753 blocks; 4 event(s); neardata 10825 req, 3205 rate-limited
