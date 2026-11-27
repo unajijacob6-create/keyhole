@@ -30,3 +30,4 @@
 [watch] mainnet at block 226,484,583 (head 226,485,591, lag 1008); scanned 5640, skipped 13419 blocks; 2 event(s); neardata 8022 req, 2348 rate-limited
 [watch] mainnet at block 226,484,852 (head 226,485,591, lag 739); scanned 5909, skipped 13419 blocks; 2 event(s); neardata 8422 req, 2480 rate-limited
 [watch] block 226,485,085  01138abe5dae2290fae474def5ef8011aea4f4b7.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
+[watch] mainnet at block 226,485,123 (head 226,485,591, lag 468); scanned 6180, skipped 13419 blocks; 3 event(s); neardata 8812 req, 2600 rate-limited
