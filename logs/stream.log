@@ -10,3 +10,6 @@
 [watch] mainnet at block 226,624,064 (head 226,625,200, lag 1136); scanned 1928, skipped 3697 blocks; 0 event(s); neardata 2786 req, 843 rate-limited
 [watch] mainnet at block 226,624,337 (head 226,625,200, lag 863); scanned 2201, skipped 3697 blocks; 0 event(s); neardata 3186 req, 969 rate-limited
 [watch] mainnet at block 226,624,625 (head 226,625,200, lag 575); scanned 2489, skipped 3697 blocks; 0 event(s); neardata 3599 req, 1095 rate-limited
+[watch] mainnet at block 226,624,896 (head 226,625,200, lag 304); scanned 2760, skipped 3697 blocks; 0 event(s); neardata 4003 req, 1228 rate-limited
+[watch] block 226,625,115  musd-t1.near  DeployContract (contract-receipt)  new code ALkCGo…
+[watch] block 226,625,156  muhra-t1.near  DeployContract (contract-receipt)  new code 3KUpDD…
