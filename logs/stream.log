@@ -23,3 +23,5 @@
 [watch] block 226,569,764  b9c349a6ed5a27e4d52629e7ac84871f45fbbe6c.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] block 226,569,772  d65029f451f806c2e2687c3d983b96934c6b5644.dep.alcorexchange.near  UseGlobalContract (contract-receipt)
 [watch] mainnet at block 226,569,979 (head 226,570,908, lag 929); scanned 4114, skipped 9277 blocks; 6 event(s); neardata 5961 req, 1825 rate-limited
+[watch] mainnet at block 226,570,250 (head 226,570,908, lag 658); scanned 4385, skipped 9277 blocks; 6 event(s); neardata 6354 req, 1948 rate-limited
+[watch] block 226,570,453  cert.grinddistrict.near  DeployContract (transaction)  new code 5paEq7…
