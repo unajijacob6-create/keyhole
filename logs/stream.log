@@ -11,3 +11,5 @@
 [watch] mainnet: 5620 blocks behind; skipping to head 226,564,111 (blocks 226558491–226564110 not scanned)
 [watch] mainnet at block 226,564,397 (head 226,564,463, lag 66); scanned 2189, skipped 5620 blocks; 1 event(s); neardata 3167 req, 962 rate-limited
 [watch] mainnet at block 226,564,673 (head 226,565,401, lag 728); scanned 2465, skipped 5620 blocks; 1 event(s); neardata 3563 req, 1082 rate-limited
+[watch] mainnet at block 226,564,943 (head 226,565,401, lag 458); scanned 2735, skipped 5620 blocks; 1 event(s); neardata 3956 req, 1204 rate-limited
+[watch] block 226,565,152  arena.nearcarta.near  DeployContract (contract-receipt)  new code DiH8Sy…
