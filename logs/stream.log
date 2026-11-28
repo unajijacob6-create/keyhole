@@ -7,3 +7,8 @@
 [watch] mainnet block 226526738: HTTP 429; retry in 4s
 [watch] mainnet at block 226,526,782 (head 226,527,416, lag 634); scanned 868, skipped 0 blocks; 0 event(s); neardata 1238 req, 359 rate-limited
 [watch] mainnet at block 226,527,056 (head 226,527,416, lag 360); scanned 1142, skipped 0 blocks; 0 event(s); neardata 1645 req, 491 rate-limited
+[watch] mainnet at block 226,527,342 (head 226,527,416, lag 74); scanned 1428, skipped 0 blocks; 0 event(s); neardata 2051 req, 612 rate-limited
+[watch] mainnet: 4166 blocks behind; skipping to head 226,531,583 (blocks 226527417–226531582 not scanned)
+[watch] block 226,531,653  barrel-v2.promptbarrel.near  DeployContract (transaction)  new code JDUu3x…
+[watch] mainnet block 226531735: HTTP 429; retry in 4s
+[watch] mainnet block 226531737: HTTP 429; retry in 4s
