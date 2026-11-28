@@ -46,3 +46,7 @@
 [watch] mainnet: 4054 blocks behind; skipping to head 226,550,118 (blocks 226546064–226550117 not scanned)
 [watch] mainnet at block 226,550,167 (head 226,550,221, lag 54); scanned 6575, skipped 17678 blocks; 1 event(s); neardata 9352 req, 2745 rate-limited
 [watch] mainnet at block 226,550,454 (head 226,550,541, lag 87); scanned 6862, skipped 17678 blocks; 1 event(s); neardata 9762 req, 2866 rate-limited
+[watch] mainnet at block 226,550,739 (head 226,551,733, lag 994); scanned 7147, skipped 17678 blocks; 1 event(s); neardata 10170 req, 2989 rate-limited
+[watch] mainnet block 226550875: HTTP 429; retry in 4s
+[watch] mainnet block 226550876: HTTP 429; retry in 4s
+[watch] mainnet block 226550877: HTTP 429; retry in 4s
